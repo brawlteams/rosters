@@ -146,9 +146,8 @@ button{font-family:'Lilita One',sans-serif;cursor:pointer}
 .export-preview{min-width:0;max-height:72vh;overflow:auto;padding:10px;background:#120e2e;border:2px solid #000;border-radius:6px}
 .export-preview img{display:block;width:100%;height:auto}
 .export-share-panel{display:flex;flex-direction:column;gap:12px;align-self:start}
-.export-actions{display:grid;grid-template-columns:1fr 1fr;gap:9px}
-.export-actions .toolbar-action{width:100%;min-height:42px;font-size:14px;padding:6px 8px}
-.export-actions [data-act="copy-export"]{grid-column:1/-1;width:calc((100% - 9px) / 2);justify-self:center}
+.export-actions{display:flex;flex-wrap:wrap;justify-content:center;gap:9px}
+.export-actions .toolbar-action{flex:0 0 calc(50% - 4.5px);width:auto;min-width:0;min-height:42px;font-size:14px;padding:6px 8px}
 .export-share-link{display:flex;align-items:center;justify-content:center;min-height:40px;box-sizing:border-box;background:#302858;text-decoration:none}
 .export-share-link span{display:inline-block;transform:skewX(4deg)}
 .export-share-link[data-service="x"]{background:linear-gradient(180deg,#b5e5ff 0%,#4cb4f5 92%,#1d86c7 92%,#146399 100%)}
@@ -481,6 +480,35 @@ body.modal-open .hamburger,body.modal-open .nav-btn{z-index:900}
 
 /* stop iOS from inflating text, which makes the name measuring wrong */
 html{-webkit-text-size-adjust:100%;text-size-adjust:100%}
+
+.loading-overlay{display:none;position:fixed;inset:0;z-index:1500;flex-direction:column;align-items:center;justify-content:center;gap:18px;background:rgba(0,0,0,.78)}
+.loading-overlay.active{display:flex}
+.loading-overlay p{margin:0;font-size:24px;color:#ffcc00;text-transform:uppercase}
+.spinner{width:64px;height:64px;box-sizing:border-box;border:8px solid #2b2254;border-top-color:#ffcc00;border-radius:50%;animation:spin .8s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+/* export sheet: the black header bar is always the same height, with or without an org */
+.export-card-header{
+  box-sizing:border-box;
+  min-height:152px;              /* = logo + strip + name + icon row + padding of a card with an org */
+  justify-content:center;        /* "F/A team" sits in the middle of the bar */
+}
+
+/* export popup: all three buttons get exactly the same size */
+.export-dialog{grid-template-columns:minmax(0,1.2fr) minmax(280px,.8fr)}
+.export-actions .toolbar-action{
+  flex:0 0 calc(50% - 4.5px);
+  width:calc(50% - 4.5px);
+  height:44px;
+  min-height:44px;
+  padding:0 6px;
+  display:flex;align-items:center;justify-content:center;
+  white-space:nowrap;
+  font-size:14px;
+}
+.export-actions .toolbar-action span{white-space:nowrap}
+@media (max-width:600px){
+  .export-dialog{grid-template-columns:minmax(0,1fr)}
+}
 </style>
 </head>
 <body>
@@ -575,6 +603,10 @@ html{-webkit-text-size-adjust:100%;text-size-adjust:100%}
     </div>
   </div>
 </div>
+<div id="export-loading" class="loading-overlay" role="status" aria-live="polite" aria-hidden="true">
+  <div class="spinner"></div>
+  <p>Exporting...</p>
+</div>
 <div id="achievement-popup" class="achievement-popup" role="tooltip" aria-hidden="true"></div>
 <div id="export-modal" class="export-overlay" data-act="close-export-bg" aria-hidden="true">
   <section class="export-dialog" role="dialog" aria-modal="true" aria-labelledby="export-title">
@@ -590,12 +622,6 @@ html{-webkit-text-size-adjust:100%;text-size-adjust:100%}
         <button class="blue-btn toolbar-action" data-act="download-export"><span>DOWNLOAD PNG</span></button>
         <button class="blue-btn toolbar-action" data-act="copy-export"><span>COPY IMAGE</span></button>
       </div>
-      <div class="export-share-links">
-        <a class="blue-btn toolbar-action export-share-link" data-act="social-export" data-service="x" href="https://twitter.com/intent/tweet?text=Check%20out%20my%20Brawlteams%20rosters" target="_blank" rel="noopener"><span>Twitter</span></a>
-        <a class="blue-btn toolbar-action export-share-link" data-act="social-export" data-service="reddit" href="https://www.reddit.com/submit?title=My%20Brawlteams%20rosters" target="_blank" rel="noopener"><span>Reddit</span></a>
-        <a class="blue-btn toolbar-action export-share-link" data-act="social-export" data-service="discord" href="https://discord.com/channels/@me" target="_blank" rel="noopener"><span>Discord</span></a>
-      </div>
-      <p class="export-note">On iPhone or iPad, choose “Save Image” in the share sheet. Social sites may ask you to attach the PNG after opening.</p>
       <p id="export-status" class="export-status" aria-live="polite"></p>
     </div>
   </section>
@@ -1511,22 +1537,44 @@ const needsWarmup = /iP(ad|hone|od)/.test(navigator.userAgent)
   || (/Safari/.test(navigator.userAgent) && !/Chrome|Chromium|Android/.test(navigator.userAgent))
   || (navigator.maxTouchPoints > 1 && /Mac/.test(navigator.platform));
   /* load every <img> in the export sheet as an inline data URL, so html-to-image never has to fetch anything */
-function imageToDataUrl(url){
-  return fetch(url)
-    .then(r => { if(!r.ok) throw new Error('HTTP ' + r.status); return r.blob(); })
-    .then(b => new Promise((resolve, reject) => {
-      const f = new FileReader();
-      f.onload = () => resolve(f.result);
-      f.onerror = reject;
-      f.readAsDataURL(b);
-    }))
-    .catch(err => { console.warn('Export: could not load image', url, err); return BLANK_PIXEL; });
+const imageCache = new Map();   // url -> data URL, so later exports are instant
+async function fetchDataUrl(url, tries = 4){
+  if(imageCache.has(url)) return imageCache.get(url);
+  for(let a = 0; a < tries; a++){
+    try{
+      const r = await fetch(url, { cache: a ? 'reload' : 'force-cache' });
+      if(!r.ok) throw new Error('HTTP ' + r.status);
+      const blob = await r.blob();
+      const data = await new Promise((res, rej) => {
+        const f = new FileReader();
+        f.onload = () => res(f.result);
+        f.onerror = rej;
+        f.readAsDataURL(blob);
+      });
+      imageCache.set(url, data);
+      return data;
+    }catch(err){
+      if(a === tries - 1){ console.warn('Export: could not load image', url, err); return null; }
+      await new Promise(r => setTimeout(r, 250 * (a + 1)));   // wait a bit, then retry
+    }
+  }
 }
 async function inlineExportImages(root){
-  await Promise.all([...root.querySelectorAll('img')].map(async img => {
+  const imgs = [...root.querySelectorAll('img')];
+  const urls = [...new Set(imgs.map(i => i.currentSrc || i.src).filter(s => s && !s.startsWith('data:')))];
+  const results = new Map();
+  let next = 0;
+  /* 6 downloads at a time instead of all at once */
+  await Promise.all(Array.from({ length: Math.min(6, urls.length) }, async () => {
+    while(next < urls.length){
+      const url = urls[next++];
+      results.set(url, await fetchDataUrl(url));
+    }
+  }));
+  await Promise.all(imgs.map(async img => {
     const src = img.currentSrc || img.src;
-    if(!src || src.startsWith('data:')) return;
-    img.src = await imageToDataUrl(src);
+    if(!results.has(src)) return;
+    img.src = results.get(src) || BLANK_PIXEL;
     try{ await img.decode(); }catch(e){}
   }));
 }
@@ -1553,6 +1601,8 @@ if(!window.htmlToImage){ askConfirm({ title:'Export unavailable', text:'PNG expo
   const d = new Date(), p = v => String(v).padStart(2, '0');
   const date = `${p(d.getDate())}.${p(d.getMonth() + 1)}.${d.getFullYear()}`;
   button.disabled = true;
+  $('export-loading').classList.add('active');
+  $('export-loading').setAttribute('aria-hidden', 'false');
   stage.innerHTML = `<div class="export-sheet" id="export-sheet" style="width:${sheetWidth}px">
     <h1 class="export-title">Brawlteams Rosters</h1>
     <p class="export-subtitle">${esc(main)} / ${esc(sub === 'All' ? 'All Leagues' : sub)}${query ? ` / Search: ${esc(query)}` : ''}${n < total ? ` / ${n} of ${total} rosters` : ''} / ${date}</p>
@@ -1591,6 +1641,8 @@ if(!window.htmlToImage){ askConfirm({ title:'Export unavailable', text:'PNG expo
    }finally{
     stage.replaceChildren();
     button.disabled = false;
+    $('export-loading').classList.remove('active');
+    $('export-loading').setAttribute('aria-hidden', 'true');
   }
 }
 function closeExportModal(){
@@ -1794,10 +1846,9 @@ function exportCard(t){
   </section>`;
   return `<article class="export-card">
     <header class="export-card-header">
-      <div class="export-org-logo${org && org.logo ? ' has-img' : ''}">${logo}</div>
-      ${org ? strip(org.sub) : '<span class="region-strip" style="visibility:hidden"></span>'}
-<h2 class="export-team-name">${esc(org ? org.n : 'F/A team')}</h2>
-${org ? `<span class="export-org-meta">${flag(org.cc)}${achs('org', t.org, false)}</span>` : '<span class="export-org-meta"></span>'}
+      ${org ? `<div class="export-org-logo${org.logo ? ' has-img' : ''}">${logo}</div>${strip(org.sub)}` : ''}
+      <h2 class="export-team-name">${esc(org ? org.n : 'F/A team')}</h2>
+      ${org ? `<span class="export-org-meta">${flag(org.cc)}${achs('org', t.org, false)}</span>` : ''}
     </header>
     ${section('PLAYERS', 'player', t.players)}
     ${section('STAFF', 'staff', t.staff)}
@@ -2166,7 +2217,6 @@ document.addEventListener('click', e => {
     case 'download-export': downloadExportImage(); break;
     case 'share-export': shareExportImage(); break;
     case 'copy-export': copyExportImage(); break;
-    case 'social-export': $('export-status').textContent = 'If prompted, attach the downloaded PNG to your post.'; break;
     case 'close-export': case 'close-export-bg': closeExportModal(); break;
     case 'hamburger': toggleSidebar(); break;
     case 'close-sidebar': closeSidebar(); break;
@@ -2220,7 +2270,8 @@ window.addEventListener('resize', () => {
 /* if a logo file fails to load, fall back to the placeholder */
 document.addEventListener('error', e => {
   const img = e.target;
-  if(img.tagName !== 'IMG' || !img.parentNode || !img.parentNode.classList.contains('has-img')) return;
+  if(img.tagName !== 'IMG' || img.closest('#export-stage')) return;   // <-- changed
+  if(!img.parentNode || !img.parentNode.classList.contains('has-img')) return;
   const p = img.parentNode;
   p.classList.remove('has-img');
   img.replaceWith(Object.assign(document.createElement('span'), { className: p.classList.contains('ach') ? 'ach-placeholder' : '', textContent:'LOGO' }));
