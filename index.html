@@ -1578,6 +1578,20 @@ async function inlineExportImages(root){
     try{ await img.decode(); }catch(e){}
   }));
 }
+/* Safari draws nested images late, so render until two passes in a row give the same file size */
+async function renderStable(node, options, maxPasses = 6){
+  let blob = null, lastSize = -1;
+  for(let i = 0; i < maxPasses; i++){
+    const b = await window.htmlToImage.toBlob(node, options).catch(() => null);
+    if(b){
+      blob = b;
+      if(lastSize > 0 && Math.abs(b.size - lastSize) / lastSize < 0.001) break;   // stable = every image is in
+      lastSize = b.size;
+    }
+    await new Promise(r => setTimeout(r, 200));
+  }
+  return blob;
+}
 async function exportVisibleRosters(){
   let teams = oldestFirst(state.teams.filter(visible));
   const total = teams.length;
@@ -1622,8 +1636,7 @@ if(!window.htmlToImage){ askConfirm({ title:'Export unavailable', text:'PNG expo
     const ratio = Math.max(1, Math.min(2, Math.sqrt(14e6 / (exportSheet.offsetWidth * exportSheet.offsetHeight))));
     const options = { pixelRatio:ratio, cacheBust:false, imagePlaceholder:BLANK_PIXEL, backgroundColor:'#120e2e' };
     if(fontCss) options.fontEmbedCSS = fontCss; else options.skipFonts = true;
-    if(needsWarmup) await window.htmlToImage.toBlob(exportSheet, options).catch(() => {});
-    const blob = await window.htmlToImage.toBlob(exportSheet, options);
+    const blob = await renderStable(exportSheet, options);
     if(!blob) throw new Error('PNG rendering returned an empty image.');
     if(currentExportUrl) URL.revokeObjectURL(currentExportUrl);
     currentExportBlob = blob;
