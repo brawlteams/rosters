@@ -123,7 +123,7 @@ button{font-family:'Lilita One',sans-serif;cursor:pointer}
 .export-card-header .region-strip{width:60px;height:4px;flex:0 0 4px}
 .export-org-logo{width:52px;height:52px;box-sizing:border-box;display:flex;align-items:center;justify-content:center;overflow:hidden;border:2px dashed #777;border-radius:6px;background:#2b2254;color:#aaa;font-size:10px}
 .export-org-logo img{width:100%;height:100%;object-fit:contain}
-.export-team-name{margin:0;color:#fff;font-size:19px;line-height:24px;text-transform:uppercase}
+.export-team-name{margin:0;color:#fff;font-size:19px;line-height:24px;text-transform:uppercase;max-width:100%;box-sizing:border-box;white-space:nowrap;overflow:hidden}
 .export-org-meta{display:flex;align-items:center;justify-content:center;gap:4px;min-height:22px}
 .export-org-meta .ach-list{margin-left:0}
 .export-section{display:flex;flex-direction:column;gap:7px;padding:10px 12px}
@@ -134,7 +134,7 @@ button{font-family:'Lilita One',sans-serif;cursor:pointer}
 .export-person .region-strip{width:4px;height:18px;flex:0 0 4px;border:0;box-shadow:none;border-radius:2px}
 .export-person .person-info{gap:8px;min-width:0}
 .export-person .person-identity{gap:6px;min-width:0}
-.export-person .nm{flex:0 1 auto;white-space:normal;overflow:visible;text-overflow:clip;overflow-wrap:anywhere;line-height:1.25}
+.export-person .nm{flex:0 0 auto;white-space:nowrap;overflow:visible;line-height:1.25}
 .export-person .flag{flex:0 0 auto}
 .export-person .ach-list{margin-left:0}
 .export-empty{padding:8px;color:#aaa;font-size:13px;text-align:left}
@@ -335,8 +335,12 @@ button.ach.has-img:hover{border-color:#ffcc00}
 /* touch-friendly dropdowns replace the region / league buttons */
 .tab-container,.subtab-container{justify-content:center}
 .picker-wrap{width:100%;max-width:1300px;margin:0 auto}
-.picker-select{font-family:'Lilita One',sans-serif;font-size:18px;padding:12px 14px;border-radius:10px;border:3.5px solid #000;background:linear-gradient(180deg,var(--c1) 0%,var(--c2) 92%,var(--c3) 92%,var(--c4) 100%);color:#fff;outline:none;cursor:pointer;max-width:100%;box-shadow:0 2px 0 #000}
-.picker-select option{color:#120e2e}
+.picker-select{font-family:'Lilita One',sans-serif;font-size:17px;text-transform:uppercase;padding:10px 38px 10px 16px;min-width:230px;text-align:center;text-align-last:center;border-radius:10px;border:3.5px solid #000;color:#fff;outline:none;cursor:pointer;max-width:100%;
+  -webkit-appearance:none;appearance:none;
+  background:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='14' height='9' viewBox='0 0 14 9'><path d='M1 1l6 6 6-6' fill='none' stroke='white' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'/></svg>") no-repeat right 13px center / 14px 9px,
+  linear-gradient(180deg,var(--c1) 0%,var(--c2) 92%,var(--c3) 92%,var(--c4) 100%);
+  text-shadow:0 .07em 0 #000;-webkit-text-stroke:.04em #000;box-shadow:0 2px 0 #000,inset 0 4px 0 rgba(255,255,255,.7)}
+  .picker-select option{color:#120e2e}
 @media (hover:none),(pointer:coarse){
   .tab-container,.subtab-container{display:flex;flex-direction:column;align-items:center;gap:10px}
   .picker-wrap{order:-1;margin-bottom:8px}
@@ -356,7 +360,64 @@ button.ach.has-img:hover{border-color:#ffcc00}
   .team-card .row .ach-list{margin-right:30px}
 }
 
+@font-face{font-family:'Lilita One';src:url('fonts/LilitaOne-Regular.woff2') format('woff2');font-display:swap}
 .export-sheet .export-card{width:340px;flex:0 0 340px}
+
+@media (hover:none),(pointer:coarse){
+  .hamburger,.nav-btn{width:34px;height:34px;top:8px;border-width:2.5px;border-radius:8px;box-shadow:0 2px 0 #000}
+  .hamburger{left:8px;gap:4px}
+  .hamburger span{width:17px;height:2px}
+  .hamburger.active span:nth-child(1){transform:translateY(6px) rotate(45deg)}
+  .hamburger.active span:nth-child(3){transform:translateY(-6px) rotate(-45deg)}
+  .nav-btn svg{width:16px;height:16px}
+  .nav-back{left:50px}
+  .nav-fwd{left:92px}
+  body.sidebar-open .nav-back{left:calc(min(300px,80vw) + 12px)}
+  body.sidebar-open .nav-fwd{left:calc(min(300px,80vw) + 54px)}
+}
+@media (max-width:600px){
+  body.sidebar-open .nav-btn{display:none}   /* the sidebar fills the whole phone screen */
+  body{padding:64px 10px 24px}               /* room for the small buttons above the title */
+}
+/* all screens: popups cover the buttons instead of floating above them */
+body.modal-open .hamburger,body.modal-open .nav-btn{z-index:900}
+.sidebar{box-sizing:border-box}
+@media (max-width:600px){ .sidebar{width:100%;max-width:100%;border-right:0} }
+@media (hover:none),(pointer:coarse){
+  button:hover,.green-btn:hover,.red-btn:hover,.blue-btn:hover,.cancel-btn:hover,.add-slot:hover{filter:none}
+  .res:hover{background:rgba(0,0,0,.3);border-color:transparent}
+  .add-slot:hover{border-color:rgba(255,255,255,.25);color:#bbb}
+  .header-action:hover,.team-header .del:hover{background:rgba(255,255,255,.08);border-color:#555;color:#fff;filter:none}
+  .team-card .row .x:hover{background:rgba(0,0,0,.4);filter:none}
+  button.ach:hover{border-color:#000;filter:none}
+  button.ach.has-img:hover{border-color:transparent}
+  .sidebar .side-link:hover{filter:none;background:rgba(0,0,0,.25)}
+}
+.pickers{display:flex;flex-direction:column;align-items:center;width:100%}
+.picker-col{display:flex;flex-direction:column;align-items:center;width:100%}
+.intro{font-size:20px;max-width:700px;margin:25px auto 30px;text-align:center;line-height:1.3;color:#fff;letter-spacing:-.3px}
+
+/* touch devices: compact pickers (the old desktop spacing reserved room for the logo row) */
+@media (hover:none),(pointer:coarse){
+  .tab-container,.subtab-container{padding:2px 10px 4px;margin:0;min-height:0;overflow:visible}
+  .label{margin:0 0 2px}
+}
+
+/* tablets: region left, league right, same font sizes as now */
+@media (min-width:601px) and (hover:none),(min-width:601px) and (pointer:coarse){
+  .pickers{flex-direction:row;justify-content:center;align-items:flex-start;gap:32px;max-width:900px}
+  .picker-col{width:auto;min-width:0}
+}
+
+/* phones */
+@media (max-width:600px){
+  .intro{font-size:14px;margin:12px auto 12px}
+  .label{font-size:16px;margin:0}
+  .picker-col + .picker-col{margin-top:6px}
+  .picker-select{width:min(100%,300px);font-size:16px;padding-top:8px;padding-bottom:8px}
+  .teams-grid{gap:10px}
+  .teams-grid .team-card{zoom:.62}   /* smaller roster cards: 2 per row on most phones */
+}
 </style>
 </head>
 <body>
@@ -399,18 +460,23 @@ button.ach.has-img:hover{border-color:#ffcc00}
     <hr/>
 </header>
 
-<p style="font-size: 20px; max-width: 700px; margin: 25px auto 30px auto; text-align: center; line-height: 1.3; color: #ffffff; letter-spacing: -0.3px;">
+<p class="intro">
  View current rosters, change them and create custom ones. Pick a region and league, add players, staff and organizations from any region, run your own Rostermania and share it with people online. 
  <br> 
  <br>
  DISCLAIMER: Current rosters that are eliminated from the Brawl Stars Championship 2026 will already be adjusted according to Rostermania-rumors!
 </p>
 
-<p class="label">SELECT REGION:</p>
-<div id="main-tabs" class="tab-container"></div>
-
-<p id="league-label" class="label" hidden>SELECT LEAGUE:</p>
-<div id="sub-tabs" class="subtab-container"></div>
+<div class="pickers">
+  <div class="picker-col">
+    <p class="label">SELECT REGION:</p>
+    <div id="main-tabs" class="tab-container"></div>
+  </div>
+  <div class="picker-col">
+    <p id="league-label" class="label" hidden>SELECT LEAGUE:</p>
+    <div id="sub-tabs" class="subtab-container"></div>
+  </div>
+</div>
 
 <div class="toolbar">
   <input id="q" class="search-input" placeholder="Search orgs, teams, players, staff..." autocomplete="off">
@@ -989,7 +1055,7 @@ const DB = {
   staff: {
     mameshi: {n:'Mameshi', role:'HC', sub:'Championship East Asia', cc:'JP', ach:[{logo:'img/tournaments/wf2021.png', event:'World Finals 2021', t:'Mameshi won the World Finals 2021 in Bucharest🇷🇴 as a head coach'}]},
     taro: {n:'TARO', role:'M', sub:'Championship East Asia', cc:'JP', ach:[]},
-    relyh: {n:'Relyh', role:'HC', sub:'Championship East Asia', cc:'JP', ach:[{logo:'img/tournaments/wf2020.png', event:'World Finals 2020', t:'Relyh won the World Finals 2020, which were held Online🌏 as a head coach'}, {logo:'img/tournaments/lcq2025.png', event:'Last Chance Qualifier 2025', t:'Relyh earned a Golden Ticket at the Last Chance Qualifier 2025 in Sao Paulo🇧🇷 as a head coach'}, {logo:'img/tournaments/wf2025.png', event:'World Finals 2025', t:'Relyh won the World Finals 2025 in Stockholm🇸🇪 as a head coach'}]},
+    relyh: {n:'Relyh', role:'HC', sub:'Championship East Asia', cc:'JP', ach:[{logo:'img/tournaments/wf2020.png', event:'World Finals 2020', t:'Relyh won the World Finals 2020, which were held Online🌏'}, {logo:'img/tournaments/lcq2025.png', event:'Last Chance Qualifier 2025', t:'Relyh earned a Golden Ticket at the Last Chance Qualifier 2025 in Sao Paulo🇧🇷 as a head coach'}, {logo:'img/tournaments/wf2025.png', event:'World Finals 2025', t:'Relyh won the World Finals 2025 in Stockholm🇸🇪 as a head coach'}]},
     xena: {n:'Xena', role:'A', sub:'Championship East Asia', cc:'JP', ach:[]},
     royale: {n:'Royale', role:'HC', sub:'Challengers APAC', cc:'SG', ach:[]},
     wigglyspoo: {n:'Wigglyspoo', role:'HC', sub:'Challengers APAC', cc:'SG', ach:[]},
@@ -1344,6 +1410,43 @@ function waitForImages(root, timeout = 8000){
   }));
   return Promise.race([Promise.all(jobs), new Promise(res => setTimeout(res, timeout))]);
 }
+/* builds the @font-face CSS for the export (self-hosted file first, then Google Fonts) */
+let fontCssPromise = null;
+function getFontCss(){
+  if(fontCssPromise) return fontCssPromise;
+  const toDataUrl = async url => {
+    const r = await fetch(url);
+    if(!r.ok) throw new Error('font fetch failed');
+    const b = await r.blob();
+    return new Promise((res, rej) => { const f = new FileReader(); f.onload = () => res(f.result); f.onerror = rej; f.readAsDataURL(b); });
+  };
+  fontCssPromise = (async () => {
+    try{
+      const d = await toDataUrl('fonts/LilitaOne-Regular.woff2');
+      return `@font-face{font-family:'Lilita One';src:url(${d}) format('woff2');font-weight:400;font-style:normal}`;
+    }catch(e){}
+    try{
+      const link = document.querySelector('link[href*="fonts.googleapis.com"]');
+      let css = await (await fetch(link.href)).text();
+      const urls = [...new Set([...css.matchAll(/url\((https:[^)]+)\)/g)].map(x => x[1]))];
+      for(const u of urls) css = css.split(u).join(await toDataUrl(u));
+      return css;
+    }catch(e){ return ''; }
+  })().then(css => { if(!css) fontCssPromise = null; return css; });
+  return fontCssPromise;
+}
+/* shrink only the org names so they stay on one line */
+function fitExportNames(root){
+  root.querySelectorAll('.export-team-name').forEach(el => {
+    el.style.fontSize = '';
+    let fs = 19;
+    while(el.scrollWidth > el.clientWidth && fs > 9){ fs -= 1; el.style.fontSize = fs + 'px'; }
+  });
+}
+/* Safari / iOS often render the first export blank, so render once and discard it */
+const needsWarmup = /iP(ad|hone|od)/.test(navigator.userAgent)
+  || (/Safari/.test(navigator.userAgent) && !/Chrome|Chromium|Android/.test(navigator.userAgent))
+  || (navigator.maxTouchPoints > 1 && /Mac/.test(navigator.platform));
 async function exportVisibleRosters(){
   let teams = oldestFirst(state.teams.filter(visible));
   const total = teams.length;
@@ -1374,13 +1477,18 @@ if(!window.htmlToImage){ askConfirm({ title:'Export unavailable', text:'PNG expo
   </div>`;
 
   try{
-    await document.fonts.load('16px "Lilita One"');
+    await document.fonts.load('19px "Lilita One"');
     if(document.fonts?.ready) await document.fonts.ready;
     await waitForImages(stage);
+    fitExportNames(stage);
     await new Promise(resolve => requestAnimationFrame(() => requestAnimationFrame(resolve)));
     const exportSheet = $('export-sheet');
-    const options = { pixelRatio:2, cacheBust:false, imagePlaceholder:BLANK_PIXEL, backgroundColor:'#120e2e' };
-    try{ options.fontEmbedCSS = await window.htmlToImage.getFontEmbedCSS(exportSheet); }catch(error){ console.warn('Could not embed the display font in the export:', error); }
+    const fontCss = await getFontCss();
+    /* keep the canvas under ~14 megapixels so phones don't fail on big exports */
+    const ratio = Math.max(1, Math.min(2, Math.sqrt(14e6 / (exportSheet.offsetWidth * exportSheet.offsetHeight))));
+    const options = { pixelRatio:ratio, cacheBust:false, imagePlaceholder:BLANK_PIXEL, backgroundColor:'#120e2e' };
+    if(fontCss) options.fontEmbedCSS = fontCss;
+    if(needsWarmup) await window.htmlToImage.toBlob(exportSheet, options).catch(() => {});
     const blob = await window.htmlToImage.toBlob(exportSheet, options);
     if(!blob) throw new Error('PNG rendering returned an empty image.');
     if(currentExportUrl) URL.revokeObjectURL(currentExportUrl);
@@ -1505,7 +1613,7 @@ function renderTabs(){
   const touch = isTouchDevice();
   const regions = ['All Regions', ...Object.keys(REGIONS)];
   $('main-tabs').innerHTML = touch
-    ? `<select class="picker-select" data-act="picker-main" aria-label="Select region">
+    ?`<select class="picker-select ${REGION_CLASS[main]}" data-act="picker-main" aria-label="Select region">
         ${regions.map(r => `<option value="${esc(r)}" ${r === main ? 'selected' : ''}>${esc(r)}</option>`).join('')}
        </select>`
     : regions.map(r => {
@@ -1515,7 +1623,7 @@ function renderTabs(){
   const subs = ['All', ...(main === 'All Regions' ? [] : REGIONS[main])];
   $('league-label').hidden = !subs.length;
   $('sub-tabs').innerHTML = touch
-    ? `<select class="picker-select" data-act="picker-sub" aria-label="Select league">
+    ?`<select class="picker-select ${subClass(sub)}" data-act="picker-sub" aria-label="Select league">
         ${subs.map(s => `<option value="${esc(s)}" ${s === sub ? 'selected' : ''}>${esc(leaguePickerLabel(s))}</option>`).join('')}
        </select>`
     : subs.map(s => {
