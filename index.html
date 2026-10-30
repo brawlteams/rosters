@@ -1883,12 +1883,19 @@ function textOverflows(el){
   return r.getBoundingClientRect().width > el.getBoundingClientRect().width + 0.1
       || el.scrollWidth > el.clientWidth + 1;
 }
-/* shrink only the org names that would wrap to a second line */
+function orgNameOverflows(el){
+  const r = document.createRange();
+  r.selectNodeContents(el);
+  const textW = r.getBoundingClientRect().width;
+  const ls = parseFloat(getComputedStyle(el).letterSpacing) || 0;   // the 1px Safari doesn't measure
+  const avail = el.parentElement.clientWidth;                       // .team-identity = space between trash and X
+  return textW + ls + 2 > avail || el.scrollWidth > el.clientWidth;
+}
 function fitOrgNames(){
   document.querySelectorAll('.team-name').forEach(el => {
     el.style.fontSize = '';
     let fs = 19;
-    while(textOverflows(el) && fs > 8){ fs -= 0.5; el.style.fontSize = fs + 'px'; }
+    while(orgNameOverflows(el) && fs > 8){ fs -= 0.5; el.style.fontSize = fs + 'px'; }
   });
 }
 function nameOverflows(el){
