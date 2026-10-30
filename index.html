@@ -474,6 +474,13 @@ body.modal-open .hamburger,body.modal-open .nav-btn{z-index:900}
 /* export popup: a bit narrower so the right-hand text isn't stretched into few long lines */
 .export-dialog{width:min(780px,100%)}
 .export-share-panel p{max-width:34ch}
+/* iPad: never more than 4 roster cards per row (4 x 260px + 3 x 22px gaps) */
+@media (min-width:601px) and (hover:none),(min-width:601px) and (pointer:coarse){
+  .teams-grid{max-width:1106px}
+}
+
+/* stop iOS from inflating text, which makes the name measuring wrong */
+html{-webkit-text-size-adjust:100%;text-size-adjust:100%}
 </style>
 </head>
 <body>
@@ -1503,6 +1510,26 @@ function fitExportNames(root){
 const needsWarmup = /iP(ad|hone|od)/.test(navigator.userAgent)
   || (/Safari/.test(navigator.userAgent) && !/Chrome|Chromium|Android/.test(navigator.userAgent))
   || (navigator.maxTouchPoints > 1 && /Mac/.test(navigator.platform));
+  /* load every <img> in the export sheet as an inline data URL, so html-to-image never has to fetch anything */
+function imageToDataUrl(url){
+  return fetch(url)
+    .then(r => { if(!r.ok) throw new Error('HTTP ' + r.status); return r.blob(); })
+    .then(b => new Promise((resolve, reject) => {
+      const f = new FileReader();
+      f.onload = () => resolve(f.result);
+      f.onerror = reject;
+      f.readAsDataURL(b);
+    }))
+    .catch(err => { console.warn('Export: could not load image', url, err); return BLANK_PIXEL; });
+}
+async function inlineExportImages(root){
+  await Promise.all([...root.querySelectorAll('img')].map(async img => {
+    const src = img.currentSrc || img.src;
+    if(!src || src.startsWith('data:')) return;
+    img.src = await imageToDataUrl(src);
+    try{ await img.decode(); }catch(e){}
+  }));
+}
 async function exportVisibleRosters(){
   let teams = oldestFirst(state.teams.filter(visible));
   const total = teams.length;
@@ -1536,6 +1563,7 @@ if(!window.htmlToImage){ askConfirm({ title:'Export unavailable', text:'PNG expo
     await document.fonts.load('19px "Lilita One"');
     if(document.fonts?.ready) await document.fonts.ready;
     await waitForImages(stage);
+    await inlineExportImages(stage);
     fitExportNames(stage);
     await new Promise(resolve => requestAnimationFrame(() => requestAnimationFrame(resolve)));
     const exportSheet = $('export-sheet');
@@ -1543,7 +1571,7 @@ if(!window.htmlToImage){ askConfirm({ title:'Export unavailable', text:'PNG expo
     /* keep the canvas under ~14 megapixels so phones don't fail on big exports */
     const ratio = Math.max(1, Math.min(2, Math.sqrt(14e6 / (exportSheet.offsetWidth * exportSheet.offsetHeight))));
     const options = { pixelRatio:ratio, cacheBust:false, imagePlaceholder:BLANK_PIXEL, backgroundColor:'#120e2e' };
-    if(fontCss) options.fontEmbedCSS = fontCss;
+    if(fontCss) options.fontEmbedCSS = fontCss; else options.skipFonts = true;
     if(needsWarmup) await window.htmlToImage.toBlob(exportSheet, options).catch(() => {});
     const blob = await window.htmlToImage.toBlob(exportSheet, options);
     if(!blob) throw new Error('PNG rendering returned an empty image.');
@@ -1788,7 +1816,8 @@ function render(){ renderTabs(); renderGrid(); }
 function textOverflows(el){
   const r = document.createRange();
   r.selectNodeContents(el);
-  return r.getBoundingClientRect().width > el.getBoundingClientRect().width + 0.1;
+  return r.getBoundingClientRect().width > el.getBoundingClientRect().width + 0.1
+      || el.scrollWidth > el.clientWidth + 1;
 }
 /* shrink only the org names that would wrap to a second line */
 function fitOrgNames(){
@@ -2205,6 +2234,19 @@ window.addEventListener('orientationchange', () => setTimeout(() => { fitOrgName
 window.addEventListener('scroll', () => { if(activeAchievementButton) closeAchievementPopup(); }, { passive:true, capture:true });
 window.addEventListener('wheel',  () => { if(activeAchievementButton) closeAchievementPopup(); }, { passive:true });
 window.addEventListener('touchmove', () => { if(activeAchievementButton) closeAchievementPopup(); }, { passive:true });
+/* re-fit names whenever the layout settles (images loaded, grid width changed) */
+let fitTimer, lastGridWidth = 0;
+function scheduleFit(){
+  clearTimeout(fitTimer);
+  fitTimer = setTimeout(() => { fitOrgNames(); fitPlayerNames(); }, 60);
+}
+document.addEventListener('load', e => { if(e.target.tagName === 'IMG') scheduleFit(); }, true);
+if(window.ResizeObserver){
+  new ResizeObserver(() => {
+    const w = $('grid').clientWidth;
+    if(w !== lastGridWidth){ lastGridWidth = w; scheduleFit(); }
+  }).observe($('grid'));
+}
 updateNavButtons();
 render();
 </script>
