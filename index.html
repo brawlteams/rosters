@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="viewport" viewport-fit=cover content="width=device-width, initial-scale=1">
 <title>Brawlteams</title>
 <meta name="description" content="A website for assigning Brawl Stars Esportlers to different teams, organizations and regions.">
 <link href="https://fonts.googleapis.com/css2?family=Lilita+One&display=swap" rel="stylesheet">
@@ -90,7 +90,7 @@ button{font-family:'Lilita One',sans-serif;cursor:pointer}
 /* toolbar */
 .toolbar{display:flex;flex-wrap:wrap;gap:12px;justify-content:center;align-items:center;margin-bottom:26px;width:100%;max-width:1000px}
 .search-input{font-family:inherit;font-size:16px;padding:12px;border-radius:8px;border:3px solid #000;background:#120e2e;color:#fff;outline:none;flex:1;min-width:220px}
-.sort-select{font-family:inherit;font-size:15px;padding:10px 12px;border-radius:8px;border:3px solid #000;background:#120e2e;color:#fff;min-width:145px}
+.sort-select{font-family:inherit;font-size:16px;padding:10px 12px;border-radius:8px;border:3px solid #000;background:#120e2e;color:#fff;min-width:145px}
 .green-btn, .red-btn, .blue-btn {
   color: #fff;
   border: 2px solid #000;
@@ -235,12 +235,13 @@ button.ach:hover{border-color:#ffcc00;filter:brightness(1.25)}
 /* modal */
 .modal-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.7);justify-content:center;align-items:center;z-index:1000}
 .modal-overlay.active{display:flex}
-.modal-content{background:#2b2254;border:4px solid #000;border-radius:16px;box-shadow:0 10px 0 #000;width:90%;max-width:450px;padding:25px;display:flex;flex-direction:column;gap:15px;max-height:85vh}
+.modal-content{max-height:88dvh;overflow-y:auto}
 .modal-content .sort-select{width:100%;box-sizing:border-box}
 .modal-title{color:#ffcc00;font-size:22px;text-transform:uppercase;margin:0}
 body.modal-open{overflow:hidden}
 .modal-overlay,.export-overlay,.results,.export-dialog,.export-preview{overscroll-behavior:contain}
-.results{max-height:260px;overflow-y:auto;overflow-x:hidden;display:flex;flex-direction:column;gap:6px;scrollbar-gutter:stable}
+.results{max-height:min(260px,34dvh)}
+button,.res,.side-link,.picker-select{touch-action:manipulation;-webkit-tap-highlight-color:transparent}
 .res{box-sizing:border-box;flex:0 0 auto;width:100%;min-width:0;background:rgba(0,0,0,.3);padding:10px;border-radius:6px;cursor:pointer;display:flex;align-items:center;gap:8px;font-size:16px;border:2px solid transparent}
 .res:hover{background:rgba(255,204,0,.2);border-color:#ffcc00}
 .res small{margin-left:auto;color:#aaa;font-size:12px}
@@ -360,7 +361,7 @@ button.ach.has-img:hover{border-color:#ffcc00}
   .team-card .row .ach-list{margin-right:30px}
 }
 
-@font-face{font-family:'Lilita One';src:url('fonts/LilitaOne-Regular.woff2') format('woff2');font-display:swap}
+@font-face{font-family:'Lilita One';src:url('fonts/lilita-one-v17-latin-regular.woff2') format('woff2');font-display:swap}
 .export-sheet .export-card{width:340px;flex:0 0 340px}
 
 @media (hover:none),(pointer:coarse){
@@ -418,6 +419,61 @@ body.modal-open .hamburger,body.modal-open .nav-btn{z-index:900}
   .teams-grid{gap:10px}
   .teams-grid .team-card{zoom:.62}   /* smaller roster cards: 2 per row on most phones */
 }
+@media (hover:none),(pointer:coarse){
+  .pickers{margin-bottom:22px}
+}
+@media (max-width:600px){
+  .pickers{margin-bottom:16px}
+}
+@media (hover:none),(pointer:coarse){
+  .picker-select{width:100%;max-width:300px;min-width:0;font-size:16px;padding-left:14px;text-overflow:ellipsis}
+}
+@media (min-width:601px) and (hover:none),(min-width:601px) and (pointer:coarse){
+  .picker-col{flex:0 1 300px;width:auto;min-width:0}
+}
+@media (hover:none),(pointer:coarse){
+    .hamburger{left:max(8px,env(safe-area-inset-left))}
+    .nav-back{left:max(50px,calc(env(safe-area-inset-left) + 42px))}
+    .nav-fwd{left:max(92px,calc(env(safe-area-inset-left) + 84px))}
+    body{padding-left:max(10px,env(safe-area-inset-left));padding-right:max(10px,env(safe-area-inset-right))}
+  }
+.picker-select.open{
+  background-image:
+    url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='14' height='9' viewBox='0 0 14 9'><path d='M1 8l6-6 6 6' fill='none' stroke='white' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'/></svg>"),
+    linear-gradient(180deg,var(--c1) 0%,var(--c2) 92%,var(--c3) 92%,var(--c4) 100%);
+}
+/* ===== POPUPS: search / reset-confirm ===== */
+.modal-overlay{padding:16px;box-sizing:border-box}
+
+.modal-content{
+  display:flex;flex-direction:column;gap:12px;
+  box-sizing:border-box;
+  width:min(520px,100%);
+  max-height:88dvh;
+  overflow:hidden;                 /* only the results list scrolls, not the whole popup */
+  padding:20px;
+  background:#211a42;
+  border:4px solid #000;
+  border-radius:12px;
+  box-shadow:0 8px 0 #000;
+}
+.modal-content .search-input{flex:0 0 auto;width:100%;min-width:0;box-sizing:border-box}
+.modal-content .sort-select{flex:0 0 auto}
+.modal-content .results{
+  flex:1 1 auto;min-height:0;      /* lets the list shrink and scroll */
+  max-height:min(380px,50dvh);
+  overflow-y:auto;
+  display:flex;flex-direction:column;gap:6px;
+}
+.modal-content > .toolbar-action{flex:0 0 auto;align-self:center}  /* CLOSE stays pinned at the bottom */
+
+/* reset / "no rosters" / "export failed" popup: narrow, so the text wraps nicely */
+.confirm-overlay .modal-content{width:min(400px,100%);gap:16px;align-items:stretch}
+.confirm-overlay .modal-title{text-align:center}
+
+/* export popup: a bit narrower so the right-hand text isn't stretched into few long lines */
+.export-dialog{width:min(780px,100%)}
+.export-share-panel p{max-width:34ch}
 </style>
 </head>
 <body>
@@ -1145,7 +1201,7 @@ const DB = {
     lukiebear: {n:'Lukiebear', role:'HC', sub:'Championship North America', cc:'CA', ach:[{logo:'img/tournaments/lcq2023.png', event:'Last Chance Qualifier 2023', t:'Lukiebear earned a Golden Ticket at the Last Chance Qualifier 2023 in Katowice🇵🇱 as a manager'}]},
     realcanadian: {n:'RealCanadian', role:'A', sub:'Championship North America', cc:'CA', ach:[]},
     peter_jeck: {n:'Peter Jeck', role:'HC', sub:'Challengers NA West', cc:'MX', ach:[]},
-    roledu: {n:'ROLEDU', role:'HC', sub:'Championship North America', cc:'MX', ach:[]},
+    roledu: {n:'ROLEDU', role:'AC', sub:'Championship North America', cc:'MX', ach:[]},
     lotus: {n:'Lotus', role:'HC', sub:'Championship North America', cc:'US', ach:[]},
     iink: {n:'IiNK', role:'M', sub:'Challengers NA East', cc:'US', ach:[{logo:'img/tournaments/lcq2025.png', event:'Last Chance Qualifier 2025', t:'IiNK earned a Golden Ticket at the Last Chance Qualifier 2025 in Sao Paulo🇧🇷 as a manager'}]},
     sward: {n:'Sward', role:'HC', sub:'Challengers NA East', cc:'US', ach:[]},
@@ -1236,7 +1292,7 @@ const DB = {
     ocx: {n:'OCX Division', sub:'Championship South America', homeRegion:'SA', cc:'BR', logo:'img/teams/ocx.png', ach:[]},
     ns: {n:'F/A Ninguem Segura', sub:'Championship South America', homeRegion:'SA', cc:'BR', logo:'img/teams/ns.png', ach:[]},
     qqq: {n:'F/A QuieroQueQue', sub:'Championship South America', homeRegion:'SA', cc:'CL', logo:'img/teams/qqq.png', ach:[]},
-    _67: {n:'F/A Six Seven', sub:'Championship South America', homeRegion:'SA', cc:'BR', logo:'img/teams/_67.png', ach:[]},
+    _67: {n:'F/A Six Seven', sub:'Championship South America', homeRegion:'SA', cc:'BR', logo:'img/teams/ss.png', ach:[]},
     loud_a: {n:'LOUD Academy', sub:'Challengers Brazil', homeRegion:'SA', cc:'BR', logo:'img/teams/loud_a.png', ach:[]},
     dcz: {n:'F/A Daycare Zero', sub:'Challengers SA West', homeRegion:'SA', cc:'PE', logo:'img/teams/dcz.png', ach:[]},
     lvl: {n:'Level Esports', sub:'Challengers SA West', homeRegion:'SA', cc:'AR', logo:'img/teams/lvl.png', ach:[]},
@@ -1334,7 +1390,7 @@ const OFFICIAL = [
   {id:'o40', org:'_67', sub:'Championship South America',  players:['bicho', 'gods', 'nubis'], staff:[]},
   {id:'o41', org:'dcz', sub:'Challengers SA West',  players:['bradbari', 'kai'], staff:[]},
 
-  {id:'o42', org:'trb', sub:'Championship North America',  players:['rbm', 'lxffy', 'diegogamer'], staff:['roledu', 'sugus']},
+  {id:'o42', org:'trb', sub:'Championship North America',  players:['rbm', 'lxffy', 'diegogamer'], staff:['killer', 'roledu', 'sugus']},
   {id:'o43', org:'te', sub:'Championship North America',  players:['snoiy', 'memen', 'doin'], staff:['kapi', 'lexus']},
   {id:'o44', org:'kds', sub:'Championship North America',  players:['sans'], staff:['lukiebear', 'realcanadian', 'lollo']},
   {id:'o45', org:'vtc', sub:'Championship North America',  players:['ezlivi', 'duckie', 'belal'], staff:['lotus', 'drizz']},
@@ -1422,7 +1478,7 @@ function getFontCss(){
   };
   fontCssPromise = (async () => {
     try{
-      const d = await toDataUrl('fonts/LilitaOne-Regular.woff2');
+      const d = await toDataUrl('fonts/lilita-one-v17-latin-regular.woff2');
       return `@font-face{font-family:'Lilita One';src:url(${d}) format('woff2');font-weight:400;font-style:normal}`;
     }catch(e){}
     try{
@@ -1728,20 +1784,18 @@ function renderGrid(){
 document.fonts.ready.then(() => { fitOrgNames(); fitPlayerNames(); });
 
 function render(){ renderTabs(); renderGrid(); }
+/* true if the text is wider than its box, measured to a fraction of a pixel */
+function textOverflows(el){
+  const r = document.createRange();
+  r.selectNodeContents(el);
+  return r.getBoundingClientRect().width > el.getBoundingClientRect().width + 0.1;
+}
 /* shrink only the org names that would wrap to a second line */
 function fitOrgNames(){
-  const names = document.querySelectorAll('.team-name');
-  names.forEach(el => {
+  document.querySelectorAll('.team-name').forEach(el => {
     el.style.fontSize = '';
-    // only shrink names that overflow their own constrained box
-    if(el.scrollWidth > el.clientWidth){
-      let fs = 18;
-      el.style.fontSize = fs + 'px';
-      while(el.scrollWidth > el.clientWidth && fs > 8){
-        fs -= 1;
-        el.style.fontSize = fs + 'px';
-      }
-    }
+    let fs = 19;
+    while(textOverflows(el) && fs > 8){ fs -= 0.5; el.style.fontSize = fs + 'px'; }
   });
 }
 function fitPlayerNames(){
@@ -1749,14 +1803,11 @@ function fitPlayerNames(){
   b.classList.add('fitting', 'no-fx');
   document.querySelectorAll('.team-card .row .nm').forEach(el => {
     el.style.fontSize = '';
-    if(el.scrollWidth <= el.clientWidth) return;
-    const base = parseFloat(getComputedStyle(el).fontSize);
-    let fs = Math.max(7, Math.floor(base * el.clientWidth / el.scrollWidth * 2) / 2);
-    el.style.fontSize = fs + 'px';
-    while(el.scrollWidth > el.clientWidth && fs > 7){ fs -= 0.5; el.style.fontSize = fs + 'px'; }
+    let fs = parseFloat(getComputedStyle(el).fontSize);
+    while(textOverflows(el) && fs > 7){ fs -= 0.5; el.style.fontSize = fs + 'px'; }
   });
   b.classList.remove('fitting');
-  void b.offsetWidth;            // apply the change while transitions are off
+  void b.offsetWidth;
   b.classList.remove('no-fx');
 }
 
@@ -2138,6 +2189,18 @@ document.addEventListener('error', e => {
 document.addEventListener('keydown', e => {
   if(e.key === 'Enter' && e.target.classList.contains('side-link')) e.target.click();
 });
+/* flip the dropdown arrow while the picker is open */
+document.addEventListener('pointerdown', e => {
+  const sel = e.target.closest?.('.picker-select');
+  document.querySelectorAll('.picker-select.open').forEach(s => { if(s !== sel) s.classList.remove('open'); });
+  if(sel) sel.classList.toggle('open');
+});
+document.addEventListener('focusin',  e => { if(e.target.classList?.contains('picker-select')) e.target.classList.add('open'); });
+document.addEventListener('focusout', e => { if(e.target.classList?.contains('picker-select')) e.target.classList.remove('open'); });
+document.addEventListener('change',   e => { if(e.target.classList?.contains('picker-select')) e.target.classList.remove('open'); });
+window.addEventListener('load', () => { fitOrgNames(); fitPlayerNames(); });
+document.fonts.load('16px "Lilita One"').then(() => { fitOrgNames(); fitPlayerNames(); });
+window.addEventListener('orientationchange', () => setTimeout(() => { fitOrgNames(); fitPlayerNames(); }, 300));
 /* close the achievement bubble on any scroll (page, search list, modal) */
 window.addEventListener('scroll', () => { if(activeAchievementButton) closeAchievementPopup(); }, { passive:true, capture:true });
 window.addEventListener('wheel',  () => { if(activeAchievementButton) closeAchievementPopup(); }, { passive:true });
