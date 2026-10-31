@@ -515,6 +515,14 @@ html{-webkit-text-size-adjust:100%;text-size-adjust:100%}
   border-radius:2px;
   height:4px;
 }
+.dd{position:relative;width:100%;max-width:300px}
+.dd .picker-select{width:100%;max-width:none;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;display:block}
+.dd-list{display:none;position:absolute;top:calc(100% + 6px);left:0;right:0;z-index:60;max-height:50vh;overflow-y:auto;overscroll-behavior:contain;background:#1a1438;border:3px solid #000;border-radius:10px;box-shadow:0 4px 0 #000}
+.dd.open .dd-list{display:block}
+.dd-opt{display:block;width:100%;padding:12px 14px;background:none;border:0;border-bottom:1px solid #000;color:#fff;font-size:16px;text-transform:uppercase;text-align:center;-webkit-text-stroke:.04em #000;text-shadow:0 .07em 0 #000}
+.dd-opt:last-child{border-bottom:0}
+.dd-opt.sel{background:linear-gradient(180deg,var(--c1) 0%,var(--c2) 92%,var(--c3) 92%,var(--c4) 100%)}
+.dd-opt:active{filter:brightness(1.3)}
 </style>
 </head>
 <body>
@@ -1773,13 +1781,18 @@ function leagueInner(s){
 /* ---------- tabs ---------- */
 function leaguePickerLabel(s){ return s === 'All' ? 'All Leagues' : s; }
 function isTouchDevice(){ return window.matchMedia('(hover:none),(pointer:coarse)').matches; }
+function ddHtml(kind, cls, items, current){
+  const label = kind === 'sub' ? leaguePickerLabel(current) : current;
+  return `<div class="dd ${cls}" data-dd="${kind}">
+    <button type="button" class="picker-select ${cls}" aria-haspopup="listbox" aria-expanded="false"><span>${esc(label)}</span></button>
+    <div class="dd-list" role="listbox">${items.map(v => `<button type="button" class="dd-opt${v === current ? ' sel' : ''}" role="option" data-val="${esc(v)}">${esc(kind === 'sub' ? leaguePickerLabel(v) : v)}</button>`).join('')}</div>
+  </div>`;
+}
 function renderTabs(){
   const touch = isTouchDevice();
   const regions = ['All Regions', ...Object.keys(REGIONS)];
   $('main-tabs').innerHTML = touch
-    ?`<select class="picker-select ${REGION_CLASS[main]}" data-act="picker-main" aria-label="Select region">
-        ${regions.map(r => `<option value="${esc(r)}" ${r === main ? 'selected' : ''}>${esc(r)}</option>`).join('')}
-       </select>`
+    ? ddHtml('main', REGION_CLASS[main], regions, main)
     : regions.map(r => {
         const state = r === main ? ' active' : (main === 'All Regions' ? '' : ' off');
         return `<button class="tab-btn ${REGION_CLASS[r]}${state}" data-act="main" data-id="${esc(r)}"><span>${esc(r)}</span></button>`;
@@ -1787,9 +1800,7 @@ function renderTabs(){
   const subs = ['All', ...(main === 'All Regions' ? [] : REGIONS[main])];
   $('league-label').hidden = !subs.length;
   $('sub-tabs').innerHTML = touch
-    ?`<select class="picker-select ${subClass(sub)}" data-act="picker-sub" aria-label="Select league">
-        ${subs.map(s => `<option value="${esc(s)}" ${s === sub ? 'selected' : ''}>${esc(leaguePickerLabel(s))}</option>`).join('')}
-       </select>`
+        ? ddHtml('sub', subClass(sub), subs, sub)
     : subs.map(s => {
         const isAll = s === 'All';
         const state = s === sub ? ' active' : (sub === 'All' ? '' : ' off');
@@ -2315,13 +2326,31 @@ document.addEventListener('keydown', e => {
   if(e.key === 'Enter' && e.target.classList.contains('side-link')) e.target.click();
 });
 /* flip the dropdown arrow only when the picker really opens (a completed tap), reset when it closes */
+/* custom dropdowns (touch devices): the arrow points up exactly while the list is open */
+function closeDd(dd){
+  dd.classList.remove('open');
+  const b = dd.querySelector('.picker-select');
+  b.classList.remove('open');
+  b.setAttribute('aria-expanded', 'false');
+}
 document.addEventListener('click', e => {
-  const sel = e.target.closest?.('.picker-select');
-  document.querySelectorAll('.picker-select.open').forEach(s => { if(s !== sel) s.classList.remove('open'); });
-  if(sel) sel.classList.toggle('open');
+  const btn = e.target.closest('.dd > .picker-select');
+  const opt = e.target.closest('.dd-opt');
+  document.querySelectorAll('.dd.open').forEach(d => { if(!btn || d !== btn.parentElement) closeDd(d); });
+  if(opt){
+    const dd = opt.closest('.dd'), v = opt.dataset.val;
+    closeDd(dd);                                    // closes even when the same entry is picked
+    if(dd.dataset.dd === 'main'){ if(v !== main){ main = v; sub = 'All'; render(); } }
+    else if(v !== sub){ sub = v; render(); }
+    return;
+  }
+  if(btn){
+    const dd = btn.parentElement, open = !dd.classList.contains('open');
+    dd.classList.toggle('open', open);
+    btn.classList.toggle('open', open);
+    btn.setAttribute('aria-expanded', String(open));
+  }
 });
-document.addEventListener('focusout', e => { if(e.target.classList?.contains('picker-select')) e.target.classList.remove('open'); });
-document.addEventListener('change',   e => { if(e.target.classList?.contains('picker-select')) e.target.classList.remove('open'); });
 window.addEventListener('load', () => { fitOrgNames(); fitPlayerNames(); });
 document.fonts.load('16px "Lilita One"').then(() => { fitOrgNames(); fitPlayerNames(); });
 window.addEventListener('orientationchange', () => setTimeout(() => { fitOrgNames(); fitPlayerNames(); }, 300));
