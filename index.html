@@ -628,7 +628,6 @@ html{-webkit-text-size-adjust:100%;text-size-adjust:100%}
         <button class="blue-btn toolbar-action" data-act="download-export"><span>DOWNLOAD PNG</span></button>
         <button class="blue-btn toolbar-action" data-act="copy-export"><span>COPY IMAGE</span></button>
       </div>
-      <p class="export-note">On iPhone or iPad, choose “Save Image” in the share popup.</p>
       <p id="export-status" class="export-status" aria-live="polite"></p>
     </div>
   </section>
@@ -1545,6 +1544,24 @@ const needsWarmup = /iP(ad|hone|od)/.test(navigator.userAgent)
   || (navigator.maxTouchPoints > 1 && /Mac/.test(navigator.platform));
   /* load every <img> in the export sheet as an inline data URL, so html-to-image never has to fetch anything */
 const imageCache = new Map();   // url -> data URL, so later exports are instant
+/* shrink a blob to max 160px so Safari decodes it instantly, returns a PNG data URL */
+async function shrinkToDataUrl(blob, maxDim = 160){
+  const url = URL.createObjectURL(blob);
+  try{
+    const img = new Image();
+    img.src = url;
+    await img.decode();
+    const scale = Math.min(1, maxDim / Math.max(img.naturalWidth, img.naturalHeight));
+    const w = Math.max(1, Math.round(img.naturalWidth * scale));
+    const h = Math.max(1, Math.round(img.naturalHeight * scale));
+    const c = document.createElement('canvas');
+    c.width = w; c.height = h;
+    c.getContext('2d').drawImage(img, 0, 0, w, h);
+    return c.toDataURL('image/png');
+  }finally{
+    URL.revokeObjectURL(url);
+  }
+}
 async function fetchDataUrl(url, tries = 4){
   if(imageCache.has(url)) return imageCache.get(url);
   for(let a = 0; a < tries; a++){
@@ -1552,12 +1569,7 @@ async function fetchDataUrl(url, tries = 4){
       const r = await fetch(url, { cache: a ? 'reload' : 'force-cache' });
       if(!r.ok) throw new Error('HTTP ' + r.status);
       const blob = await r.blob();
-      const data = await new Promise((res, rej) => {
-        const f = new FileReader();
-        f.onload = () => res(f.result);
-        f.onerror = rej;
-        f.readAsDataURL(blob);
-      });
+      const data = await shrinkToDataUrl(blob);
       imageCache.set(url, data);
       return data;
     }catch(err){
@@ -1587,19 +1599,13 @@ async function inlineExportImages(root){
 }
 /* Safari draws nested images late: render repeatedly until two passes in a row give the same file size */
 async function renderStable(node, options){
-  let blob = null, lastSize = -1, stableCount = 0;
-  for(let i = 0; i < 8; i++){
+  let best = null;
+  for(let i = 0; i < 3; i++){
     const b = await window.htmlToImage.toBlob(node, options).catch(() => null);
-    if(b){
-      blob = b;
-      if(lastSize > 0 && Math.abs(b.size - lastSize) / lastSize < 0.0005) stableCount++;
-      else stableCount = 0;
-      lastSize = b.size;
-      if(stableCount >= 1 && i >= 2) break;      // at least 3 passes, then stop once stable
-    }
-    await new Promise(r => setTimeout(r, 250));
+    if(b && (!best || b.size > best.size)) best = b;
+    await new Promise(r => setTimeout(r, 200));
   }
-  return blob;
+  return best;
 }
 async function exportVisibleRosters(){
   let teams = oldestFirst(state.teams.filter(visible));
