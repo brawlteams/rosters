@@ -1389,11 +1389,11 @@ const OFFICIAL = [
   {id:'o1', org:'zeta', sub:'Championship East Asia',  players:['sitetampo', 'sizuku', 'batman'], staff:['mameshi', 'leightox', 'taro']},
   {id:'o2', org:'cr', sub:'Championship East Asia',  players:['tensai', 'moya', 'milkreo'], staff:['relyh']},
   {id:'o3', org:'skc_ea', sub:'Championship East Asia',  players:['kuru','ghost_t','naipishu'], staff:['sebas']},
-  {id:'o4', org:'', sub:'Championship East Asia',  players:['ryohei', 'yutapin', 'totoron'], staff:[]},
+  {id:'o4', org:'rvl', sub:'Championship East Asia',  players:['ryohei', 'yutapin', 'totoron'], staff:[]},
   {id:'o5', org:'fl', sub:'Championship East Asia',  players:['achapi', 'ken_g', 'i_see'], staff:['lukluk23']},
   {id:'o6', org:'igm', sub:'Championship East Asia',  players:['shigemyon', 'drake', 'nyades'], staff:[]},
   {id:'o7', org:'ins', sub:'Championship East Asia',  players:['jene_azure', 'wahochi', 'koga'], staff:['xena']},
-  {id:'o8', org:'', sub:'Championship East Asia',  players:['toridesu','ferkel'], staff:[]},
+  {id:'o8', org:'fz', sub:'Championship East Asia',  players:['toridesu','ferkel'], staff:[]},
   {id:'o9', org:'rc', sub:'Championship East Asia',  players:['melty', 'shu', 'levi'], staff:['acee']},
   {id:'o10', org:'axis', sub:'Championship East Asia',  players:['terry', 'menmi', 'yume'], staff:['nem']},
   {id:'o11', org:'wwl', sub:'Challengers Korea',  players:['behappy', 'gon', 'jake'], staff:['ilpae07']},
@@ -1409,7 +1409,7 @@ const OFFICIAL = [
   {id:'o21', org:'cgn', sub:'Championship EMEA',  players:['lenain', 'dompe', 'nes'], staff:['lollo']},
   {id:'o22', org:'big', sub:'Championship EMEA',  players:['salty', 'mehli', 'dede'], staff:['inso', 'plantyse', 'auge']},
    {id:'o23', org:'kbp', sub:'Championship EMEA',  players:['tomzy', 'yuffy', 'ray092'], staff:[]},
-  {id:'o24', org:'', sub:'Championship EMEA',  players:['ciro', 'gordon', 'tex'], staff:[]},
+  {id:'o24', org:'fnrs', sub:'Championship EMEA',  players:['ciro', 'gordon', 'tex'], staff:[]},
   {id:'o25', org:'rev', sub:'Championship EMEA',  players:['fayelo', 'natrix', 'ethan'], staff:['wsmoon']},
   {id:'o26', org:'fut_f', sub:'Championship EMEA',  players:['demaster', 'zeyrox', 'ferissa'], staff:['mighty']},
   {id:'o27', org:'sk', sub:'Championship EMEA',  players:['yoshi', 'ope', 'yoko'], staff:['pedro_guijarro', 'oscardc', 'kvalafar']},
@@ -1420,10 +1420,10 @@ const OFFICIAL = [
   {id:'o31', org:'bh', sub:'Championship South America',  players:['prozy', 'portox', 'wesley'], staff:['paolo']},
   {id:'o32', org:'red', sub:'Championship South America',  players:['mohtep', 'jubileu', 'cauebr'], staff:['alchemicalx', 'peri']},
   {id:'o33', org:'loud', sub:'Championship South America',  players:['firecrow', 'edinho'], staff:['role', 'trekking']},
-  {id:'o34', org:'', sub:'Championship South America',  players:['brabao', 'golden', 'satisfyer'], staff:['acee']},
+  {id:'o34', org:'os', sub:'Championship South America',  players:['brabao', 'golden', 'satisfyer'], staff:['acee']},
   {id:'o35', org:'skc', sub:'Championship South America',  players:['juan_carlos', 'rhz', 'kristian'], staff:[]},
-  {id:'o36', org:'', sub:'Championship South America',  players:['fire_murilo', 'icecrow', 'lipizin'], staff:['kaiki']},
-  {id:'o37', org:'', sub:'Championship South America',  players:['pekka', 'derrp', 'doritos'], staff:['rol', 'murilek']},
+  {id:'o36', org:'al', sub:'Championship South America',  players:['fire_murilo', 'icecrow', 'lipizin'], staff:['kaiki']},
+  {id:'o37', org:'ocx', sub:'Championship South America',  players:['pekka', 'derrp', 'doritos'], staff:['rol', 'murilek']},
   {id:'o38', org:'ns', sub:'Championship South America',  players:['tufa', 'rei_do_fut', 'sennin'], staff:['quinaia', 'diego']},
   {id:'o39', org:'qqq', sub:'Championship South America',  players:['b4st', 'deykon', 'todd'], staff:[]},
   {id:'o40', org:'_67', sub:'Championship South America',  players:['bicho', 'gods', 'nubis'], staff:[]},
@@ -1436,7 +1436,7 @@ const OFFICIAL = [
    {id:'o46', org:'hml', sub:'Championship North America',  players:['tyrant', 'rafiki', 'ducky'], staff:[]},
   {id:'o47', org:'lgcy', sub:'Championship North America',  players:['zeus', 'xemp'], staff:['acro', 'peri']},
   {id:'o48', org:'utp', sub:'Championship North America',  players:['nerf', 'junnie', 'winq'], staff:['lux']},
-  {id:'o49', org:'', sub:'Championship North America',  players:['chino', 'tacos', 'vegeta'], staff:['og']},
+  {id:'o49', org:'amn', sub:'Championship North America',  players:['chino', 'tacos', 'vegeta'], staff:['og']},
   {id:'o50', org:'da', sub:'Championship North America',  players:['david_2', 'razuen', 'godnoob'], staff:[]},
   {id:'o51', org:'mtry', sub:'Championship North America',  players:['samuelito', 'jared', 'grezze'], staff:[]},
 
@@ -1898,12 +1898,19 @@ function textOverflows(el){
   return r.getBoundingClientRect().width > el.getBoundingClientRect().width + 0.1
       || el.scrollWidth > el.clientWidth + 1;
 }
-/* shrink only the org names that would wrap to a second line */
+function orgNameOverflows(el){
+  const r = document.createRange();
+  r.selectNodeContents(el);
+  const textW = r.getBoundingClientRect().width;
+  const ls = parseFloat(getComputedStyle(el).letterSpacing) || 0;   // the 1px Safari doesn't measure
+  const avail = el.parentElement.clientWidth;                       // space between trash and X
+  return textW + ls + 3 > avail || el.scrollWidth > el.clientWidth;
+}
 function fitOrgNames(){
   document.querySelectorAll('.team-name').forEach(el => {
     el.style.fontSize = '';
     let fs = 19;
-    while(textOverflows(el) && fs > 8){ fs -= 0.5; el.style.fontSize = fs + 'px'; }
+    while(orgNameOverflows(el) && fs > 8){ fs -= 0.5; el.style.fontSize = fs + 'px'; }
   });
 }
 function nameOverflows(el){
@@ -1931,7 +1938,7 @@ function fitPlayerNames(){
 
 /* ---------- sidebar ---------- */
 function toggleSidebar(force){
-  const open = force === true || !$('sidebar').classList.contains('active');
+  const open = force === undefined ? !$('sidebar').classList.contains('active') : force;
   $('sidebar').classList.toggle('active', open);
   $('sidebar').setAttribute('aria-hidden', String(!open));
   $('sidebar-overlay').classList.toggle('active', open);
@@ -2307,13 +2314,12 @@ document.addEventListener('error', e => {
 document.addEventListener('keydown', e => {
   if(e.key === 'Enter' && e.target.classList.contains('side-link')) e.target.click();
 });
-/* flip the dropdown arrow while the picker is open */
-document.addEventListener('pointerdown', e => {
+/* flip the dropdown arrow only when the picker really opens (a completed tap), reset when it closes */
+document.addEventListener('click', e => {
   const sel = e.target.closest?.('.picker-select');
   document.querySelectorAll('.picker-select.open').forEach(s => { if(s !== sel) s.classList.remove('open'); });
   if(sel) sel.classList.toggle('open');
 });
-document.addEventListener('focusin',  e => { if(e.target.classList?.contains('picker-select')) e.target.classList.add('open'); });
 document.addEventListener('focusout', e => { if(e.target.classList?.contains('picker-select')) e.target.classList.remove('open'); });
 document.addEventListener('change',   e => { if(e.target.classList?.contains('picker-select')) e.target.classList.remove('open'); });
 window.addEventListener('load', () => { fitOrgNames(); fitPlayerNames(); });
