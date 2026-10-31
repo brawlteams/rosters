@@ -509,6 +509,12 @@ html{-webkit-text-size-adjust:100%;text-size-adjust:100%}
 @media (max-width:600px){
   .export-dialog{grid-template-columns:minmax(0,1fr)}
 }
+.export-card-header .region-strip{
+  box-shadow:none;
+  border:0;
+  border-radius:2px;
+  height:4px;
+}
 </style>
 </head>
 <body>
@@ -1579,6 +1585,22 @@ async function inlineExportImages(root){
     try{ await img.decode(); }catch(e){}
   }));
 }
+/* Safari draws nested images late: render repeatedly until two passes in a row give the same file size */
+async function renderStable(node, options){
+  let blob = null, lastSize = -1, stableCount = 0;
+  for(let i = 0; i < 8; i++){
+    const b = await window.htmlToImage.toBlob(node, options).catch(() => null);
+    if(b){
+      blob = b;
+      if(lastSize > 0 && Math.abs(b.size - lastSize) / lastSize < 0.0005) stableCount++;
+      else stableCount = 0;
+      lastSize = b.size;
+      if(stableCount >= 1 && i >= 2) break;      // at least 3 passes, then stop once stable
+    }
+    await new Promise(r => setTimeout(r, 250));
+  }
+  return blob;
+}
 async function exportVisibleRosters(){
   let teams = oldestFirst(state.teams.filter(visible));
   const total = teams.length;
@@ -1623,8 +1645,7 @@ if(!window.htmlToImage){ askConfirm({ title:'Export unavailable', text:'PNG expo
     const ratio = Math.max(1, Math.min(2, Math.sqrt(14e6 / (exportSheet.offsetWidth * exportSheet.offsetHeight))));
     const options = { pixelRatio:ratio, cacheBust:false, imagePlaceholder:BLANK_PIXEL, backgroundColor:'#120e2e' };
     if(fontCss) options.fontEmbedCSS = fontCss; else options.skipFonts = true;
-    if(needsWarmup) await window.htmlToImage.toBlob(exportSheet, options).catch(() => {});
-    const blob = await window.htmlToImage.toBlob(exportSheet, options);
+    const blob = await renderStable(exportSheet, options);
     if(!blob) throw new Error('PNG rendering returned an empty image.');
     if(currentExportUrl) URL.revokeObjectURL(currentExportUrl);
     currentExportBlob = blob;
