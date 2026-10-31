@@ -622,6 +622,7 @@ html{-webkit-text-size-adjust:100%;text-size-adjust:100%}
         <button class="blue-btn toolbar-action" data-act="download-export"><span>DOWNLOAD PNG</span></button>
         <button class="blue-btn toolbar-action" data-act="copy-export"><span>COPY IMAGE</span></button>
       </div>
+      <p class="export-note">On iPhone or iPad, choose “Save Image” in the share popup.</p>
       <p id="export-status" class="export-status" aria-live="polite"></p>
     </div>
   </section>
@@ -1142,7 +1143,7 @@ const DB = {
   },
 
   staff: {
-    mameshi: {n:'Mameshi', role:'HC', sub:'Championship East Asia', cc:'JP', ach:[{logo:'img/tournaments/wf2021.png', event:'World Finals 2021', t:'Mameshi won the World Finals 2021 in Bucharest🇷🇴 as a head coach'}]},
+    mameshi: {n:'Mameshi', role:'HC', sub:'Championship East Asia', cc:'JP', ach:[{logo:'img/tournaments/wf2021.png', event:'World Finals 2021', t:'Mameshi won the World Finals 2021 in Bucharest🇷🇴'}]},
     taro: {n:'TARO', role:'M', sub:'Championship East Asia', cc:'JP', ach:[]},
     relyh: {n:'Relyh', role:'HC', sub:'Championship East Asia', cc:'JP', ach:[{logo:'img/tournaments/wf2020.png', event:'World Finals 2020', t:'Relyh won the World Finals 2020, which were held Online🌏'}, {logo:'img/tournaments/lcq2025.png', event:'Last Chance Qualifier 2025', t:'Relyh earned a Golden Ticket at the Last Chance Qualifier 2025 in Sao Paulo🇧🇷 as a head coach'}, {logo:'img/tournaments/wf2025.png', event:'World Finals 2025', t:'Relyh won the World Finals 2025 in Stockholm🇸🇪 as a head coach'}]},
     xena: {n:'Xena', role:'A', sub:'Championship East Asia', cc:'JP', ach:[]},
@@ -1218,7 +1219,7 @@ const DB = {
     acee: {n:'Acee', role:'HC', sub:'Championship East Asia', cc:'BR', ach:[{logo:'img/tournaments/lcq2023.png', event:'Last Chance Qualifier 2023', t:'Acee earned a Golden Ticket at the Last Chance Qualifier 2023 in Katowice🇵🇱 as a head coach'}]},
     kaiki: {n:'Kaiki', role:'A', sub:'Challengers Brazil', cc:'BR', ach:[]},
     nic: {n:'Nic', role:'A', sub:'Challengers Brazil', cc:'BR', ach:[]},
-    quinaia: {n:'Quinaia', role:'HC', sub:'Challengers Brazil', cc:'BR', ach:[{logo:'img/tournaments/lcq2024.png', event:'Last Chance Qualifier 2024', t:'Quinaia earned a Golden Ticket at the Last Chance Qualifier 2024 in Cologne🇩🇪 as an analyst'}]},
+    quinaia: {n:'Quinaia', role:'A', sub:'Challengers Brazil', cc:'BR', ach:[{logo:'img/tournaments/lcq2024.png', event:'Last Chance Qualifier 2024', t:'Quinaia earned a Golden Ticket at the Last Chance Qualifier 2024 in Cologne🇩🇪 as an analyst'}]},
     ricky: {n:'Ricky', role:'A', sub:'Championship EMEA', cc:'BR', ach:[]},
     murilek: {n:'Murilek', role:'A', sub:'Challengers Brazil', cc:'BR', ach:[]},
     alchemicalx: {n:'AlchemicalX', role:'HC', sub:'Championship South America', cc:'CL', ach:[]},
@@ -1578,20 +1579,6 @@ async function inlineExportImages(root){
     try{ await img.decode(); }catch(e){}
   }));
 }
-/* Safari draws nested images late, so render until two passes in a row give the same file size */
-async function renderStable(node, options, maxPasses = 6){
-  let blob = null, lastSize = -1;
-  for(let i = 0; i < maxPasses; i++){
-    const b = await window.htmlToImage.toBlob(node, options).catch(() => null);
-    if(b){
-      blob = b;
-      if(lastSize > 0 && Math.abs(b.size - lastSize) / lastSize < 0.001) break;   // stable = every image is in
-      lastSize = b.size;
-    }
-    await new Promise(r => setTimeout(r, 200));
-  }
-  return blob;
-}
 async function exportVisibleRosters(){
   let teams = oldestFirst(state.teams.filter(visible));
   const total = teams.length;
@@ -1636,7 +1623,8 @@ if(!window.htmlToImage){ askConfirm({ title:'Export unavailable', text:'PNG expo
     const ratio = Math.max(1, Math.min(2, Math.sqrt(14e6 / (exportSheet.offsetWidth * exportSheet.offsetHeight))));
     const options = { pixelRatio:ratio, cacheBust:false, imagePlaceholder:BLANK_PIXEL, backgroundColor:'#120e2e' };
     if(fontCss) options.fontEmbedCSS = fontCss; else options.skipFonts = true;
-    const blob = await renderStable(exportSheet, options);
+    if(needsWarmup) await window.htmlToImage.toBlob(exportSheet, options).catch(() => {});
+    const blob = await window.htmlToImage.toBlob(exportSheet, options);
     if(!blob) throw new Error('PNG rendering returned an empty image.');
     if(currentExportUrl) URL.revokeObjectURL(currentExportUrl);
     currentExportBlob = blob;
@@ -1883,19 +1871,12 @@ function textOverflows(el){
   return r.getBoundingClientRect().width > el.getBoundingClientRect().width + 0.1
       || el.scrollWidth > el.clientWidth + 1;
 }
-function orgNameOverflows(el){
-  const r = document.createRange();
-  r.selectNodeContents(el);
-  const textW = r.getBoundingClientRect().width;
-  const ls = parseFloat(getComputedStyle(el).letterSpacing) || 0;   // the 1px Safari doesn't measure
-  const avail = el.parentElement.clientWidth;                       // .team-identity = space between trash and X
-  return textW + ls + 2 > avail || el.scrollWidth > el.clientWidth;
-}
+/* shrink only the org names that would wrap to a second line */
 function fitOrgNames(){
   document.querySelectorAll('.team-name').forEach(el => {
     el.style.fontSize = '';
     let fs = 19;
-    while(orgNameOverflows(el) && fs > 8){ fs -= 0.5; el.style.fontSize = fs + 'px'; }
+    while(textOverflows(el) && fs > 8){ fs -= 0.5; el.style.fontSize = fs + 'px'; }
   });
 }
 function nameOverflows(el){
