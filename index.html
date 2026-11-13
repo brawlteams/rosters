@@ -201,10 +201,10 @@ button{font-family:'Lilita One',sans-serif;cursor:pointer}
 .empty{color:#aaa;grid-column:1/-1}
 button:hover{filter:brightness(1.25)}
 .team-card .row .x{position:absolute;right:10px;top:50%;transform:translateY(-50%);margin:0;background:rgba(0,0,0,.4);color:#fff;border:2px solid #000;border-radius:4px;font-size:12px;padding:2px 6px;opacity:0;pointer-events:none;transition:opacity .12s ease}
-.team-card .row:hover .x,.team-card .row:focus-within .x{opacity:1;pointer-events:auto}
+.team-card .row:hover .x,.team-card .row:focus-within .x,.team-card .row.achievement-open .x{opacity:1;pointer-events:auto}
 .team-card .row .x:hover{background:#b71c1c;filter:brightness(1.25)}
 .team-card .row .ach-list{margin-right:0;transition:margin-right .15s ease}
-.team-card .row:hover .ach-list,.team-card .row:focus-within .ach-list{margin-right:30px}
+.team-card .row:hover .ach-list,.team-card .row:focus-within .ach-list,.team-card .row.achievement-open .ach-list{margin-right:30px}
 body.fitting .team-card .row .ach-list{margin-right:30px;transition:none}
 body.no-fx .team-card .row .ach-list{transition:none!important}
 
@@ -220,7 +220,7 @@ body.no-fx .team-card .row .ach-list{transition:none!important}
 /* achievements */
 .ach-list{display:inline-flex;align-items:center;gap:2px;flex:0 0 auto;margin-left:auto;white-space:nowrap}
 .ach{display:inline-flex;align-items:center;justify-content:center;box-sizing:border-box;width:20px;height:20px;flex:0 0 20px;padding:0;overflow:hidden;background:rgba(0,0,0,.35);border:1.5px solid #000;border-radius:5px;line-height:1;cursor:pointer}
-button.ach:hover{border-color:#ffcc00;filter:brightness(1.25)}
+button.ach:hover,button.ach.selected{border-color:#ffcc00;box-shadow:0 0 8px 2px #ffcc00;filter:brightness(1.25)}
 .ach img{display:block;width:100%;height:100%;object-fit:contain}
 .ach-placeholder{font-size:6px;color:#fff;letter-spacing:0}
 .achievement-popup{display:none;position:fixed;z-index:1200;width:max-content;max-width:min(280px,calc(100vw - 24px));box-sizing:border-box;padding:10px 12px;background:#fff;color:#1b1730;border:2px solid #111;border-radius:6px;box-shadow:0 3px 0 #000;text-align:center;font-size:14px;line-height:1.35;overflow-wrap:anywhere}
@@ -358,6 +358,7 @@ button.ach.has-img:hover{border-color:#ffcc00}
   .header-action{opacity:1;pointer-events:auto}
   .team-card .row .x{opacity:1;pointer-events:auto}
   .team-card .row .ach-list{margin-right:30px}
+  button.ach.selected,button.ach.selected:hover{border-color:#ffcc00;box-shadow:0 0 8px 2px #ffcc00;filter:brightness(1.25)}
 }
 
 @font-face{font-family:'Lilita One';src:url('lilita-one-v17-latin-regular.woff2') format('woff2');font-display:swap}
@@ -462,8 +463,10 @@ body.modal-open .hamburger,body.modal-open .nav-btn{z-index:900}
   flex:1 1 auto;min-height:0;      /* lets the list shrink and scroll */
   max-height:min(380px,50dvh);
   overflow-y:auto;
+  scrollbar-width:none;
   display:flex;flex-direction:column;gap:6px;
 }
+.modal-content .results::-webkit-scrollbar{display:none}
 .modal-content > .toolbar-action{flex:0 0 auto;align-self:center}  /* CLOSE stays pinned at the bottom */
 
 /* reset / "no rosters" / "export failed" popup: narrow, so the text wraps nicely */
@@ -567,9 +570,6 @@ html{-webkit-text-size-adjust:100%;text-size-adjust:100%}
 
 <p class="intro">
  View current rosters, change them and create custom ones. Pick a region and league, add players, staff and organizations from any region, run your own Rostermania and share it with people online. 
- <br> 
- <br>
- DISCLAIMER: Current rosters that are eliminated from the Brawl Stars Championship 2026 will already be adjusted according to Rostermania-rumors!
 </p>
 
 <div class="pickers">
@@ -800,7 +800,7 @@ const DB = {
     creo: {n:'Creo', sub:'Challengers Korea', cc:'KR', ach:[]}, 
     moding: {n:'Moding', sub:'Challengers Korea', cc:'KR', ach:[]}, 
     nicebear: {n:'Nicebear', sub:'Challengers Korea', cc:'KR', ach:[]}, 
-    geki: {n:'Geki', sub:'Challengers APAC', cc:'TW', ach:[]}, 
+    geki: {n:'Geki', sub:'Championship East Asia', cc:'TW', ach:[]}, 
     meow_2: {n:'Meow', sub:'Challengers APAC', cc:'TW', ach:[]}, 
     bonox: {n:'BONOX', sub:'Challengers Korea', cc:'KR', ach:[]}, 
     siro: {n:'Siro', sub:'Challengers Korea', cc:'KR', ach:[]}, 
@@ -809,6 +809,17 @@ const DB = {
     fengou: {n:'Fengou', sub:'Championship China', cc:'HK', ach:[]},
     cryingman: {n:'CryingMan', sub:'Challengers NA East', cc:'KR', ach:[]},
     marlexzz: {n:'MaRLeXZZ', sub:'Challengers Japan', cc:'JP', ach:[]}, 
+    sunrise: {n:'SunRise', sub:'Championship East Asia', cc:'HK', ach:[]},
+    nelu215: {n:'Nelu215', sub:'Championship East Asia', cc:'TW', ach:[]}, 
+    sun: {n:'Sun', sub:'Championship East Asia', cc:'JP', ach:[]},
+    sourin: {n:'Sourin', sub:'Championship East Asia', cc:'JP', ach:[]}, 
+    yukimll: {n:'YuKiMll', sub:'Championship East Asia', cc:'JP', ach:[]},
+    ponkey: {n:'Ponkey', sub:'Championship East Asia', cc:'JP', ach:[]}, 
+    ater: {n:'Ater', sub:'Championship East Asia', cc:'JP', ach:[]},
+    midoronashi: {n:'Midoronashi', sub:'Championship East Asia', cc:'JP', ach:[]}, 
+    もちのすけ: {n:'もちのすけ', sub:'Championship East Asia', cc:'JP', ach:[]},
+    モコモコ羊ちゃん: {n:'モコモコ羊ちゃん', sub:'Championship East Asia', cc:'JP', ach:[]},
+    ドブ枠じゅげむ: {n:'ドブ枠じゅげむ', sub:'Championship East Asia', cc:'JP', ach:[]}, 
 
     angelboy: {n:'Angelboy', sub:'Championship EMEA', cc:'UA', ach:[{logo:'img/tournaments/lcq2023.png', event:'Last Chance Qualifier 2023', t:'Angelboy earned a Golden Ticket at the Last Chance Qualifier 2023 in Katowice🇵🇱'}, {logo:'img/tournaments/lcq2025.png', event:'Last Chance Qualifier 2025', t:'Angelboy earned a Golden Ticket at the Last Chance Qualifier 2025 in Sao Paulo🇧🇷'}]}, 
     guesti: {n:'Guesti', sub:'Championship EMEA', cc:'UA', ach:[]},
@@ -847,7 +858,7 @@ const DB = {
     gugu: {n:'GuGu', sub:'Challengers France', cc:'FR', ach:[{logo:'img/tournaments/lcq2024.png', event:'Last Chance Qualifier 2024', t:'GuGu earned a Golden Ticket at the Last Chance Qualifier 2024 in Cologne🇩🇪'}]},
     tizzou: {n:'Tizzou', sub:'Challengers France', cc:'FR', ach:[]},
     brosta: {n:'Brosta', sub:'Challengers France', cc:'FR', ach:[]},
-    shawn: {n:'Shawn', sub:'Challengers France', cc:'FR', ach:[]},
+    shawnn: {n:'Shawnn', sub:'Challengers France', cc:'FR', ach:[]},
     decaii: {n:'Decaii', sub:'Championship EMEA', cc:'RS', ach:[]},
     remica: {n:'Remica', sub:'Championship EMEA', cc:'RS', ach:[]},
     coverz: {n:'Coverz', sub:'Championship EMEA', cc:'DE', ach:[]},
@@ -1026,6 +1037,19 @@ const DB = {
     guigool: {n:'GuiGooL', sub:'Challengers Brazil', cc:'BR', ach:[]},
     kaduh: {n:'Kaduh', sub:'Challengers Brazil', cc:'BR', ach:[]},
     lukitas: {n:'Lukitas', sub:'Challengers SA West', cc:'AR', ach:[]},
+    sterixx: {n:'Sterixx', sub:'Championship South America', cc:'BR', ach:[]},
+    br_rqcrow: {n:'BR RQCrow', sub:'Championship South America', cc:'BR', ach:[]},
+    phz: {n:'Phz', sub:'Championship South America', cc:'BR', ach:[]},
+    daidote: {n:'Daidote', sub:'Championship South America', cc:'PE', ach:[]},
+    benjaxx: {n:'Benjaxx', sub:'Championship South America', cc:'CL', ach:[]},
+    badlioncheat: {n:'Badlioncheat', sub:'Championship South America', cc:'', ach:[]},
+    fortistars: {n:'FortiStars', sub:'Championship South America', cc:'BR', ach:[]},
+    jonatas: {n:'Jonatas', sub:'Championship South America', cc:'BR', ach:[]},
+    mito: {n:'Mito', sub:'Championship South America', cc:'BR', ach:[]},
+    mega_prime: {n:'Mega Prime', sub:'Championship South America', cc:'BR', ach:[]},
+    luking: {n:'Luking', sub:'Championship South America', cc:'BR', ach:[]},
+    dex: {n:'Dex', sub:'Championship South America', cc:'BR', ach:[]},
+
 
     rbm: {n:'RBM', sub:'Championship North America', cc:'MX', ach:[]},
     lxffy: {n:'Lxffy', sub:'Championship North America', cc:'PR', ach:[]},
@@ -1095,6 +1119,12 @@ const DB = {
     diegofr: {n:'Diegofr', sub:'Challengers NA West', cc:'MX', ach:[]},
     nando: {n:'Nando', sub:'Challengers NA West', cc:'MX', ach:[]},
     juice_box: {n:'Juice Box', sub:'Challengers NA East', cc:'CA', ach:[]},
+    kayjayoh: {n:'Kayjayoh', sub:'Championship North America', cc:'US', ach:[]},
+    darkwolf: {n:'DarkWolf', sub:'Championship North America', cc:'PA', ach:[]},
+    polone: {n:'Polone', sub:'Championship North America', cc:'CR', ach:[]},
+    akeno: {n:'Akeno', sub:'Championship North America', cc:'PA', ach:[]},
+    pika: {n:'Pika', sub:'Championship North America', cc:'US', ach:[]},
+    pierre: {n:'Pierre', sub:'Championship North America', cc:'CA', ach:[]},
         
     diuqiang: {n:'DiuQiang', sub:'Championship China', cc:'CN', ach:[]},
     dynamike: {n:'DynaMike', sub:'Championship China', cc:'CN', ach:[]},
@@ -1199,7 +1229,7 @@ const DB = {
     alez: {n:'Alez', role:'M', sub:'Championship EMEA', cc:'ES', ach:[{logo:'img/tournaments/mm2023.png', event:'Mobile Masters 2023', t:'Alez won the Mobile Masters 2023 in Chiba🇯🇵 as a manager'}, {logo:'img/tournaments/lcq2024.png', event:'Last Chance Qualifier 2024', t:'Alez earned a Golden Ticket at the Last Chance Qualifier 2024 in Cologne🇩🇪 as a manager'}, {logo:'img/tournaments/lcq2025.png', event:'Last Chance Qualifier 2025', t:'Alez earned a Golden Ticket at the Last Chance Qualifier 2025 in Sao Paulo🇧🇷 as a manager'}]},
     daantz: {n:'DaaNTz', role:'HC', sub:'Championship EMEA', cc:'ES', ach:[]},
     ignacius: {n:'Ignacius', role:'HC', sub:'Challengers South Europe', cc:'ES', ach:[{logo:'img/tournaments/mf2020.png', event:'March Monthly Finals 2020', t:'Ignacius won the March Monthly Finals 2020 in Katowice🇵🇱 as a head coach'}]},
-    kiwii: {n:'Kiwii', role:'A', sub:'Challengers South Europe', cc:'ES', ach:[{logo:'img/tournaments/mf2020.png', event:'March Monthly Finals 2020', t:'Kiwii won the March Monthly Finals 2020 in Katowice🇵🇱 as an analyst'}]},
+    kiwii: {n:'Kiwii', role:'A', sub:'Championship EMEA', cc:'ES', ach:[{logo:'img/tournaments/mf2020.png', event:'March Monthly Finals 2020', t:'Kiwii won the March Monthly Finals 2020 in Katowice🇵🇱 as an analyst'}]},
     liechem: {n:'Liechem', role:'HC', sub:'Challengers South Europe', cc:'ES', ach:[]},
     oscardc: {n:'OscarDC', role:'A', sub:'Championship EMEA', cc:'ES', ach:[{logo:'img/tournaments/mm2023.png', event:'Mobile Masters 2023', t:'OscarDC won the Mobile Masters 2023 in Chiba🇯🇵 as an analyst'}]},
     pedro_guijarro: {n:'Pedro Guijarro', role:'HC', sub:'Championship EMEA', cc:'ES', ach:[{logo:'img/tournaments/lcq2023.png', event:'Last Chance Qualifier 2023', t:'Pedro Guijarro earned a Golden Ticket at the Last Chance Qualifier 2023 in Katowice🇵🇱 as a head coach'}]},
@@ -1242,13 +1272,13 @@ const DB = {
     martins: {n:'Martins', role:'M', sub:'Challengers Brazil', cc:'BR', ach:[]},
     hipes: {n:'Hipes', role:'HC', sub:'Challengers Brazil', cc:'BR', ach:[]},
 
-    killer: {n:'Killer', role:'HC', sub:'Championship North America', cc:'GT', ach:[]},
+    killer: {n:'Killer', role:'HC', sub:'Championship South America', cc:'GT', ach:[]},
     og: {n:'OG', role:'HC', sub:'Championship North America', cc:'CA', ach:[{logo:'img/tournaments/lcq2023.png', event:'Last Chance Qualifier 2023', t:'OG earned a Golden Ticket at the Last Chance Qualifier 2023 in Katowice🇵🇱'}]},
     cori: {n:'Cori', role:'HC', sub:'Challengers NA East', cc:'CA', ach:[]},
     lukiebear: {n:'Lukiebear', role:'HC', sub:'Championship North America', cc:'CA', ach:[{logo:'img/tournaments/lcq2023.png', event:'Last Chance Qualifier 2023', t:'Lukiebear earned a Golden Ticket at the Last Chance Qualifier 2023 in Katowice🇵🇱 as a manager'}]},
     realcanadian: {n:'RealCanadian', role:'A', sub:'Championship North America', cc:'CA', ach:[]},
     peter_jeck: {n:'Peter Jeck', role:'HC', sub:'Challengers NA West', cc:'MX', ach:[]},
-    roledu: {n:'ROLEDU', role:'AC', sub:'Championship North America', cc:'MX', ach:[]},
+    roledu: {n:'ROLEDU', role:'HC', sub:'Championship North America', cc:'MX', ach:[]},
     lotus: {n:'Lotus', role:'HC', sub:'Championship North America', cc:'US', ach:[]},
     iink: {n:'IiNK', role:'M', sub:'Challengers NA East', cc:'US', ach:[{logo:'img/tournaments/lcq2025.png', event:'Last Chance Qualifier 2025', t:'IiNK earned a Golden Ticket at the Last Chance Qualifier 2025 in Sao Paulo🇧🇷 as a manager'}]},
     sward: {n:'Sward', role:'HC', sub:'Challengers NA East', cc:'US', ach:[]},
@@ -1278,6 +1308,10 @@ const DB = {
     fz: {n:'Frenzy Esports', sub:'Championship East Asia', homeRegion:'Asia Pacific', cc:'JP', logo:'img/teams/fz.png', ach:[]},
     rc: {n:'REJECT', sub:'Championship East Asia', homeRegion:'Asia Pacific', cc:'JP', logo:'img/teams/rc.png', ach:[]},
     axis: {n:'AXIS e-Sports', sub:'Championship East Asia', homeRegion:'Asia Pacific', cc:'JP', logo:'img/teams/axis.png', ach:[]},
+    nes: {n:'F/A Not Easy', sub:'Championship East Asia', homeRegion:'Asia Pacific', cc:'TW', logo:'img/teams/misc.png', ach:[]},
+    flc: {n:'F/A Team Falcons', sub:'Championship East Asia', homeRegion:'Asia Pacific', cc:'JP', logo:'img/teams/misc.png', ach:[]},
+    モーティス: {n:'F/A モーティス絶対使わないです', sub:'Championship East Asia', homeRegion:'Asia Pacific', cc:'JP', logo:'img/teams/misc.png', ach:[]},
+    モングラー: {n:'F/A モングラール建築', sub:'Championship East Asia', homeRegion:'Asia Pacific', cc:'JP', logo:'img/teams/misc.png', ach:[]},
     wwl: {n:'WWL Esports', sub:'Challengers Korea', homeRegion:'Asia Pacific', cc:'US', logo:'img/teams/wwl.png', ach:[]},
     ovc: {n:'Overcome', sub:'Challengers APAC', homeRegion:'Asia Pacific', cc:'HK', logo:'img/teams/ovc.png', ach:[]},
     rntx: {n:'Revenant XSpark', sub:'Challengers APAC', homeRegion:'Asia Pacific', cc:'IN', logo:'img/teams/rntx.png', ach:[{logo:'img/tournaments/lcq2023.png', event:'Last Chance Qualifier 2023', t:'Revenant XSpark earned a Golden Ticket at the Last Chance Qualifier 2023 in Katowice🇵🇱'}, {logo:'img/tournaments/lcq2025.png', event:'Last Chance Qualifier 2025', t:'Revenant XSpark earned a Golden Ticket at the Last Chance Qualifier 2025 in Sao Paulo🇧🇷'}]},
@@ -1329,7 +1363,8 @@ const DB = {
     trb_eu: {n:'Tribe Gaming EU', sub:'Challengers EMEA', homeRegion:'EMEA', cc:'US', logo:'img/teams/trb_eu.png', ach:[]},
     bk: {n:'BK ROG Esports', sub:'Challengers France', homeRegion:'EMEA', cc:'FR', logo:'img/teams/bk.png', ach:[]},
     cm: {n:'CODEMAGIC', sub:'Challengers France', homeRegion:'EMEA', cc:'FR', logo:'img/teams/cm.png', ach:[]},
-    
+    tgrb: {n:'F/A Togrubi', sub:'Challengers France', homeRegion:'EMEA', cc:'FR', logo:'img/teams/tgrb.png', ach:[]},
+
     bh: {n:'Bounty Hunters', sub:'Championship South America', homeRegion:'SA', cc:'BR', logo:'img/teams/bh.png', ach:[]},
     red: {n:'RED Canids', sub:'Championship South America', homeRegion:'SA', cc:'BR', logo:'img/teams/red.png', ach:[]},
     loud: {n:'LOUD', sub:'Championship South America', homeRegion:'SA', cc:'BR', logo:'img/teams/loud.png', ach:[]},
@@ -1354,6 +1389,10 @@ const DB = {
     ae_l: {n:'Aphelion Esports', sub:'Challengers Brazil', homeRegion:'SA', cc:'US', logo:'img/teams/ae_l.png', ach:[]},
     ssg_br: {n:'Spacestation Gaming Brazil', sub:'Challengers Brazil', homeRegion:'SA', cc:'US', logo:'img/teams/ssg_br.png', ach:[]},
     etn: {n:'Eternal Esports', sub:'Championship South America', homeRegion:'SA', cc:'US', logo:'img/teams/etn.png', ach:[]},
+    dro: {n:'F/A Dropeados 2026', sub:'Championship South America', homeRegion:'SA', cc:'PE', logo:'img/teams/dro.png', ach:[]},
+    goats: {n:'F/A Goats', sub:'Championship South America', homeRegion:'SA', cc:'BR', logo:'img/teams/misc.png', ach:[]},
+    sbd: {n:'F/A Skibidi Sigmas', sub:'Championship South America', homeRegion:'SA', cc:'BR', logo:'img/teams/misc.png', ach:[]},
+    mcqt: {n:'F/A Macaquitos', sub:'Championship South America', homeRegion:'SA', cc:'BR', logo:'img/teams/mcqt.png', ach:[]},
    
     trb: {n:'Tribe Gaming', sub:'Championship North America', homeRegion:'NA', cc:'US', logo:'img/teams/trb.png', ach:[]},
     te: {n:'Team Elektros', sub:'Championship North America', homeRegion:'NA', cc:'GB', logo:'img/teams/te.png', ach:[]},
@@ -1364,8 +1403,8 @@ const DB = {
     utp: {n:'F/A Utopia', sub:'Championship North America', homeRegion:'NA', cc:'US', logo:'img/teams/utp.png', ach:[]},
     amn: {n:'Amnesia Esports', sub:'Championship North America', homeRegion:'NA', cc:'IT', logo:'img/teams/amn.png', ach:[]},
     da: {n:'F/A David´s Aura', sub:'Championship North America', homeRegion:'NA', cc:'VE', logo:'img/teams/da.png', ach:[]},
-    mtry: {n:'F/A Monterrey', sub:'Championship North America', homeRegion:'NA', cc:'MX', logo:'img/teams/mtry.png', ach:[]},
-    lgcy_a: {n:'Legacy Academy', sub:'Challengers NA East', homeRegion:'NA', cc:'US', logo:'img/teams/lgcy_a.png', ach:[]},
+    mtry: {n:'F/A Monterrey', sub:'Championship North America', homeRegion:'NA', cc:'MX', logo:'img/teams/misc.png', ach:[]},
+    lgcy_a: {n:'Legacy Academy', sub:'Championship North America', homeRegion:'NA', cc:'US', logo:'img/teams/lgcy_a.png', ach:[]},
     mx: {n:'MX Team', sub:'Challengers NA West', homeRegion:'NA', cc:'BR', logo:'img/teams/mx.png', ach:[]},
     mx_a: {n:'MX Team Academy', sub:'Challengers NA West', homeRegion:'NA', cc:'BR', logo:'img/teams/mx_a.png', ach:[]},
     pcf: {n:'PCIFIC Forza Esports', sub:'Challengers NA West', homeRegion:'NA', cc:'TR', logo:'img/teams/pcf.png', ach:[]},
@@ -1376,6 +1415,9 @@ const DB = {
     vtr: {n:'Vatra Gaming', sub:'Challengers NA West', homeRegion:'NA', cc:'MX', logo:'img/teams/vtr.png', ach:[]},
     omen: {n:'Omen Elite', sub:'Challengers NA East', homeRegion:'NA', cc:'US', logo:'img/teams/omen.png', ach:[]},
     obey: {n:'Obey Alliance', sub:'Challengers NA West', homeRegion:'NA', cc:'US', logo:'img/teams/obey.png', ach:[]},
+    nova_2: {n:'Nova Esports', sub:'Championship North America', homeRegion:'NA', cc:'MX', logo:'img/teams/nova_2.png', ach:[]},
+    lime: {n:'F/A Lime', sub:'Championship North America', homeRegion:'NA', cc:'CA', logo:'img/teams/misc.png', ach:[]},
+    name: {n:'F/A Nameless', sub:'Championship North America', homeRegion:'NA', cc:'US', logo:'img/teams/name.png', ach:[]},
 
     toc: {n:'F/A Trick of China', sub:'Championship China', homeRegion:'CNML', cc:'CN', logo:'img/teams/toc.png', ach:[]},
     axr: {n:'F/A Ace Xero', sub:'Championship China', homeRegion:'CNML', cc:'CN', logo:'img/teams/axr.png', ach:[]},
@@ -1396,7 +1438,7 @@ const DB = {
 const OFFICIAL = [
   {id:'o1', org:'zeta', sub:'Championship East Asia',  players:['sitetampo', 'sizuku', 'batman'], staff:['mameshi', 'leightox', 'taro']},
   {id:'o2', org:'cr', sub:'Championship East Asia',  players:['tensai', 'moya', 'milkreo'], staff:['relyh']},
-  {id:'o3', org:'skc_ea', sub:'Championship East Asia',  players:['kuru','ghost_t','naipishu'], staff:['sebas']},
+  {id:'o3', org:'skc_ea', sub:'Championship East Asia',  players:['kuru','ghost_t'], staff:['sebas']},
   {id:'o4', org:'rvl', sub:'Championship East Asia',  players:['ryohei', 'yutapin', 'totoron'], staff:[]},
   {id:'o5', org:'fl', sub:'Championship East Asia',  players:['achapi', 'ken_g', 'i_see'], staff:['lukluk23']},
   {id:'o6', org:'igm', sub:'Championship East Asia',  players:['shigemyon', 'drake', 'nyades'], staff:[]},
@@ -1404,6 +1446,10 @@ const OFFICIAL = [
   {id:'o8', org:'fz', sub:'Championship East Asia',  players:['toridesu','ferkel'], staff:[]},
   {id:'o9', org:'rc', sub:'Championship East Asia',  players:['melty', 'shu', 'levi'], staff:['acee']},
   {id:'o10', org:'axis', sub:'Championship East Asia',  players:['terry', 'menmi', 'yume'], staff:['nem']},
+  {id:'o60', org:'nes', sub:'Championship East Asia',  players:['geki', 'sunrise', 'nelu215'], staff:[]},
+  {id:'o61', org:'flc', sub:'Championship East Asia',  players:['sun','sourin', 'yukimll'], staff:[]},
+  {id:'o62', org:'モーティス', sub:'Championship East Asia',  players:['ponkey', 'ater', 'midoronashi'], staff:[]},
+  {id:'o63', org:'モングラー', sub:'Championship East Asia',  players:['もちのすけ', 'モコモコ羊ちゃん', 'ドブ枠じゅげむ'], staff:[]},
   {id:'o11', org:'wwl', sub:'Challengers Korea',  players:['behappy', 'gon', 'jake'], staff:['ilpae07']},
   {id:'o13', org:'rntx', sub:'Challengers APAC',  players:['sergeant', 'walkthrough'], staff:['stardragon']},
   {id:'o14', org:'slg', sub:'Challengers India',  players:['trashant', 'raw', 'ash_king'], staff:['spark']},
@@ -1411,21 +1457,22 @@ const OFFICIAL = [
   {id:'o15', org:'fut', sub:'Championship EMEA',  players:['angelboy', 'guesti', 'nob'], staff:['ricky', 'mighty']},
   {id:'o16', org:'hmb', sub:'Championship EMEA',  players:['symantec', 'lukii', 'boss'], staff:['canaan', 'vid']},
   {id:'o17', org:'ttm', sub:'Championship EMEA',  players:['maru', 'maury', 'joker'], staff:['daantz', 'alez']},
-  {id:'o18', org:'novo', sub:'Championship EMEA',  players:['meow', 'filippo', 'jus'], staff:['dorian', 'bashira']},
+  {id:'o18', org:'novo', sub:'Championship EMEA',  players:['meow', 'filippo', 'jus'], staff:['dorian', 'kiwii', 'bashira']},
   {id:'o19', org:'th', sub:'Championship EMEA',  players:['ikaoss', 'marco', 'subeme'], staff:['xcasta', 'peri']},
   {id:'o20', org:'navi', sub:'Championship EMEA',  players:['nowy297', 'gero', 'enraged'], staff:['chloun']},
   {id:'o21', org:'cgn', sub:'Championship EMEA',  players:['lenain', 'dompe', 'nes'], staff:['lollo']},
   {id:'o22', org:'big', sub:'Championship EMEA',  players:['salty', 'mehli', 'dede'], staff:['inso', 'plantyse', 'auge']},
-   {id:'o23', org:'kbp', sub:'Championship EMEA',  players:['tomzy', 'yuffy', 'ray092'], staff:[]},
+  {id:'o23', org:'kbp', sub:'Championship EMEA',  players:['tomzy', 'yuffy', 'ray092'], staff:[]},
   {id:'o24', org:'fnrs', sub:'Championship EMEA',  players:['ciro', 'gordon', 'tex'], staff:[]},
   {id:'o25', org:'rev', sub:'Championship EMEA',  players:['fayelo', 'natrix', 'ethan'], staff:['wsmoon']},
   {id:'o26', org:'fut_f', sub:'Championship EMEA',  players:['demaster', 'zeyrox', 'ferissa'], staff:['mighty']},
   {id:'o27', org:'sk', sub:'Championship EMEA',  players:['yoshi', 'ope', 'yoko'], staff:['pedro_guijarro', 'oscardc', 'kvalafar']},
   {id:'o28', org:'tlf', sub:'Challengers South Europe',  players:['mine', 'amos', 'rup'], staff:['zoulan', 'domori']},
+  {id:'o64', org:'tgrb', sub:'Challengers France',  players:['gugu', 'tizzou', 'shawnn'], staff:[]},
   {id:'o29', org:'sxs', sub:'Challengers South Europe',  players:['biso', 'lucas', 'saint'], staff:['fedeilrobo', 'bashira']},
   {id:'o30', org:'big_c', sub:'Challengers DACH',  players:['arthur', 'unlucky', 'decaii'], staff:['inso', 'plantyse', 'auge']},
 
-  {id:'o31', org:'bh', sub:'Championship South America',  players:['prozy', 'portox', 'wesley'], staff:['paolo']},
+  {id:'o31', org:'bh', sub:'Championship South America',  players:['prozy', 'portox', 'wesley'], staff:['killer', 'paolo']},
   {id:'o32', org:'red', sub:'Championship South America',  players:['mohtep', 'jubileu', 'cauebr'], staff:['alchemicalx', 'peri']},
   {id:'o33', org:'loud', sub:'Championship South America',  players:['firecrow', 'edinho'], staff:['role', 'trekking']},
   {id:'o34', org:'os', sub:'Championship South America',  players:['brabao', 'golden', 'satisfyer'], staff:['acee']},
@@ -1435,9 +1482,13 @@ const OFFICIAL = [
   {id:'o38', org:'ns', sub:'Championship South America',  players:['tufa', 'rei_do_fut', 'sennin'], staff:['quinaia', 'diego']},
   {id:'o39', org:'qqq', sub:'Championship South America',  players:['b4st', 'deykon', 'todd'], staff:[]},
   {id:'o40', org:'_67', sub:'Championship South America',  players:['bicho', 'gods', 'nubis'], staff:[]},
+  {id:'o65', org:'dro', sub:'Championship South America',  players:['benjaxx', 'daidote', 'badlioncheat'], staff:[]},
+  {id:'o66', org:'goats', sub:'Championship South America',  players:['fortistars', 'jonatas', 'mito'], staff:[]},
+  {id:'o67', org:'sbd', sub:'Championship South America',  players:['mega_prime', 'luking', 'dex'], staff:[]},
+  {id:'o68', org:'mcqt', sub:'Championship South America',  players:['sterixx', 'br_rqcrow', 'phz'], staff:[]},
   {id:'o41', org:'dcz', sub:'Challengers SA West',  players:['bradbari', 'kai'], staff:[]},
 
-  {id:'o42', org:'trb', sub:'Championship North America',  players:['rbm', 'lxffy', 'diegogamer'], staff:['killer', 'roledu', 'sugus']},
+  {id:'o42', org:'trb', sub:'Championship North America',  players:['rbm', 'lxffy', 'diegogamer'], staff:['roledu', 'sugus']},
   {id:'o43', org:'te', sub:'Championship North America',  players:['snoiy', 'memen', 'doin'], staff:['kapi', 'lexus']},
   {id:'o44', org:'kds', sub:'Championship North America',  players:['sans'], staff:['lukiebear', 'realcanadian', 'lollo']},
   {id:'o45', org:'vtc', sub:'Championship North America',  players:['ezlivi', 'duckie', 'belal'], staff:['lotus', 'drizz']},
@@ -1447,6 +1498,10 @@ const OFFICIAL = [
   {id:'o49', org:'amn', sub:'Championship North America',  players:['chino', 'tacos', 'vegeta'], staff:['og']},
   {id:'o50', org:'da', sub:'Championship North America',  players:['david_2', 'razuen', 'godnoob'], staff:[]},
   {id:'o51', org:'mtry', sub:'Championship North America',  players:['samuelito', 'jared', 'grezze'], staff:[]},
+  {id:'o69', org:'name', sub:'Championship North America',  players:['zee', 'vsxolar', 'kayjayoh'], staff:[]},
+  {id:'o70', org:'nova_2', sub:'Championship North America',  players:['squeezy', 'pain', 'kirito'], staff:[]},
+  {id:'o71', org:'lime', sub:'Championship North America',  players:['pierre', 'pika'], staff:[]},
+  {id:'o72', org:'lgcy_a', sub:'Championship North America',  players:['darkwolf', 'polone', 'akeno'], staff:[]},
 
   {id:'o52', org:'toc', sub:'Championship China',  players:['diuqiang', 'dynamike', 'xpr'], staff:['pirin329', 'abdzz']},
   {id:'o53', org:'axr', sub:'Championship China',  players:['galaxy', 'david', 'coldrink'], staff:['kroos']},
@@ -1830,7 +1885,12 @@ function creationOrderKey(team, index){
   // user-created rosters first, newest first; then official baseline in order
   if(user) return [0, -createdAt, -Number(user[1]), index];
   if(Number.isFinite(createdAt) && createdAt > 0) return [0, -createdAt, 0, index];
-  if(official) return [1, Number(official[1]), index, 0];
+  if(official){
+    const region = regionForSubregion(team.sub) || team.homeRegion;
+    const regionIndex = Object.keys(REGIONS).indexOf(region);
+    const leagueRank = team.sub?.startsWith('Championship') ? 0 : 1;
+    return [1, regionIndex < 0 ? Object.keys(REGIONS).length : regionIndex, leagueRank, Number(official[1]), index];
+  }
   return [2, index, 0, 0];
 }
 function oldestFirst(teams){
@@ -2160,7 +2220,11 @@ function closeAchievementPopup(){
   const popup = $('achievement-popup');
   popup.classList.remove('active', 'below');
   popup.setAttribute('aria-hidden', 'true');
-  if(activeAchievementButton) activeAchievementButton.setAttribute('aria-expanded', 'false');
+  if(activeAchievementButton){
+    activeAchievementButton.setAttribute('aria-expanded', 'false');
+    activeAchievementButton.classList.remove('selected');
+    activeAchievementButton.closest('.team-card .row')?.classList.remove('achievement-open');
+  }
   activeAchievementButton = null;
 }
 function showAchievementPopup(button){
@@ -2173,23 +2237,33 @@ function showAchievementPopup(button){
   popup.classList.add('active');
   popup.setAttribute('aria-hidden', 'false');
   button.setAttribute('aria-expanded', 'true');
+  button.classList.add('selected');
+  button.closest('.team-card .row')?.classList.add('achievement-open');
   activeAchievementButton = button;
 
+  const viewport = window.visualViewport;
+  const offsetLeft = viewport?.offsetLeft || 0;
+  const offsetTop = viewport?.offsetTop || 0;
+  const viewportWidth = viewport?.width || window.innerWidth;
+  const viewportHeight = viewport?.height || window.innerHeight;
+  popup.style.maxWidth = `${Math.max(1, Math.min(280, viewportWidth - 24))}px`;
   popup.style.left = '0px';                    // measure at a neutral position
   popup.style.top = '0px';
   const anchor = button.getBoundingClientRect();
   const bubble = popup.getBoundingClientRect();
   const margin = 12;
-  const center = anchor.left + anchor.width / 2;
-  const left = Math.max(margin, Math.min(window.innerWidth - bubble.width - margin, center - bubble.width / 2));
-  const below = anchor.top < bubble.height + margin + 12;
-  const desiredTop = below ? anchor.bottom + margin : anchor.top - bubble.height - margin;
-  const top = Math.max(margin, Math.min(window.innerHeight - bubble.height - margin, desiredTop));
+  const center = anchor.left + offsetLeft + anchor.width / 2;
+  const anchorTop = anchor.top + offsetTop;
+  const anchorBottom = anchor.bottom + offsetTop;
+  const left = Math.max(offsetLeft + margin, Math.min(offsetLeft + viewportWidth - bubble.width - margin, center - bubble.width / 2));
+  const below = anchorTop < offsetTop + bubble.height + margin + 12;
+  const desiredTop = below ? anchorBottom + margin : anchorTop - bubble.height - margin;
+  const top = Math.max(offsetTop + margin, Math.min(offsetTop + viewportHeight - bubble.height - margin, desiredTop));
   popup.classList.toggle('below', below);
   popup.style.left = `${left}px`;
   popup.style.top = `${top}px`;
   // the arrow is positioned inside the border, so measure from the padding edge
-  const inner = popup.getBoundingClientRect().left + popup.clientLeft;
+  const inner = left + popup.clientLeft;
   const arrowX = Math.max(14, Math.min(popup.clientWidth - 14, center - inner));
   popup.style.setProperty('--arrow-x', `${arrowX}px`);
 }
