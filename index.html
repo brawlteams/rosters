@@ -533,7 +533,8 @@ button.ach:hover,button.ach.selected,button.ach.has-img:hover,button.ach.has-img
 #bracket-page{display:none;width:100%;max-width:1388px;flex-direction:column;align-items:center}
 body.brackets-active #roster-page{display:none}
 body.brackets-active #bracket-page{display:flex}
-body.brackets-active .about-footer{display:none}
+body:not(.brackets-active) .about-footer-brackets{display:none}
+body.brackets-active .about-footer:not(.about-footer-brackets){display:none}
 .bracket-toolbar{display:flex;align-items:center;justify-content:center;gap:10px;width:100%;max-width:1000px;margin:0 auto 14px}
 .bracket-toolbar .search-input{min-width:180px}
 .bracket-actions{display:flex;gap:8px;flex:0 0 auto}
@@ -599,15 +600,11 @@ button.wf-team[data-act]:hover{background:#2b2254}
   .bracket-section>h2{font-size:18px}
   .bracket-roster-preview{max-height:60vh}
 }
-.wf-champ{position:absolute;box-sizing:border-box;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px;padding:10px;background:#0d0a22;border:2px solid #000;border-radius:8px;text-align:center}
-.wf-champ.set{background:#183c2b;border-color:#ffcc00}
-.wf-champ b{font-size:16px;color:#fff;text-transform:uppercase;line-height:1.15;overflow-wrap:anywhere}
-.wf-champ span{font-size:12px;color:#7e79a8;text-transform:uppercase}
-.wf-champ-empty{width:96px;height:96px;display:flex;align-items:center;justify-content:center;border:3px dashed #3a356a;border-radius:50%;font-size:44px;color:#3a356a}
-.wf-champ-glow{width:132px;height:132px;display:flex;align-items:center;justify-content:center;border-radius:50%;
-  background:radial-gradient(circle,rgba(255,204,0,.55) 0%,rgba(255,204,0,.2) 58%,rgba(255,204,0,0) 72%);
-  box-shadow:0 0 36px 12px rgba(255,204,0,.55)}
-.wf-champ-glow img{width:100px;height:100px;object-fit:contain}
+.wf-champ{overflow:hidden}
+.wf-champ-glow{position:relative;isolation:isolate;width:132px;height:132px;display:flex;align-items:center;justify-content:center}
+.wf-champ-glow::before{content:"";position:absolute;inset:-30px;border-radius:50%;z-index:-1;
+  background:radial-gradient(circle,rgba(255,204,0,.6) 0%,rgba(255,204,0,.25) 45%,rgba(255,204,0,0) 70%)}
+.wf-champ-glow img{position:relative;width:100px;height:100px;object-fit:contain}
 
 /* mobile / touch */
 #bracket-page{min-width:0;max-width:100%}
@@ -630,6 +627,9 @@ button.wf-team[data-act]:hover{background:#2b2254}
 .bracket-corestats a:hover{color:#72d5ff;text-decoration:underline}
 .toolbar-action:disabled,
 .toolbar-action:disabled:hover{filter:grayscale(1) brightness(.55);cursor:not-allowed;transform:skewX(-4deg);box-shadow:0 2px 0 #000}
+#bracket-score-form{max-height:100%;overflow-y:auto;-webkit-overflow-scrolling:touch}
+.wf-team:focus{outline:none}
+.wf-team:focus-visible{outline:2px solid #ffcc00;outline-offset:-2px}
 </style>
 </head>
 <body>
@@ -656,9 +656,9 @@ button.wf-team[data-act]:hover{background:#2b2254}
         <b>Liquipedia</b>
         <small>Brawl Esports encyclopedia</small>
       </div>
-      <div class="side-link" data-act="nav" data-url="https://www.leafstats.net" role="link" tabindex="0">
-        <b>Leafstats</b>
-        <small>Brawl Stars competitive data and analytics</small>
+      <div class="side-link" data-act="nav" data-url="https://corestats.pro" role="link" tabindex="0">
+        <b>Corestats</b>
+        <small>Brawl Stars competitive tools</small>
       </div>
       <div class="side-link" data-act="nav" data-url="https://www.bsen.news" role="link" tabindex="0">
         <b>BSEN</b>
@@ -715,6 +715,25 @@ button.wf-team[data-act]:hover{background:#2b2254}
     </div>
   </div>
   <div id="bracket-content" class="bracket-content"></div>
+  
+  <section class="about-footer about-footer-brackets">
+    <h2>About</h2>
+
+    <div class="disclaimer-text">
+      Created and updated by<br>
+      <a href="https://x.com/LM_BS10" target="_blank">LM</a>
+    </div>
+
+    <div class="disclaimer-text">
+      Comparisons from<br>
+      <a href="https://corestats.pro" target="_blank" rel="noopener">Corestats</a>
+    </div>
+
+    <footer class="disclaimer-text">
+      <hr>
+      <p>Brawl Stars is a trademark of Supercell Oy. This content is not affiliated with, endorsed, sponsored, or specifically approved by Supercell and Supercell is not responsible for it. For more information, please visit <a href="https://supercell.com/en/fan-content-policy" target="_blank">Supercell's Fan Content Policy</a>.</p>
+    </footer>
+  </section>
 </main>
 
 <div id="bracket-score-modal" class="modal-overlay confirm-overlay" aria-hidden="true">
@@ -1734,6 +1753,11 @@ function setActivePage(page){
   $('bracket-tab').classList.toggle('active', brackets);
   $('roster-tab').setAttribute('aria-selected', String(!brackets));
   $('bracket-tab').setAttribute('aria-selected', String(brackets));
+  if(!brackets){
+    render();          // builds the cards
+    fitOrgNames();     // measures and sizes them while the page is still unpainted
+    fitPlayerNames();
+  }
   updateNavButtons();
 }
 const KEY = 'brawlteams_v2';
@@ -2444,11 +2468,17 @@ function renderPlayoffs(){
     wfHead('Lower Bracket Round 1', 0, hd2), wfHead('Lower Bracket Round 2', 1, hd2),
     wfHead('Lower Bracket Round 3', 2, hd2), wfHead('Lower Bracket Round 4', 3, hd2),
     wfHead('Champion', 5, 0, WF_CHAMP_W),
-    `<div class="wf-champ${champ ? ' set' : ''}" style="left:${X(5)}px;top:${gf + 34 - 110}px;width:${WF_CHAMP_W}px;height:220px">
-      ${champ
-        ? `<div class="wf-champ-glow"><img src="${esc(DB.orgs[champ].logo)}" alt=""></div><b>${esc(bracketTeamName(champ))}</b>`
-        : `<div class="wf-champ-empty">?</div><span>World Champion</span>`}
-    </div>`,
+    (() => {
+      const cx = X(5), cy = gf + 34 - 110, box = 220;
+      if(!champ) return `<div class="wf-champ" style="position:absolute;left:${cx}px;top:${cy}px;width:${WF_CHAMP_W}px;height:${box}px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px;background:#0d0a22;border:2px solid #000;border-radius:8px;box-sizing:border-box"><div class="wf-champ-empty">?</div><span>World Champion</span></div>`;
+      const logo = DB.orgs[champ] && DB.orgs[champ].logo;
+      return `<div class="wf-champ" style="position:absolute;left:${cx}px;top:${cy}px;width:${WF_CHAMP_W}px;height:${box}px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px;background:#183c2b;border:2px solid #ffcc00;border-radius:8px;box-sizing:border-box;text-align:center">
+        <div style="width:132px;height:132px;border-radius:50%;display:flex;align-items:center;justify-content:center;background:radial-gradient(circle,rgba(255,204,0,.55) 0%,rgba(255,204,0,.2) 60%,rgba(255,204,0,0) 72%)">
+          <img src="${esc(logo || '')}" alt="" style="width:100px;height:100px;object-fit:contain">
+        </div>
+        <b style="font-size:16px;color:#fff;text-transform:uppercase;line-height:1.15">${esc(bracketTeamName(champ))}</b>
+      </div>`;
+    })(),
     wfMatch('ubqf1', 'playoff', X(0), qf[0]), wfMatch('ubqf2', 'playoff', X(0), qf[1]),
     wfMatch('ubqf3', 'playoff', X(0), qf[2]), wfMatch('ubqf4', 'playoff', X(0), qf[3]),
     wfMatch('ubsf1', 'playoff', X(1), sf[0]), wfMatch('ubsf2', 'playoff', X(1), sf[1]),
@@ -2518,12 +2548,29 @@ function openBracketScore(matchId, selectedOrg){
   $('bracket-score-modal').classList.add('active');
   $('bracket-score-modal').setAttribute('aria-hidden', 'false');
   syncScrollLock();
-  $('bracket-score-a').focus();
+  fitScoreOverlay();
+  if(!isTouchDevice()) $('bracket-score-a').focus();   // on phones, the user taps the field themselves
 }
+/* keep the score popup inside the visible area when the iPad/iPhone keyboard opens */
+const scoreOverlay = $('bracket-score-modal');
+function fitScoreOverlay(){
+  const vv = window.visualViewport;
+  if(!vv || !scoreOverlay.classList.contains('active')) return;
+  scoreOverlay.style.top = vv.offsetTop + 'px';
+  scoreOverlay.style.height = vv.height + 'px';
+}
+if(window.visualViewport){
+  visualViewport.addEventListener('resize', fitScoreOverlay);
+  visualViewport.addEventListener('scroll', fitScoreOverlay);
+}
+/* stop the page behind the popup from scrolling; the form itself can still scroll */
+scoreOverlay.addEventListener('touchmove', e => { if(!e.target.closest('form')) e.preventDefault(); }, { passive:false });
 function closeBracketScore(){
   $('bracket-score-modal').classList.remove('active');
   $('bracket-score-modal').setAttribute('aria-hidden', 'true');
   activeBracketMatch = null;
+  scoreOverlay.style.top = '';
+  scoreOverlay.style.height = '';
   syncScrollLock();
 }
 function submitBracketScore(event){
@@ -2582,7 +2629,8 @@ function hideBracketRosterPreview(){
 function renderGrid(){
   const list = oldestFirst(state.teams.filter(visible));
   $('grid').innerHTML = list.length ? list.map(card).join('') : '<p class="empty">Currently no rosters to edit. Press "+ NEW ROSTER" to make a new one.</p>';
-  requestAnimationFrame(() => { fitOrgNames(); fitPlayerNames(); });
+  fitOrgNames();
+  fitPlayerNames();
 }
 
 document.fonts.ready.then(() => { fitOrgNames(); fitPlayerNames(); });
@@ -2979,7 +3027,7 @@ document.addEventListener('click', e => {
     case 'bracket-score': openBracketScore(matchId, org); break;
     case 'close-bracket-score': closeBracketScore(); break;
     case 'bracket-reset':
-      askConfirm({ title:'Reset World Finals bracket?', text:'Clear every group and playoff prediction for this browser?', ok:'RESET', danger:true })
+      askConfirm({ title:'Reset tournament bracket?', text:'Every prediction gets cleared and matches are reseted. You can undo this with the back arrow.', ok:'RESET', danger:true })
         .then(ok => { if(!ok) return; bkRemember(); bracketState = { groupResults:{}, playoffResults:{} }; saveBracketState(); renderBracket(); });
       break;
     case 'bracket-export': exportBracketImage(); break;
@@ -3071,9 +3119,17 @@ window.addEventListener('resize', () => {
   closeModal(); closeAchievementPopup(); closeExportModal(); closeSidebar();
 });
 /* if a logo file fails to load, fall back to the placeholder */
+/* if an image fails to load, retry a few times before falling back to the placeholder */
 document.addEventListener('error', e => {
   const img = e.target;
-  if(img.tagName !== 'IMG' || img.closest('#export-stage')) return;   // <-- changed
+  if(img.tagName !== 'IMG' || img.closest('#export-stage')) return;
+  const src = img.getAttribute('src');
+  const tries = Number(img.dataset.retry || 0);
+  if(tries < 3 && src && !src.startsWith('data:')){
+    img.dataset.retry = tries + 1;
+    setTimeout(() => { img.src = src.split('?')[0] + '?r=' + Date.now(); }, 400 * (tries + 1));
+    return;
+  }
   if(!img.parentNode || !img.parentNode.classList.contains('has-img')) return;
   const p = img.parentNode;
   p.classList.remove('has-img');
