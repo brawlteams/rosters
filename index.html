@@ -630,6 +630,20 @@ button.wf-team[data-act]:hover{background:#2b2254}
 #bracket-score-form{max-height:100%;overflow-y:auto;-webkit-overflow-scrolling:touch}
 .wf-team:focus{outline:none}
 .wf-team:focus-visible{outline:2px solid #ffcc00;outline-offset:-2px}
+.bk-stepper{display:flex;flex-direction:column;align-items:center;gap:8px;min-width:0}
+.bk-team-name{min-height:34px;display:flex;align-items:center;justify-content:center;color:#fff;font-size:13px;text-align:center;overflow-wrap:anywhere}
+.bk-stepper-row{display:flex;align-items:center;justify-content:center;gap:6px;width:100%}
+.bk-step{flex:0 0 44px;height:48px;display:flex;align-items:center;justify-content:center;padding:0;font-size:20px;line-height:1;color:#fff;background:#2b2254;border:3px solid #000;border-radius:8px;box-shadow:0 3px 0 #000;-webkit-user-select:none;user-select:none;touch-action:manipulation}
+.bk-step:hover{background:#3a2f70;filter:none}
+.bk-step:active{transform:translateY(2px);box-shadow:0 1px 0 #000}
+.bk-step:disabled{opacity:.3;cursor:not-allowed;transform:none;box-shadow:0 3px 0 #000;background:#2b2254}
+.bk-value{flex:1 1 0;min-width:0;max-width:64px;height:48px;display:flex;align-items:center;justify-content:center;font-size:26px;color:#ffcc00;background:#120e2e;border:3px solid #000;border-radius:8px;box-sizing:border-box}
+.bk-team-name{flex-direction:column;gap:6px}.bk-team-logo{width:36px;height:36px;object-fit:contain;flex:0 0 36px;display:block}
+.bk-team-text{min-width:0;overflow-wrap:anywhere}
+#bracket-score-form{gap:6px}
+#bracket-score-form .bk-stepper-row{margin-bottom:0}
+#bracket-score-form .bracket-score-error{margin:0}
+.bracket-corestats{margin-top:-4px}
 </style>
 </head>
 <body>
@@ -694,7 +708,7 @@ button.wf-team[data-act]:hover{background:#2b2254}
 </div>
 
 <div class="toolbar">
-  <input id="q" class="search-input" placeholder="Search orgs, teams, players, staff..." autocomplete="off">
+  <input id="q" class="search-input" placeholder="Search orgs, teams, players or staff..." autocomplete="off">
   <button class="green-btn toolbar-action" data-act="newteam"><span>+ NEW ROSTER</span></button>
   <button class="blue-btn toolbar-action" data-act="export"><span>EXPORT</span></button>
   <button class="red-btn toolbar-action" data-act="reset"><span>RESET</span></button>
@@ -704,11 +718,11 @@ button.wf-team[data-act]:hover{background:#2b2254}
 </main>
 
 <main id="bracket-page" role="tabpanel" aria-labelledby="bracket-tab" hidden>
-  <p class="intro">Pick match scores for the latest Brawl Esports tornaments, follow each team through groups and playoffs, and crown your own Champion.</p>
+  <p class="intro">Pick match scores for upcoming Brawl Esports tornaments, follow each team through groups and playoffs, and crown your own Champion.</p>
   <img class="bracket-logo" src="img/tournaments/wf2026.png" alt="World Finals 2026">
   <p class="bracket-interaction-hint">Click either team to enter a score. Regular matches are Bo5, while the Bo7 Grand Final starts 1-0 for the Upper Bracket finalist.</p>
   <div class="bracket-toolbar">
-    <input id="bracket-search" class="search-input" type="search" placeholder="Search participating teams or players..." autocomplete="off" aria-label="Search World Finals teams and players">
+    <input id="bracket-search" class="search-input" type="search" placeholder="Search participating orgs, teams, players or staff..." autocomplete="off" aria-label="Search World Finals teams and players">
     <div class="bracket-actions">
       <button class="blue-btn toolbar-action" type="button" data-act="bracket-export"><span>EXPORT</span></button>
       <button class="red-btn toolbar-action" type="button" data-act="bracket-reset"><span>RESET</span></button>
@@ -741,9 +755,23 @@ button.wf-team[data-act]:hover{background:#2b2254}
     <h3 id="bracket-score-title" class="modal-title"></h3>
     <p id="bracket-score-note" class="confirm-text"></p>
     <div class="bracket-score-fields">
-      <label><span id="bracket-score-name-a"></span><input id="bracket-score-a" class="sort-select" type="number" min="0" max="3" required></label>
+      <div class="bk-stepper">
+        <span class="bk-team-name" id="bracket-score-name-a"></span>
+        <div class="bk-stepper-row">
+          <button type="button" class="bk-step" data-step="a:-1" aria-label="Decrease score for team A">&#9664;</button>
+          <output id="bracket-score-a" class="bk-value" aria-live="polite">0</output>
+          <button type="button" class="bk-step" data-step="a:1" aria-label="Increase score for team A">&#9654;</button>
+        </div>
+      </div>
       <span class="bracket-score-separator">:</span>
-      <label><span id="bracket-score-name-b"></span><input id="bracket-score-b" class="sort-select" type="number" min="0" max="3" required></label>
+      <div class="bk-stepper">
+        <span class="bk-team-name" id="bracket-score-name-b"></span>
+        <div class="bk-stepper-row">
+          <button type="button" class="bk-step" data-step="b:-1" aria-label="Decrease score for team B">&#9664;</button>
+          <output id="bracket-score-b" class="bk-value" aria-live="polite">0</output>
+          <button type="button" class="bk-step" data-step="b:1" aria-label="Increase score for team B">&#9654;</button>
+        </div>
+      </div>
     </div>
     <p id="bracket-score-error" class="bracket-score-error" aria-live="polite"></p>
     <p class="bracket-corestats">Unsure about the result? <a id="bracket-corestats" href="#" target="_blank" rel="noopener">COMPARE the 2 teams on Corestats!</a></p>
@@ -1639,7 +1667,7 @@ const OFFICIAL = [
   {id:'o32', org:'red', sub:'Championship South America',  players:['mohtep', 'jubileu', 'cauebr'], staff:['alchemicalx', 'peri']},
   {id:'o33', org:'loud', sub:'Championship South America',  players:['firecrow', 'edinho'], staff:['role', 'trekking']},
   {id:'o34', org:'os', sub:'Championship South America',  players:['brabao', 'golden', 'satisfyer'], staff:['acee']},
-  {id:'o35', org:'skc', sub:'Championship South America',  players:['juan_carlos', 'rhz', 'kristian'], staff:[]},
+  {id:'o35', org:'skc', sub:'Championship South America',  players:['rhz', 'kristian'], staff:[]},
   {id:'o36', org:'al', sub:'Championship South America',  players:['fire_murilo', 'icecrow', 'lipizin'], staff:['kaiki']},
   {id:'o37', org:'ocx', sub:'Championship South America',  players:['pekka', 'derrp', 'doritos'], staff:['rol', 'murilek']},
   {id:'o38', org:'ns', sub:'Championship South America',  players:['tufa', 'rei_do_fut', 'sennin'], staff:['quinaia', 'diego']},
@@ -2522,6 +2550,30 @@ function corestatsUrl(a, b){
   const tag = id => CORESTATS_TAG[id] || id;
   return `https://corestats.pro/compare/teams/${tag(a)}-vs-${tag(b)}`;
 }
+/* score steppers: values are limited to the valid range for each match type */
+let stepScores = { a:0, b:0 }, stepMax = 3;
+function renderSteppers(){
+  $('bracket-score-a').textContent = String(stepScores.a);
+  $('bracket-score-b').textContent = String(stepScores.b);
+  document.querySelectorAll('.bk-step').forEach(btn => {
+    const [side, dir] = btn.dataset.step.split(':');
+    const v = stepScores[side] + Number(dir);
+    btn.disabled = v < 0 || v > stepMax;
+  });
+}
+function stepScore(side, dir){
+  const next = stepScores[side] + dir;
+  if(next < 0 || next > stepMax) return;
+  stepScores[side] = next;
+  $('bracket-score-error').textContent = '';
+  renderSteppers();
+}
+document.querySelector('.bracket-score-fields').addEventListener('click', e => {
+  const btn = e.target.closest('.bk-step');
+  if(!btn || btn.disabled) return;
+  const [side, dir] = btn.dataset.step.split(':');
+  stepScore(side, Number(dir));
+});
 function openBracketScore(matchId, selectedOrg){
   const groupMatch = WF26_GROUP_MATCHES.find(match => match.id === matchId);
   const teams = groupMatch ? getGroupMatchTeams(matchId) : getPlayoffTeams(matchId);
@@ -2538,18 +2590,20 @@ function openBracketScore(matchId, selectedOrg){
   $('bracket-score-note').textContent = grandFinal
     ? 'The Upper Bracket finalist starts 1-0. Enter the final score; first to 4 wins.'
     : 'Enter the final set score. A Bo5 match ends when a team reaches 3 wins.';
-  $('bracket-score-name-a').textContent = bracketTeamName(teams[0]);
-  $('bracket-score-name-b').textContent = bracketTeamName(teams[1]);
-  $('bracket-score-a').max = String(target);
-  $('bracket-score-b').max = String(target);
-  $('bracket-score-a').value = String(scoreA);
-  $('bracket-score-b').value = String(scoreB);
+    const logoHtml = orgId => {
+    const logo = DB.orgs[orgId] && DB.orgs[orgId].logo;
+    return logo ? `<img class="bk-team-logo" src="${esc(logo)}" alt="">` : '';
+  };
+  $('bracket-score-name-a').innerHTML = `${logoHtml(teams[0])}<span class="bk-team-text">${esc(bracketTeamName(teams[0]))}</span>`;
+  $('bracket-score-name-b').innerHTML = `${logoHtml(teams[1])}<span class="bk-team-text">${esc(bracketTeamName(teams[1]))}</span>`;
+  stepMax = target;
+  stepScores = { a:scoreA, b:scoreB };
+  renderSteppers();
   $('bracket-score-error').textContent = '';
   $('bracket-score-modal').classList.add('active');
   $('bracket-score-modal').setAttribute('aria-hidden', 'false');
   syncScrollLock();
   fitScoreOverlay();
-  if(!isTouchDevice()) $('bracket-score-a').focus();   // on phones, the user taps the field themselves
 }
 /* keep the score popup inside the visible area when the iPad/iPhone keyboard opens */
 const scoreOverlay = $('bracket-score-modal');
@@ -2576,7 +2630,7 @@ function closeBracketScore(){
 function submitBracketScore(event){
   event.preventDefault();
   if(!activeBracketMatch) return;
-  const scoreA = Number($('bracket-score-a').value), scoreB = Number($('bracket-score-b').value);
+  const scoreA = stepScores.a, scoreB = stepScores.b;
   const match = activeBracketMatch, grandFinal = match.id === 'gf';
   const validScore = Number.isInteger(scoreA) && Number.isInteger(scoreB) && scoreA >= 0 && scoreB >= 0
     && (grandFinal ? (scoreA === 4 && scoreB <= 3 && scoreB >= 0) || (scoreB === 4 && scoreA >= 1 && scoreA <= 3)
