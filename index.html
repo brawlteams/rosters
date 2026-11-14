@@ -2627,6 +2627,31 @@ function closeBracketScore(){
   scoreOverlay.style.height = '';
   syncScrollLock();
 }
+/* drop any saved result whose winner is no longer one of the two teams in that match */
+function pruneInvalidResults(){
+  let changed = true;
+  while(changed){
+    changed = false;
+    WF26_GROUP_MATCHES.forEach(match => {
+      const r = bracketState.groupResults[match.id];
+      if(!r) return;
+      const [a, b] = getGroupMatchTeams(match.id);
+      if(!a || !b || (r.winner !== a && r.winner !== b)){
+        delete bracketState.groupResults[match.id];
+        changed = true;
+      }
+    });
+    Object.keys(WF26_PLAYOFF_SOURCES).forEach(id => {
+      const r = bracketState.playoffResults[id];
+      if(!r) return;
+      const [a, b] = getPlayoffTeams(id);
+      if(!a || !b || (r.winner !== a && r.winner !== b)){
+        delete bracketState.playoffResults[id];
+        changed = true;
+      }
+    });
+  }
+}
 function submitBracketScore(event){
   event.preventDefault();
   if(!activeBracketMatch) return;
@@ -2643,14 +2668,9 @@ function submitBracketScore(event){
   }
   bkRemember();
   const result = { scoreA, scoreB, winner:scoreA > scoreB ? match.a : match.b };
-  if(match.type === 'group'){
-    bracketState.groupResults[match.id] = result;
-    clearGroupDescendants(match.id);
-    bracketState.playoffResults = {};
-  }else{
-    bracketState.playoffResults[match.id] = result;
-    clearPlayoffDescendants(match.id);
-  }
+  if(match.type === 'group') bracketState.groupResults[match.id] = result;
+  else bracketState.playoffResults[match.id] = result;
+  pruneInvalidResults();
   saveBracketState();
   closeBracketScore();
   renderBracket();
