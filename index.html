@@ -220,7 +220,6 @@ body.no-fx .team-card .row .ach-list{transition:none!important}
 /* achievements */
 .ach-list{display:inline-flex;align-items:center;gap:2px;flex:0 0 auto;margin-left:auto;white-space:nowrap}
 .ach{display:inline-flex;align-items:center;justify-content:center;box-sizing:border-box;width:20px;height:20px;flex:0 0 20px;padding:0;overflow:hidden;background:rgba(0,0,0,.35);border:1.5px solid #000;border-radius:5px;line-height:1;cursor:pointer}
-button.ach:hover,button.ach.selected{border-color:#ffcc00;box-shadow:0 0 8px 2px #ffcc00;filter:brightness(1.25)}
 .ach img{display:block;width:100%;height:100%;object-fit:contain}
 .ach-placeholder{font-size:6px;color:#fff;letter-spacing:0}
 .achievement-popup{display:none;position:fixed;z-index:1200;width:max-content;max-width:min(280px,calc(100vw - 24px));box-sizing:border-box;padding:10px 12px;background:#fff;color:#1b1730;border:2px solid #111;border-radius:6px;box-shadow:0 3px 0 #000;text-align:center;font-size:14px;line-height:1.35;overflow-wrap:anywhere}
@@ -526,6 +525,111 @@ html{-webkit-text-size-adjust:100%;text-size-adjust:100%}
 .dd-opt:last-child{border-bottom:0}
 .dd-opt.sel{background:linear-gradient(180deg,var(--c1) 0%,var(--c2) 92%,var(--c3) 92%,var(--c4) 100%)}
 .dd-opt:active{filter:brightness(1.3)}
+button.ach:hover,button.ach.selected,button.ach.has-img:hover,button.ach.has-img.selected{border-color:#ffff00;box-shadow:none;filter:none}
+.page-switcher{display:flex;justify-content:center;gap:8px;margin:18px auto 8px}
+.page-tab{min-width:150px;padding:9px 18px;border:3px solid #000;border-radius:8px;background:#1a1438;color:#aaa;font-size:17px;text-transform:uppercase;box-shadow:0 3px 0 #000}
+.page-tab.active{background:#ffcc00;color:#120e2e;box-shadow:0 3px 0 #000,inset 0 3px 0 rgba(255,255,255,.55)}
+#roster-page{width:100%;display:flex;flex-direction:column;align-items:center}
+#bracket-page{display:none;width:100%;max-width:1388px;flex-direction:column;align-items:center}
+body.brackets-active #roster-page{display:none}
+body.brackets-active #bracket-page{display:flex}
+body.brackets-active .about-footer{display:none}
+.bracket-toolbar{display:flex;align-items:center;justify-content:center;gap:10px;width:100%;max-width:1000px;margin:0 auto 14px}
+.bracket-toolbar .search-input{min-width:180px}
+.bracket-actions{display:flex;gap:8px;flex:0 0 auto}
+.bracket-logo{display:block;width:min(360px,75vw);height:auto;max-height:150px;object-fit:contain;margin:0 auto 8px}
+.bracket-description{max-width:820px;margin:0 auto 22px;font-size:17px;line-height:1.45;color:#fff}
+.bracket-content{width:100%;min-width:0}
+.bracket-section{width:100%;margin:0 0 26px;text-align:left}
+.bracket-section>h2{margin:0 0 12px;color:#ffcc00;font-size:22px;text-transform:uppercase}
+.bracket-interaction-hint{margin:0 auto 14px;max-width:760px;color:#ffcc00;font-size:13px;line-height:1.4}
+.wf-search-empty{padding:10px;color:#ffcc00;text-align:center}
+.wf-groups{display:flex;flex-wrap:wrap;justify-content:center;gap:24px}
+.wf-center{display:flex;justify-content:center}
+.wf-panel{box-sizing:border-box;width:fit-content;max-width:100%;padding:14px;background:#211a42;border:3px solid #000;border-radius:8px;box-shadow:0 5px 0 #000}
+.wf-panel h3{margin:0 0 10px;color:#ffcc00;font-size:18px;text-transform:uppercase}
+.wf-scroll{overflow-x:auto;scrollbar-width:thin;overscroll-behavior-x:contain}
+.wf-tree{position:relative;margin:0 auto;text-align:left}
+.wf-lines{position:absolute;left:0;top:0;overflow:visible;pointer-events:none}
+.wf-head{position:absolute;box-sizing:border-box;height:30px;display:flex;align-items:center;justify-content:center;padding:0 4px;background:#1a1438;border-bottom:2px solid #ffcc00;color:#fff;font-size:11px;text-transform:uppercase;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;text-align:center}
+.wf-match{position:absolute;box-sizing:border-box;display:flex;flex-direction:column;background:#0d0a22;border:2px solid #000;border-radius:6px;overflow:hidden}
+.wf-team{box-sizing:border-box;width:100%;height:32px;flex:0 0 32px;display:flex;align-items:center;gap:7px;padding:0 0 0 7px;background:#1a1438;color:#fff;border:0;border-left:4px solid transparent;border-bottom:1px solid #000;border-radius:0;font-size:13px;text-align:left;cursor:default}
+.wf-match .wf-team:last-child{border-bottom:0}
+button.wf-team[data-act]{cursor:pointer}
+button.wf-team[data-act]:hover{background:#2b2254}
+.wf-team img,.wf-ico{width:22px;height:22px;flex:0 0 22px;object-fit:contain}
+.wf-team-name{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.wf-team-score{flex:0 0 28px;align-self:stretch;display:flex;align-items:center;justify-content:center;background:rgba(0,0,0,.35);color:#ffcc00;font-size:14px}
+.wf-team.wf-empty{color:#7e79a8;font-style:italic;font-size:11px;padding-left:11px}
+.wf-team.winner{border-left-color:#35b951;background:#183c2b}
+.wf-team.dropped{border-left-color:#ffcc00}
+.wf-team.eliminated{border-left-color:#e03b3b;background:#2a1020;opacity:.65}
+.wf-team.eliminated .wf-team-name{text-decoration:line-through;text-decoration-color:#ff6b6b}
+.wf-team.search-match{background:#38330d;box-shadow:inset 0 0 0 2px #ffff00}
+.wf-team.search-dim{opacity:.35}
+.wf-champion{margin:16px auto 0;max-width:560px;padding:15px;background:#183c2b;border:3px solid #35b951;border-radius:8px;color:#fff;text-align:center;font-size:20px;text-transform:uppercase}
+.wf-champion img{width:44px;height:44px;object-fit:contain;vertical-align:middle;margin-right:10px}
+.wf-export-sheet .wf-scroll{overflow:visible}
+.bracket-score-fields{display:grid;grid-template-columns:minmax(0,1fr) 24px minmax(0,1fr);align-items:end;gap:8px}
+.bracket-score-fields label{min-width:0;display:flex;flex-direction:column;gap:6px;color:#fff;font-size:13px;text-align:center}
+.bracket-score-fields label span{min-height:34px;display:flex;align-items:center;justify-content:center;overflow-wrap:anywhere}
+.bracket-score-fields input{width:100%;min-width:0;box-sizing:border-box;text-align:center;font-size:20px}
+.bracket-score-separator{padding-bottom:10px;color:#ffcc00;font-size:22px;text-align:center}
+.bracket-score-error{min-height:18px;margin:0;color:#ff8b8b;font-size:13px;text-align:center}
+.bracket-roster-preview{display:none;position:fixed;z-index:1250;width:min(340px,calc(100vw - 24px));max-height:70vh;overflow:auto;pointer-events:none}
+.bracket-roster-preview.active{display:block}
+.bracket-roster-card{width:100%;min-width:0;box-sizing:border-box}
+.wf-export-sheet{box-sizing:border-box;padding:32px;background:#120e2e;color:#fff;font-family:'Lilita One',sans-serif;text-align:center}
+.wf-export-sheet>img{display:block;width:360px;max-height:150px;object-fit:contain;margin:0 auto 12px}
+.wf-export-sheet .bracket-description{margin-bottom:20px}
+.wf-export-sheet .wf-gsl-scroll{overflow:visible}
+.wf-export-sheet .wf-gsl-grid{min-width:0;grid-template-rows:repeat(5,minmax(0,auto))}
+.wf-export-sheet .wf-playoff-scroll{overflow:visible}
+.wf-export-sheet .wf-team{cursor:default}
+@media (max-width:600px){
+  .page-switcher{margin:12px auto 4px}
+  .page-tab{min-width:0;padding:8px 14px;font-size:15px}
+  .bracket-toolbar{flex-wrap:wrap;margin-bottom:12px}
+  .bracket-toolbar .search-input{flex:1 1 100%;width:100%;min-width:0}
+  .bracket-logo{max-height:120px}
+  .bracket-description{font-size:14px;margin-bottom:16px}
+  .wf-groups{grid-template-columns:minmax(0,1fr);gap:12px}
+  .wf-group{padding:12px}
+  .wf-match-list{grid-template-columns:minmax(0,1fr)}
+  .bracket-section>h2{font-size:18px}
+  .bracket-roster-preview{max-height:60vh}
+}
+.wf-champ{position:absolute;box-sizing:border-box;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px;padding:10px;background:#0d0a22;border:2px solid #000;border-radius:8px;text-align:center}
+.wf-champ.set{background:#183c2b;border-color:#ffcc00}
+.wf-champ b{font-size:16px;color:#fff;text-transform:uppercase;line-height:1.15;overflow-wrap:anywhere}
+.wf-champ span{font-size:12px;color:#7e79a8;text-transform:uppercase}
+.wf-champ-empty{width:96px;height:96px;display:flex;align-items:center;justify-content:center;border:3px dashed #3a356a;border-radius:50%;font-size:44px;color:#3a356a}
+.wf-champ-glow{width:132px;height:132px;display:flex;align-items:center;justify-content:center;border-radius:50%;
+  background:radial-gradient(circle,rgba(255,204,0,.55) 0%,rgba(255,204,0,.2) 58%,rgba(255,204,0,0) 72%);
+  box-shadow:0 0 36px 12px rgba(255,204,0,.55)}
+.wf-champ-glow img{width:100px;height:100px;object-fit:contain}
+
+/* mobile / touch */
+#bracket-page{min-width:0;max-width:100%}
+.wf-scroll{-webkit-overflow-scrolling:touch;touch-action:pan-x pan-y}
+@media (max-width:600px){
+  .wf-panel{padding:10px;width:100%}
+  .wf-panel h3{font-size:16px}
+  .wf-groups{gap:14px}
+  .bracket-interaction-hint{font-size:12px}
+  .bracket-toolbar .bracket-actions{width:100%;justify-content:center}
+}
+@media (hover:none),(pointer:coarse){
+  .bracket-roster-preview{display:none!important}   /* tapping a team opens the score popup instead */
+}
+/* "Group Stage" / "Playoffs" headings: centered, directly above the panels */
+.bracket-section{text-align:center}
+.bracket-section>h2{text-align:center;margin:0 0 10px}
+.bracket-corestats{margin:0;font-size:13px;line-height:1.4;color:#d2cfe2;text-align:center;text-shadow:none}
+.bracket-corestats a{color:#42c2ff;text-decoration:none}
+.bracket-corestats a:hover{color:#72d5ff;text-decoration:underline}
+.toolbar-action:disabled,
+.toolbar-action:disabled:hover{filter:grayscale(1) brightness(.55);cursor:not-allowed;transform:skewX(-4deg);box-shadow:0 2px 0 #000}
 </style>
 </head>
 <body>
@@ -568,6 +672,12 @@ html{-webkit-text-size-adjust:100%;text-size-adjust:100%}
     <hr/>
 </header>
 
+<nav class="page-switcher" role="tablist" aria-label="Brawlteams pages">
+  <button class="page-tab active" id="roster-tab" type="button" role="tab" aria-selected="true" aria-controls="roster-page" data-act="page-tab" data-page="roster">Rostermania</button>
+  <button class="page-tab" id="bracket-tab" type="button" role="tab" aria-selected="false" aria-controls="bracket-page" data-act="page-tab" data-page="brackets">Brackets</button>
+</nav>
+
+<main id="roster-page" role="tabpanel" aria-labelledby="roster-tab">
 <p class="intro">
  View current rosters, change them and create custom ones. Pick a region and league, add players, staff and organizations from any region, run your own Rostermania and share it with people online. 
 </p>
@@ -591,6 +701,40 @@ html{-webkit-text-size-adjust:100%;text-size-adjust:100%}
 </div>
 
 <div id="grid" class="teams-grid"></div>
+</main>
+
+<main id="bracket-page" role="tabpanel" aria-labelledby="bracket-tab" hidden>
+  <p class="intro">Pick match scores for the latest Brawl Esports tornaments, follow each team through groups and playoffs, and crown your own Champion.</p>
+  <img class="bracket-logo" src="img/tournaments/wf2026.png" alt="World Finals 2026">
+  <p class="bracket-interaction-hint">Click either team to enter a score. Regular matches are Bo5, while the Bo7 Grand Final starts 1-0 for the Upper Bracket finalist.</p>
+  <div class="bracket-toolbar">
+    <input id="bracket-search" class="search-input" type="search" placeholder="Search participating teams or players..." autocomplete="off" aria-label="Search World Finals teams and players">
+    <div class="bracket-actions">
+      <button class="blue-btn toolbar-action" type="button" data-act="bracket-export"><span>EXPORT</span></button>
+      <button class="red-btn toolbar-action" type="button" data-act="bracket-reset"><span>RESET</span></button>
+    </div>
+  </div>
+  <div id="bracket-content" class="bracket-content"></div>
+</main>
+
+<div id="bracket-score-modal" class="modal-overlay confirm-overlay" aria-hidden="true">
+  <form id="bracket-score-form" class="modal-content" role="dialog" aria-modal="true" aria-labelledby="bracket-score-title" aria-describedby="bracket-score-note">
+    <h3 id="bracket-score-title" class="modal-title"></h3>
+    <p id="bracket-score-note" class="confirm-text"></p>
+    <div class="bracket-score-fields">
+      <label><span id="bracket-score-name-a"></span><input id="bracket-score-a" class="sort-select" type="number" min="0" max="3" required></label>
+      <span class="bracket-score-separator">:</span>
+      <label><span id="bracket-score-name-b"></span><input id="bracket-score-b" class="sort-select" type="number" min="0" max="3" required></label>
+    </div>
+    <p id="bracket-score-error" class="bracket-score-error" aria-live="polite"></p>
+    <p class="bracket-corestats">Unsure about the result? <a id="bracket-corestats" href="#" target="_blank" rel="noopener">COMPARE the 2 teams on Corestats!</a></p>
+    <div class="confirm-actions">
+      <button class="cancel-btn toolbar-action" type="button" data-act="close-bracket-score"><span>CANCEL</span></button>
+      <button class="green-btn toolbar-action" type="submit"><span>SAVE SCORE</span></button>
+    </div>
+  </form>
+</div>
+<div id="bracket-roster-preview" class="bracket-roster-preview" aria-hidden="true"></div>
 
 <div id="modal" class="modal-overlay" data-act="close-bg">
   <div class="modal-content">
@@ -629,7 +773,7 @@ html{-webkit-text-size-adjust:100%;text-size-adjust:100%}
     <div class="export-share-panel">
       <div>
         <h2 id="export-title">Share rosters</h2>
-        <p>Your Rosters are set. Now you can share them, download them or copy them.</p>
+        <p id="export-description">Your Rosters are set. Now you can share them, download them or copy them.</p>
       </div>
       <div class="export-actions">
         <button class="blue-btn toolbar-action" data-act="share-export"><span>SHARE / SAVE</span></button>
@@ -1329,7 +1473,7 @@ const DB = {
 
     fut: {n:'FUT Esports', sub:'Championship EMEA', homeRegion:'EMEA', cc:'TR', logo:'img/teams/fut.png', ach:[{logo:'img/tournaments/lcq2024.png', event:'Last Chance Qualifier 2024', t:'FUT Esports earned a Golden Ticket at the Last Chance Qualifier 2024 in Cologne🇩🇪'}]},
     hmb: {n:'HMBLE', sub:'Championship EMEA', homeRegion:'EMEA', cc:'IT', logo:'img/teams/hmb.png', ach:[{logo:'img/tournaments/wf2024.png', event:'World Finals 2024', t:'HMBLE won the World Finals 2024 in Helsinki🇫🇮'}, {logo:'img/tournaments/bc2025.png', event:'Brawl Cup 2025', t:'HMBLE won the Brawl Cup 2025 in Dallas🇺🇸'}, {logo:'img/tournaments/bc2026.png', event:'Brawl Cup 2026', t:'HMBLE won the Brawl Cup 2026 in Berlin🇩🇪'}]},
-    ttm: {n:'Totem Esports', sub:'Championship EMEA', homeRegion:'EMEA', cc:'IT', logo:'img/teams/ttm.png', ach:[{logo:'img/tournaments/mm2023.png', event:'Mobile Masters 2023', t:'Totem Esports won the Mobile Masters 2023 in Chiba🇯🇵'}, {logo:'img/tournaments/lcq2024.png', event:'Last Chance Qualifier 2024', t:'Totem Esports earned a Golden Ticket at the Last Chance Qualifier 2024 in Cologne🇩🇪'}, {logo:'img/tournaments/lcq2025.png', event:'Last Chance Qualifier 2025', t:'Totem Esports earned a Golden Ticket at the Last Chance Qualifier 2025 in Sao Paulo🇧🇷'}]},
+    ttm: {n:'Reply Totem', sub:'Championship EMEA', homeRegion:'EMEA', cc:'IT', logo:'img/teams/ttm.png', ach:[{logo:'img/tournaments/mm2023.png', event:'Mobile Masters 2023', t:'Reply Totem won the Mobile Masters 2023 in Chiba🇯🇵'}, {logo:'img/tournaments/lcq2024.png', event:'Last Chance Qualifier 2024', t:'Reply Totem earned a Golden Ticket at the Last Chance Qualifier 2024 in Cologne🇩🇪'}, {logo:'img/tournaments/lcq2025.png', event:'Last Chance Qualifier 2025', t:'Reply Totem earned a Golden Ticket at the Last Chance Qualifier 2025 in Sao Paulo🇧🇷'}]},
     novo: {n:'NOVO Esports', sub:'Championship EMEA', homeRegion:'EMEA', cc:'IT', logo:'img/teams/novo.png', ach:[]},
     th: {n:'Team Heretics', sub:'Championship EMEA', homeRegion:'EMEA', cc:'ES', logo:'img/teams/th.png', ach:[{logo:'img/tournaments/lcq2026.png', event:'Last Chance Qualifier 2026', t:'Team Heretics earned a Golden Ticket at the Last Chance Qualifier 2026 in Guangzhou🇨🇳'}]},
     navi: {n:'Natus Vincere', sub:'Championship EMEA', homeRegion:'EMEA', cc:'UA', logo:'img/teams/navi.png', ach:[{logo:'img/tournaments/lcq2023.png', event:'Last Chance Qualifier 2023', t:'Natus Vincere earned a Golden Ticket at the Last Chance Qualifier 2023 in Katowice🇵🇱'}, {logo:'img/tournaments/lcq2026.png', event:'Last Chance Qualifier 2026', t:'Natus Vincere earned a Golden Ticket at the Last Chance Qualifier 2026 in Guangzhou🇨🇳'}]},
@@ -1513,12 +1657,85 @@ const OFFICIAL = [
   {id:'o59', org:'ds', sub:'Championship China',  players:['_10kyears', 'decatree', 'nagi'], staff:['haibara_ai']},
 ];
 
+const WF26_GROUPS = {
+  A:['hmb', 'th', 'red', 'ttm'],
+  B:['cr', 'navi', 'te', 'novo']
+};
+const WF26_TEAM_NAMES = { ttm:'Reply Totem' };
+const WF26_SEEDS = ['fut', 'bh', 'zeta', 'trb'];
+const WF26_GROUP_MATCHES = Object.entries(WF26_GROUPS).flatMap(([group, teams]) => {
+  const prefix = `g${group.toLowerCase()}-`;
+  return [
+    {id:prefix+'ubsf1',group,title:'Upper Bracket Semifinal 1'},
+    {id:prefix+'ubsf2',group,title:'Upper Bracket Semifinal 2'},
+    {id:prefix+'ubf',group,title:'Upper Bracket Final'},
+    {id:prefix+'lbr1',group,title:'Lower Bracket Round 1'},
+    {id:prefix+'lbr2',group,title:'Lower Bracket Round 2'}
+  ];
+});
+const WF26_GROUP_SOURCES = Object.fromEntries(Object.entries(WF26_GROUPS).flatMap(([group, teams]) => {
+  const prefix = `g${group.toLowerCase()}-`;
+  return [
+    [`${prefix}ubsf1`,{a:{kind:'team',id:teams[0]},b:{kind:'team',id:teams[1]}}],
+    [`${prefix}ubsf2`,{a:{kind:'team',id:teams[2]},b:{kind:'team',id:teams[3]}}],
+    [`${prefix}ubf`,{a:{kind:'winner',id:`${prefix}ubsf1`},b:{kind:'winner',id:`${prefix}ubsf2`}}],
+    [`${prefix}lbr1`,{a:{kind:'loser',id:`${prefix}ubsf1`},b:{kind:'loser',id:`${prefix}ubsf2`}}],
+    [`${prefix}lbr2`,{a:{kind:'loser',id:`${prefix}ubf`},b:{kind:'winner',id:`${prefix}lbr1`}}]
+  ];
+}));
+const WF26_GROUP_DOWNSTREAM = Object.fromEntries(Object.keys(WF26_GROUPS).flatMap(group => {
+  const prefix = `g${group.toLowerCase()}-`;
+  return [[prefix+'ubsf1',[prefix+'ubf',prefix+'lbr1']],[prefix+'ubsf2',[prefix+'ubf',prefix+'lbr1']],[prefix+'ubf',[prefix+'lbr2']],[prefix+'lbr1',[prefix+'lbr2']]];
+}));
+const WF26_PLAYOFF_SOURCES = {
+  ubqf1:{a:{kind:'seed',id:'fut'},b:{kind:'group',group:'B',place:2}},
+  ubqf2:{a:{kind:'seed',id:'bh'},b:{kind:'group',group:'A',place:1}},
+  ubqf3:{a:{kind:'seed',id:'zeta'},b:{kind:'group',group:'A',place:2}},
+  ubqf4:{a:{kind:'seed',id:'trb'},b:{kind:'group',group:'B',place:1}},
+  ubsf1:{a:{kind:'winner',id:'ubqf1'},b:{kind:'winner',id:'ubqf2'}},
+  ubsf2:{a:{kind:'winner',id:'ubqf3'},b:{kind:'winner',id:'ubqf4'}},
+  ubf:{a:{kind:'winner',id:'ubsf1'},b:{kind:'winner',id:'ubsf2'}},
+  lbr1a:{a:{kind:'loser',id:'ubqf1'},b:{kind:'loser',id:'ubqf2'}},
+  lbr1b:{a:{kind:'loser',id:'ubqf3'},b:{kind:'loser',id:'ubqf4'}},
+  lbr2a:{a:{kind:'loser',id:'ubsf1'},b:{kind:'winner',id:'lbr1a'}},
+  lbr2b:{a:{kind:'loser',id:'ubsf2'},b:{kind:'winner',id:'lbr1b'}},
+  lbr3:{a:{kind:'winner',id:'lbr2a'},b:{kind:'winner',id:'lbr2b'}},
+  lbr4:{a:{kind:'loser',id:'ubf'},b:{kind:'winner',id:'lbr3'}},
+  gf:{a:{kind:'winner',id:'ubf'},b:{kind:'winner',id:'lbr4'}}
+};
+const WF26_PLAYOFF_STAGES = [
+  {title:'Upper Bracket Quarterfinals',matches:['ubqf1','ubqf2','ubqf3','ubqf4']},
+  {title:'Upper Bracket Semifinals',matches:['ubsf1','ubsf2']},
+  {title:'Upper Bracket Final',matches:['ubf']},
+  {title:'Lower Bracket Round 1',matches:['lbr1a','lbr1b']},
+  {title:'Lower Bracket Round 2',matches:['lbr2a','lbr2b']},
+  {title:'Lower Bracket Round 3',matches:['lbr3']},
+  {title:'Lower Bracket Round 4',matches:['lbr4']},
+  {title:'Grand Final',matches:['gf']}
+];
+const WF26_DOWNSTREAM = {
+  ubqf1:['ubsf1','lbr1a'],ubqf2:['ubsf1','lbr1a'],ubqf3:['ubsf2','lbr1b'],ubqf4:['ubsf2','lbr1b'],
+  ubsf1:['ubf','lbr2a'],ubsf2:['ubf','lbr2b'],ubf:['lbr4'],
+  lbr1a:['lbr2a'],lbr1b:['lbr2b'],lbr2a:['lbr3'],lbr2b:['lbr3'],lbr3:['lbr4'],lbr4:['gf']
+};
+
 /* =====================================================================
    3) APP LOGIC
    ===================================================================== */
 const $ = id => document.getElementById(id);
 const clone = o => JSON.parse(JSON.stringify(o));
 const esc = s => { const d = document.createElement('div'); d.textContent = s ?? ''; return d.innerHTML; };
+function setActivePage(page){
+  const brackets = page === 'brackets';
+  document.body.classList.toggle('brackets-active', brackets);
+  $('roster-page').hidden = brackets;
+  $('bracket-page').hidden = !brackets;
+  $('roster-tab').classList.toggle('active', !brackets);
+  $('bracket-tab').classList.toggle('active', brackets);
+  $('roster-tab').setAttribute('aria-selected', String(!brackets));
+  $('bracket-tab').setAttribute('aria-selected', String(brackets));
+  updateNavButtons();
+}
 const KEY = 'brawlteams_v2';
 const SAVE_VERSION = 2;
 const DBK = { player:'players', staff:'staff', org:'orgs' };
@@ -1546,6 +1763,35 @@ let activeAchievementButton = null;
 let currentExportBlob = null;
 let currentExportUrl = '';
 let currentExportFilename = '';
+let currentExportKind = 'rosters';
+const BRACKET_STORAGE_KEY = 'brawlteams_world_finals_2026_v1';
+function loadBracketState(){
+  try{
+    const saved = JSON.parse(localStorage.getItem(BRACKET_STORAGE_KEY) || 'null');
+    const validScore = (result, grandFinal = false) => {
+      if(!result || !Number.isInteger(result.scoreA) || !Number.isInteger(result.scoreB)) return false;
+      const { scoreA, scoreB } = result;
+      return grandFinal
+        ? (scoreA === 4 && scoreB <= 3 && scoreB >= 0) || (scoreB === 4 && scoreA >= 1 && scoreA <= 3)
+        : (scoreA === 3 && scoreB >= 0 && scoreB <= 2) || (scoreB === 3 && scoreA >= 0 && scoreA <= 2);
+    };
+    const groupResults = Object.fromEntries(WF26_GROUP_MATCHES
+      .filter(match => validScore(saved?.groupResults?.[match.id]))
+      .map(match => [match.id, saved.groupResults[match.id]]));
+    const playoffResults = Object.fromEntries(Object.keys(WF26_PLAYOFF_SOURCES)
+      .filter(id => validScore(saved?.playoffResults?.[id], id === 'gf'))
+      .map(id => [id, saved.playoffResults[id]]));
+    const state = { groupResults, playoffResults };
+    localStorage.setItem(BRACKET_STORAGE_KEY, JSON.stringify(state));
+    return state;
+  }catch(error){ return { groupResults:{}, playoffResults:{} }; }
+}
+function saveBracketState(){
+  try{ localStorage.setItem(BRACKET_STORAGE_KEY, JSON.stringify(bracketState)); }catch(error){}
+}
+let bracketState = loadBracketState();
+let activeBracketMatch = null;
+let bracketQuery = '';
 
 function load(){
   try{
@@ -1670,6 +1916,23 @@ async function renderStable(node, options){
   }
   return best;
 }
+function openExportPreview(blob, filename, kind){
+  if(currentExportUrl) URL.revokeObjectURL(currentExportUrl);
+  currentExportBlob = blob;
+  currentExportFilename = filename;
+  currentExportKind = kind;
+  currentExportUrl = URL.createObjectURL(blob);
+  $('export-preview-image').src = currentExportUrl;
+  $('export-title').textContent = kind === 'bracket' ? 'Share Tournament bracket' : 'Share rosters';
+  $('export-description').textContent = kind === 'bracket'
+    ? 'Your Tournament bracket is set. Now you can share, download or copy it.'
+    : 'Your Rosters are set. Now you can share them, download them or copy them.';
+  $('export-status').textContent = '';
+  $('export-modal').classList.add('active');
+  $('export-modal').setAttribute('aria-hidden', 'false');
+  syncScrollLock();
+  $('export-modal').querySelector('.export-close').focus();
+}
 async function exportVisibleRosters(){
   let teams = oldestFirst(state.teams.filter(visible));
   const total = teams.length;
@@ -1716,20 +1979,64 @@ if(!window.htmlToImage){ askConfirm({ title:'Export unavailable', text:'PNG expo
     if(fontCss) options.fontEmbedCSS = fontCss; else options.skipFonts = true;
     const blob = await renderStable(exportSheet, options);
     if(!blob) throw new Error('PNG rendering returned an empty image.');
-    if(currentExportUrl) URL.revokeObjectURL(currentExportUrl);
-    currentExportBlob = blob;
-    currentExportFilename = `brawlteams-rosters-${new Date().toISOString().replace(/[:.]/g, '-')}.png`;
-    currentExportUrl = URL.createObjectURL(blob);
-    $('export-preview-image').src = currentExportUrl;
-    $('export-status').textContent = '';
-    $('export-modal').classList.add('active');
-    $('export-modal').setAttribute('aria-hidden', 'false');
-    syncScrollLock();
-    $('export-modal').querySelector('.export-close').focus();
+    openExportPreview(blob, `brawlteams-rosters-${new Date().toISOString().replace(/[:.]/g, '-')}.png`, 'rosters');
   }catch(error){
     console.error('PNG roster export failed:', error);
     askConfirm({ title:'Export failed', text:'The PNG export failed. Please try again.' + (error && error.message ? '\n\n' + error.message : ''), cancel:null }); 
    }finally{
+    stage.replaceChildren();
+    button.disabled = false;
+    $('export-loading').classList.remove('active');
+    $('export-loading').setAttribute('aria-hidden', 'true');
+  }
+}
+function bracketComplete(){
+  return WF26_GROUP_MATCHES.every(match => bracketState.groupResults[match.id])
+      && Object.keys(WF26_PLAYOFF_SOURCES).every(id => bracketState.playoffResults[id]);
+}
+function updateExportButton(){
+  const button = document.querySelector('[data-act="bracket-export"]');
+  if(!button) return;
+  const ready = bracketComplete();
+  button.disabled = !ready;
+  button.title = ready ? 'Export your bracket' : 'Set every match to unlock export';
+}
+async function exportBracketImage(){
+  if(!bracketComplete()) return;
+  if(!window.htmlToImage){ askConfirm({ title:'Export unavailable', text:'PNG export could not load. Check your internet connection and try again.', cancel:null }); return; }
+  const stage = $('export-stage'), button = document.querySelector('[data-act="bracket-export"]');
+  stage.innerHTML = `<div class="wf-export-sheet" id="wf-export-sheet" style="width:1480px">
+    <img src="img/tournaments/wf2026.png" alt="World Finals 2026">
+    <h1 class="export-title">World Finals 2026 Bracket</h1>
+    <p class="export-subtitle">My group results, playoff bracket and World Champion</p>
+  </div>`;
+  const content = $('bracket-content').cloneNode(true);
+  content.querySelectorAll('button[data-act="bracket-score"]').forEach(team => {
+    team.disabled = true;
+    team.removeAttribute('data-act');
+    team.removeAttribute('data-match-id');
+  });
+  $('wf-export-sheet').appendChild(content);
+  button.disabled = true;
+  $('export-loading').classList.add('active');
+  $('export-loading').setAttribute('aria-hidden', 'false');
+  try{
+    try{ await document.fonts.load('19px "Lilita One"'); }catch(error){}
+    try{ if(document.fonts?.ready) await document.fonts.ready; }catch(error){}
+    await waitForImages(stage);
+    await inlineExportImages(stage);
+    await new Promise(resolve => requestAnimationFrame(() => requestAnimationFrame(resolve)));
+    const sheet = $('wf-export-sheet'), fontCss = await getFontCss();
+    const ratio = Math.max(1, Math.min(2, Math.sqrt(14e6 / (sheet.offsetWidth * sheet.offsetHeight))));
+    const options = { pixelRatio:ratio, cacheBust:false, imagePlaceholder:BLANK_PIXEL, backgroundColor:'#120e2e' };
+    if(fontCss) options.fontEmbedCSS = fontCss; else options.skipFonts = true;
+    const blob = await renderStable(sheet, options);
+    if(!blob) throw new Error('PNG rendering returned an empty image.');
+    openExportPreview(blob, `brawlteams-world-finals-2026-${new Date().toISOString().replace(/[:.]/g, '-')}.png`, 'bracket');
+  }catch(error){
+    console.error('PNG bracket export failed:', error);
+    askConfirm({ title:'Export failed', text:'The PNG bracket export failed. Please try again.' + (error && error.message ? '\n\n' + error.message : ''), cancel:null });
+  }finally{
     stage.replaceChildren();
     button.disabled = false;
     $('export-loading').classList.remove('active');
@@ -1743,6 +2050,9 @@ function closeExportModal(){
   if(currentExportUrl) URL.revokeObjectURL(currentExportUrl);
   currentExportBlob = null;
   currentExportUrl = '';
+  currentExportKind = 'rosters';
+  $('export-title').textContent = 'Share rosters';
+  $('export-description').textContent = 'Your Rosters are set. Now you can share them, download them or copy them.';
   syncScrollLock();
 }
 function downloadExportImage(){
@@ -1754,10 +2064,12 @@ function downloadExportImage(){
 }
 async function shareExportImage(){
   if(!currentExportBlob) return;
+  const title = currentExportKind === 'bracket' ? 'World Finals 2026 bracket' : 'Brawlteams Rosters';
+  const text = currentExportKind === 'bracket' ? 'My World Finals 2026 bracket' : 'My Brawl Stars Esports Rosters';
   const file = new File([currentExportBlob], currentExportFilename, { type:'image/png' });
   if(navigator.share && navigator.canShare?.({ files:[file] })){
     try{
-      await navigator.share({ files:[file], title:'Brawlteams Rosters', text:'My Brawl Stars Esports Rosters' });
+      await navigator.share({ files:[file], title, text });
       $('export-status').textContent = 'Shared. On iPhone or iPad, choose Save Image to save it to Photos.';
     }catch(error){
       if(error.name !== 'AbortError') $('export-status').textContent = 'Sharing was unavailable. Download the PNG and attach it manually.';
@@ -1934,8 +2246,9 @@ function card(t){
     <div class="card-body">${body}</div>
   </div>`;
 }
-function exportCard(t){
+function exportCard(t, orgNameOverride){
   const org = t.org && DB.orgs[t.org];
+  const displayName = typeof orgNameOverride === 'string' ? orgNameOverride : org ? org.n : 'F/A team';
   const logo = org && org.logo ? `<img src="${esc(org.logo)}" alt="">` : '<span>LOGO</span>';
   const section = (title, kind, ids) => `<section class="export-section">
     <h3 class="export-section-title">${title}</h3>
@@ -1946,12 +2259,325 @@ function exportCard(t){
   return `<article class="export-card">
     <header class="export-card-header">
       ${org ? `<div class="export-org-logo${org.logo ? ' has-img' : ''}">${logo}</div>${strip(org.sub)}` : ''}
-      <h2 class="export-team-name">${esc(org ? org.n : 'F/A team')}</h2>
+      <h2 class="export-team-name">${esc(displayName)}</h2>
       ${org ? `<span class="export-org-meta">${flag(org.cc)}${achs('org', t.org, false)}</span>` : ''}
     </header>
     ${section('PLAYERS', 'player', t.players)}
     ${section('STAFF', 'staff', t.staff)}
   </article>`;
+}
+function bracketTeamName(orgId){ return WF26_TEAM_NAMES[orgId] || (DB.orgs[orgId] && DB.orgs[orgId].n) || orgId; }
+function bracketOfficialRoster(orgId){ return OFFICIAL.find(team => team.org === orgId); }
+function bracketSearchMatches(orgId){
+  if(!bracketQuery) return true;
+  const org = DB.orgs[orgId], roster = bracketOfficialRoster(orgId);
+  const names = [bracketTeamName(orgId), org && org.n, orgId];
+  if(roster){
+    names.push(...roster.players.map(id => DB.players[id]?.n));
+    names.push(...roster.staff.map(id => DB.staff[id]?.n));
+  }
+  return names.some(name => name && name.toLowerCase().includes(bracketQuery));
+}
+function groupMatches(group){ return WF26_GROUP_MATCHES.filter(match => match.group === group); }
+function groupIsComplete(group){ return groupMatches(group).every(match => bracketState.groupResults[match.id]); }
+function getGroupMatchTeams(matchId){
+  const source = WF26_GROUP_SOURCES[matchId];
+  if(!source) return [null, null];
+  return [source.a, source.b].map(slot => {
+    if(slot.kind === 'team') return slot.id;
+    const [previousA, previousB] = getGroupMatchTeams(slot.id);
+    const previous = bracketState.groupResults[slot.id];
+    if(!previous) return null;
+    const winner = previous.winner || (previous.scoreA > previous.scoreB ? previousA : previousB);
+    return slot.kind === 'winner' ? winner : winner === previousA ? previousB : previousA;
+  });
+}
+function groupWinner(matchId){
+  const result = bracketState.groupResults[matchId];
+  if(!result) return null;
+  const [a, b] = getGroupMatchTeams(matchId);
+  return result.winner || (result.scoreA > result.scoreB ? a : b);
+}
+function groupPlace(group, place){
+  const prefix = `g${group.toLowerCase()}-`;
+  return groupWinner(prefix + (place === 1 ? 'ubf' : 'lbr2'));
+}
+function getPlayoffTeams(matchId){
+  const source = WF26_PLAYOFF_SOURCES[matchId];
+  if(!source) return [null, null];
+  return [source.a, source.b].map(slot => {
+    if(slot.kind === 'seed') return slot.id;
+    if(slot.kind === 'group') return groupPlace(slot.group, slot.place);
+    const [previousA, previousB] = getPlayoffTeams(slot.id);
+    const previous = bracketState.playoffResults[slot.id];
+    const winner = previous && (previous.winner || (previous.scoreA > previous.scoreB ? previousA : previousB));
+    if(!winner) return null;
+    return slot.kind === 'winner' ? winner : (winner === previousA ? previousB : previousA);
+  });
+}
+/* ---------- Liquipedia-style bracket layout (fixed pixel grid, so the lines always match) ---------- */
+const WFL = { colW:184, gap:36, step:220, matchH:68, head:30, pitch:84 };
+function wfLine(x1, y1, x2, y2, done){
+  const xm = x1 + WFL.gap / 2;
+  const d = y1 === y2 ? `M${x1} ${y1}H${x2}` : `M${x1} ${y1}H${xm}V${y2}H${x2}`;
+  return `<path d="${d}" fill="none" stroke="${done ? '#35b951' : '#5a5590'}" stroke-width="2"/>`;
+}
+function wfStub(x, y){ return `<path d="M${x - 14} ${y}H${x}" fill="none" stroke="#5a5590" stroke-width="2"/>`; }
+function wfHead(text, column, y, w = WFL.colW){
+  return `<div class="wf-head" style="left:${column * WFL.step}px;top:${y}px;width:${w}px">${esc(text)}</div>`;
+}
+function wfTree(width, height, lines, items){
+  return `<div class="wf-scroll"><div class="wf-tree" style="width:${width}px;height:${height}px">
+    <svg class="wf-lines" width="${width}" height="${height}" viewBox="0 0 ${width} ${height}" aria-hidden="true">${lines.join('')}</svg>${items.join('')}
+  </div></div>`;
+}
+function wfRow(orgId, placeholder, matchId, score, status){
+  if(!orgId) return `<div class="wf-team wf-empty"><span class="wf-team-name">${esc(placeholder || '')}</span></div>`;
+  const org = DB.orgs[orgId], label = bracketTeamName(orgId);
+  const cls = ['wf-team', status, bracketQuery ? (bracketSearchMatches(orgId) ? 'search-match' : 'search-dim') : ''].filter(Boolean).join(' ');
+  return `<button type="button" class="${cls}" data-org="${esc(orgId)}"${matchId ? ` data-act="bracket-score" data-match-id="${esc(matchId)}"` : ''} aria-label="${esc(label)}${matchId ? ', enter match score' : ''}">
+    ${org && org.logo ? `<img src="${esc(org.logo)}" alt="">` : '<span class="wf-ico"></span>'}
+    <span class="wf-team-name">${esc(label)}</span><span class="wf-team-score">${score ?? ''}</span></button>`;
+}
+const WF_CODE = {
+  ubqf1:'UB QF1', ubqf2:'UB QF2', ubqf3:'UB QF3', ubqf4:'UB QF4',
+  ubsf1:'UB SF1', ubsf2:'UB SF2', ubf:'UB F',
+  lbr1a:'LB R1a', lbr1b:'LB R1b', lbr2a:'LB R2a', lbr2b:'LB R2b',
+  lbr3:'LB R3', lbr4:'LB R4', gf:'GF',
+  lbr1:'LB R1', lbr2:'LB R2'          // group-stage lower rounds
+};
+function wfSlotLabel(slot){
+  if(slot.kind === 'team' || slot.kind === 'seed') return bracketTeamName(slot.id);
+  if(slot.kind === 'group') return `Group ${slot.group} #${slot.place}`;
+  const code = WF_CODE[slot.id.replace(/^g[ab]-/, '')] || slot.id;   // strips the "ga-" / "gb-" prefix
+  return `${slot.kind === 'winner' ? 'Winner' : 'Loser'} ${code}`;
+}
+function wfMatch(id, kind, x, y){
+  const isGroup = kind === 'group';
+  const [a, b] = isGroup ? getGroupMatchTeams(id) : getPlayoffTeams(id);
+  const src = isGroup ? WF26_GROUP_SOURCES[id] : WF26_PLAYOFF_SOURCES[id];
+  const result = (isGroup ? bracketState.groupResults : bracketState.playoffResults)[id];
+  const winner = result ? (result.winner || (result.scoreA > result.scoreB ? a : b)) : null;
+  const eliminating = isGroup ? /-(lbr1|lbr2)$/.test(id) : /^(lbr|gf)/.test(id);
+  const status = org => !winner ? '' : org === winner ? 'winner' : eliminating ? 'eliminated' : 'dropped';
+  const label = wfSlotLabel;
+  const clickable = a && b ? id : '';
+  return `<div class="wf-match" style="left:${x}px;top:${y}px;width:${WFL.colW}px">
+    ${wfRow(a, label(src.a), clickable, result ? result.scoreA : null, status(a))}
+    ${wfRow(b, label(src.b), clickable, result ? result.scoreB : null, status(b))}
+  </div>`;
+}
+function wfSingle(orgId, placeholder, x, centerY){
+  return `<div class="wf-match" style="left:${x}px;top:${centerY - 18}px;width:${WFL.colW}px">${wfRow(orgId, placeholder, '', null, orgId ? 'winner' : '')}</div>`;
+}
+function renderGroup(group){
+  const p = `g${group.toLowerCase()}-`, { colW:W, step, matchH:M, head, pitch } = WFL;
+  const y0 = head + 8, ub1 = y0, ub2 = y0 + pitch, ubf = y0 + pitch / 2;
+  const hd2 = ub2 + M + 24, lbf = hd2 + head + 8, lbs = lbf + 16;
+  const width = 2 * step + W, height = lbs + M + 4;
+  const done = id => !!bracketState.groupResults[p + id];
+  const lines = [
+    wfLine(W, ub1 + 34, step, ubf + 18, done('ubsf1')),
+    wfLine(W, ub2 + 34, step, ubf + 50, done('ubsf2')),
+    wfLine(step + W, ubf + 34, 2 * step, ubf + 34, done('ubf')),
+    wfLine(W, lbs + 34, step, lbf + 50, done('lbr1')),
+    wfStub(step, lbf + 18),
+    wfLine(step + W, lbf + 34, 2 * step, lbf + 34, done('lbr2'))
+  ];
+  const items = [
+    wfHead('Upper Bracket Semifinals', 0, 0), wfHead('Upper Bracket Final', 1, 0), wfHead('Qualified', 2, 0),
+    wfHead('Lower Bracket Round 1', 0, hd2), wfHead('Lower Bracket Round 2', 1, hd2), wfHead('Qualified', 2, hd2),
+    wfMatch(p + 'ubsf1', 'group', 0, ub1), wfMatch(p + 'ubsf2', 'group', 0, ub2), wfMatch(p + 'ubf', 'group', step, ubf),
+    wfMatch(p + 'lbr1', 'group', 0, lbs), wfMatch(p + 'lbr2', 'group', step, lbf),
+    wfSingle(groupPlace(group, 1), 'Winner UB F', 2 * step, ubf + 34),
+    wfSingle(groupPlace(group, 2), 'Winner LB R2', 2 * step, lbf + 34)
+  ];
+  return `<section class="wf-panel"><h3>Group ${group}</h3>${wfTree(width, height, lines, items)}</section>`;
+}
+const WF_CHAMP_W = 206;   // 5 columns + this = exactly the width of both group panels
+function wfChampion(){
+  const r = bracketState.playoffResults.gf, t = getPlayoffTeams('gf');
+  return r && t[0] && t[1] ? (r.winner || (r.scoreA > r.scoreB ? t[0] : t[1])) : null;
+}
+function renderPlayoffs(){
+  const { colW:W, step, matchH:M, head, pitch } = WFL, X = c => c * step;
+  const y0 = head + 8;
+  const qf = [0, 1, 2, 3].map(i => y0 + i * pitch);
+  const sf = [qf[0] + pitch / 2, qf[2] + pitch / 2];
+  const ubf = (sf[0] + sf[1]) / 2;
+  const hd2 = qf[3] + M + 24;
+  const r1 = [hd2 + head + 24, hd2 + head + 24 + pitch];
+  const lq = r1.map(y => y - 16);
+  const lsf = (lq[0] + lq[1]) / 2, lbf = lsf - 16, gf = (ubf + lbf) / 2;
+  const width = X(5) + WF_CHAMP_W, height = r1[1] + M + 4;
+  const champ = wfChampion();
+  const done = id => !!bracketState.playoffResults[id];
+  const lines = [
+    // upper quarterfinals -> upper semifinals
+    wfLine(X(0) + W, qf[0] + 34, X(1), sf[0] + 18, done('ubqf1')),
+    wfLine(X(0) + W, qf[1] + 34, X(1), sf[0] + 50, done('ubqf2')),
+    wfLine(X(0) + W, qf[2] + 34, X(1), sf[1] + 18, done('ubqf3')),
+    wfLine(X(0) + W, qf[3] + 34, X(1), sf[1] + 50, done('ubqf4')),
+    // upper semifinals -> upper final
+    wfLine(X(1) + W, sf[0] + 34, X(3), ubf + 18, done('ubsf1')),
+    wfLine(X(1) + W, sf[1] + 34, X(3), ubf + 50, done('ubsf2')),
+    // upper semifinal losers: half-cut stubs into the top of lower round 2
+    wfStub(X(1), lq[0] + 18), wfStub(X(1), lq[1] + 18),
+    // upper final -> grand final, upper final loser: half-cut stub into the top of lower round 4
+    wfLine(X(3) + W, ubf + 34, X(4), gf + 18, done('ubf')),
+    wfStub(X(3), lbf + 18),
+    // lower round 1 winners -> lower round 2 (bottom slots)
+    wfLine(X(0) + W, r1[0] + 34, X(1), lq[0] + 50, done('lbr1a')),
+    wfLine(X(0) + W, r1[1] + 34, X(1), lq[1] + 50, done('lbr1b')),
+    // lower round 2 winners -> lower round 3
+    wfLine(X(1) + W, lq[0] + 34, X(2), lsf + 18, done('lbr2a')),
+    wfLine(X(1) + W, lq[1] + 34, X(2), lsf + 50, done('lbr2b')),
+    // lower round 3 winner -> lower round 4 (bottom slot)
+    wfLine(X(2) + W, lsf + 34, X(3), lbf + 50, done('lbr3')),
+    // lower round 4 winner -> grand final, grand final -> champion
+    wfLine(X(3) + W, lbf + 34, X(4), gf + 50, done('lbr4')),
+    wfLine(X(4) + W, gf + 34, X(5), gf + 34, !!champ)
+  ];
+  const items = [
+    wfHead('Upper Bracket Quarterfinals', 0, 0), wfHead('Upper Bracket Semifinals', 1, 0),
+    wfHead('Upper Bracket Final', 3, 0), wfHead('Grand Final', 4, 0),
+    wfHead('Lower Bracket Round 1', 0, hd2), wfHead('Lower Bracket Round 2', 1, hd2),
+    wfHead('Lower Bracket Round 3', 2, hd2), wfHead('Lower Bracket Round 4', 3, hd2),
+    wfHead('Champion', 5, 0, WF_CHAMP_W),
+    `<div class="wf-champ${champ ? ' set' : ''}" style="left:${X(5)}px;top:${gf + 34 - 110}px;width:${WF_CHAMP_W}px;height:220px">
+      ${champ
+        ? `<div class="wf-champ-glow"><img src="${esc(DB.orgs[champ].logo)}" alt=""></div><b>${esc(bracketTeamName(champ))}</b>`
+        : `<div class="wf-champ-empty">?</div><span>World Champion</span>`}
+    </div>`,
+    wfMatch('ubqf1', 'playoff', X(0), qf[0]), wfMatch('ubqf2', 'playoff', X(0), qf[1]),
+    wfMatch('ubqf3', 'playoff', X(0), qf[2]), wfMatch('ubqf4', 'playoff', X(0), qf[3]),
+    wfMatch('ubsf1', 'playoff', X(1), sf[0]), wfMatch('ubsf2', 'playoff', X(1), sf[1]),
+    wfMatch('ubf', 'playoff', X(3), ubf), wfMatch('gf', 'playoff', X(4), gf),
+    wfMatch('lbr1a', 'playoff', X(0), r1[0]), wfMatch('lbr1b', 'playoff', X(0), r1[1]),
+    wfMatch('lbr2a', 'playoff', X(1), lq[0]), wfMatch('lbr2b', 'playoff', X(1), lq[1]),
+    wfMatch('lbr3', 'playoff', X(2), lsf), wfMatch('lbr4', 'playoff', X(3), lbf)
+  ];
+  return `<div class="wf-center"><section class="wf-panel">${wfTree(width, height, lines, items)}</section></div>`;
+}
+function renderBracket(){
+  if(!$('bracket-content')) return;
+  const orgs = [...new Set([...Object.values(WF26_GROUPS).flat(), ...WF26_SEEDS])];
+  const anySearchMatch = orgs.some(bracketSearchMatches);
+  $('bracket-content').innerHTML = `${bracketQuery && !anySearchMatch ? '<p class="wf-search-empty">No World Finals team or roster member matches that search.</p>' : ''}
+    <section class="bracket-section"><h2>Group Stage</h2><div class="wf-groups">${Object.keys(WF26_GROUPS).map(renderGroup).join('')}</div></section>
+    <section class="bracket-section"><h2>Playoffs</h2>${renderPlayoffs()}
+    </section>`;
+    updateExportButton();
+}
+function clearPlayoffDescendants(matchId, cleared = new Set()){
+  (WF26_DOWNSTREAM[matchId] || []).forEach(next => {
+    if(cleared.has(next)) return;
+    cleared.add(next);
+    delete bracketState.playoffResults[next];
+    clearPlayoffDescendants(next, cleared);
+  });
+}
+function clearGroupDescendants(matchId, cleared = new Set()){
+  (WF26_GROUP_DOWNSTREAM[matchId] || []).forEach(next => {
+    if(cleared.has(next)) return;
+    cleared.add(next);
+    delete bracketState.groupResults[next];
+    clearGroupDescendants(next, cleared);
+  });
+}
+/* Corestats compare link: https://corestats.pro/compare/teams/{team1}-vs-{team2}
+   The tags below match the org ids; add an entry here if a Corestats tag ever differs. */
+const CORESTATS_TAG = { hmb:'hmb', th:'th', red:'red', ttm:'ttm', cr:'cr', navi:'navi', novo:'novo', te:'te', fut:'fut', bh:'bh', zeta:'zeta', trb:'trb' };
+function corestatsUrl(a, b){
+  const tag = id => CORESTATS_TAG[id] || id;
+  return `https://corestats.pro/compare/teams/${tag(a)}-vs-${tag(b)}`;
+}
+function openBracketScore(matchId, selectedOrg){
+  const groupMatch = WF26_GROUP_MATCHES.find(match => match.id === matchId);
+  const teams = groupMatch ? getGroupMatchTeams(matchId) : getPlayoffTeams(matchId);
+  if(!teams[0] || !teams[1]) return;
+  const grandFinal = matchId === 'gf';
+  const saved = groupMatch ? bracketState.groupResults[matchId] : bracketState.playoffResults[matchId];
+  const target = grandFinal ? 4 : 3;
+  let scoreA = saved ? saved.scoreA : grandFinal ? 1 : selectedOrg === teams[0] ? target : 0;
+  let scoreB = saved ? saved.scoreB : grandFinal ? 0 : selectedOrg === teams[1] ? target : 0;
+  if(grandFinal && !saved){ scoreA = selectedOrg === teams[0] ? 4 : 1; scoreB = selectedOrg === teams[1] ? 4 : 0; }
+  activeBracketMatch = { id:matchId, type:groupMatch ? 'group' : 'playoff', a:teams[0], b:teams[1] };
+  $('bracket-corestats').href = corestatsUrl(teams[0], teams[1]);
+  $('bracket-score-title').textContent = groupMatch ? `Group ${groupMatch.group} · Best of 5` : `${matchId === 'gf' ? 'Grand Final · Best of 7' : 'Playoff · Best of 5'}`;
+  $('bracket-score-note').textContent = grandFinal
+    ? 'The Upper Bracket finalist starts 1-0. Enter the final score; first to 4 wins.'
+    : 'Enter the final set score. A Bo5 match ends when a team reaches 3 wins.';
+  $('bracket-score-name-a').textContent = bracketTeamName(teams[0]);
+  $('bracket-score-name-b').textContent = bracketTeamName(teams[1]);
+  $('bracket-score-a').max = String(target);
+  $('bracket-score-b').max = String(target);
+  $('bracket-score-a').value = String(scoreA);
+  $('bracket-score-b').value = String(scoreB);
+  $('bracket-score-error').textContent = '';
+  $('bracket-score-modal').classList.add('active');
+  $('bracket-score-modal').setAttribute('aria-hidden', 'false');
+  syncScrollLock();
+  $('bracket-score-a').focus();
+}
+function closeBracketScore(){
+  $('bracket-score-modal').classList.remove('active');
+  $('bracket-score-modal').setAttribute('aria-hidden', 'true');
+  activeBracketMatch = null;
+  syncScrollLock();
+}
+function submitBracketScore(event){
+  event.preventDefault();
+  if(!activeBracketMatch) return;
+  const scoreA = Number($('bracket-score-a').value), scoreB = Number($('bracket-score-b').value);
+  const match = activeBracketMatch, grandFinal = match.id === 'gf';
+  const validScore = Number.isInteger(scoreA) && Number.isInteger(scoreB) && scoreA >= 0 && scoreB >= 0
+    && (grandFinal ? (scoreA === 4 && scoreB <= 3 && scoreB >= 0) || (scoreB === 4 && scoreA >= 1 && scoreA <= 3)
+      : (scoreA === 3 && scoreB <= 2) || (scoreB === 3 && scoreA <= 2));
+  if(!validScore){
+    $('bracket-score-error').textContent = grandFinal
+      ? 'The Bo7 Grand Final score must end 4-X or 1-4 through 3-4  (with the 1-set advantage).'
+      : 'A Bo5 score must end 3-X or X-3, with the losing score below 3.';
+    return;
+  }
+  bkRemember();
+  const result = { scoreA, scoreB, winner:scoreA > scoreB ? match.a : match.b };
+  if(match.type === 'group'){
+    bracketState.groupResults[match.id] = result;
+    clearGroupDescendants(match.id);
+    bracketState.playoffResults = {};
+  }else{
+    bracketState.playoffResults[match.id] = result;
+    clearPlayoffDescendants(match.id);
+  }
+  saveBracketState();
+  closeBracketScore();
+  renderBracket();
+}
+function showBracketRosterPreview(orgId, anchor){
+  const roster = bracketOfficialRoster(orgId);
+  if(!roster || !anchor) return;
+  const preview = $('bracket-roster-preview');
+  preview.innerHTML = exportCard(roster, bracketTeamName(orgId)).replace('class="export-card"', 'class="export-card bracket-roster-card"');
+  preview.classList.add('active');
+  preview.setAttribute('aria-hidden', 'false');
+  const viewport = window.visualViewport;
+  const offsetLeft = viewport?.offsetLeft || 0, offsetTop = viewport?.offsetTop || 0;
+  const viewportWidth = viewport?.width || window.innerWidth, viewportHeight = viewport?.height || window.innerHeight;
+  const width = Math.max(1, Math.min(340, viewportWidth - 24));
+  preview.style.width = `${width}px`;
+  const box = anchor.getBoundingClientRect(), popup = preview.getBoundingClientRect(), margin = 12;
+  const center = box.left + offsetLeft + box.width / 2;
+  const left = Math.max(offsetLeft + margin, Math.min(offsetLeft + viewportWidth - popup.width - margin, center - popup.width / 2));
+  const belowTop = box.bottom + offsetTop + 8;
+  const top = belowTop + popup.height <= offsetTop + viewportHeight - margin
+    ? belowTop : Math.max(offsetTop + margin, box.top + offsetTop - popup.height - 8);
+  preview.style.left = `${left}px`;
+  preview.style.top = `${top}px`;
+}
+function hideBracketRosterPreview(){
+  $('bracket-roster-preview').classList.remove('active');
+  $('bracket-roster-preview').setAttribute('aria-hidden', 'true');
 }
 function renderGrid(){
   const list = oldestFirst(state.teams.filter(visible));
@@ -2283,7 +2909,29 @@ function restoreSnapshot(json){
   state = sanitize({ teams: s.teams, n: s.n });
   save(); render();
 }
+/* bracket history: separate from the roster history */
+const bkUndoStack = [], bkRedoStack = [];
+const bkSnapshot = () => JSON.stringify(bracketState);
+function bkRemember(){                      // call right BEFORE changing the bracket
+  bkUndoStack.push(bkSnapshot());
+  if(bkUndoStack.length > HISTORY_LIMIT) bkUndoStack.shift();
+  bkRedoStack.length = 0;
+  updateNavButtons();
+}
+function bkRestore(json){
+  bracketState = JSON.parse(json);
+  saveBracketState();
+  renderBracket();
+}
 function undo(){
+  if(document.body.classList.contains('brackets-active')){
+    if(!bkUndoStack.length) return;
+    closeBracketScore(); hideBracketRosterPreview();
+    bkRedoStack.push(bkSnapshot());
+    bkRestore(bkUndoStack.pop());
+    updateNavButtons();
+    return;
+  }
   if(!undoStack.length) return;
   closeModal(); closeAchievementPopup();
   redoStack.push(snapshot());
@@ -2291,6 +2939,14 @@ function undo(){
   updateNavButtons();
 }
 function redo(){
+  if(document.body.classList.contains('brackets-active')){
+    if(!bkRedoStack.length) return;
+    closeBracketScore(); hideBracketRosterPreview();
+    bkUndoStack.push(bkSnapshot());
+    bkRestore(bkRedoStack.pop());
+    updateNavButtons();
+    return;
+  }
   if(!redoStack.length) return;
   closeModal(); closeAchievementPopup();
   undoStack.push(snapshot());
@@ -2298,8 +2954,9 @@ function redo(){
   updateNavButtons();
 }
 function updateNavButtons(){
-  $('nav-back').disabled = !undoStack.length;
-  $('nav-fwd').disabled  = !redoStack.length;
+  const onBrackets = document.body.classList.contains('brackets-active');
+  $('nav-back').disabled = onBrackets ? !bkUndoStack.length : !undoStack.length;
+  $('nav-fwd').disabled  = onBrackets ? !bkRedoStack.length : !redoStack.length;
 }
 /* Ctrl/Cmd+Z = undo, Ctrl/Cmd+Shift+Z or Ctrl+Y = redo (ignored while typing) */
 document.addEventListener('keydown', e => {
@@ -2314,10 +2971,18 @@ document.addEventListener('click', e => {
   if(activeAchievementButton && !e.target.closest('.ach')) closeAchievementPopup();
   const el = e.target.closest('[data-act]');
   if(!el) return;
-  const { act, id, t, k, i } = el.dataset;
+  const { act, id, t, k, i, matchId, org } = el.dataset;
   if((act === 'close-bg' || act === 'close-export-bg') && e.target !== el) return;
   const team = state.teams.find(x => x.id === t);
   switch(act){
+    case 'page-tab': setActivePage(el.dataset.page); break;
+    case 'bracket-score': openBracketScore(matchId, org); break;
+    case 'close-bracket-score': closeBracketScore(); break;
+    case 'bracket-reset':
+      askConfirm({ title:'Reset World Finals bracket?', text:'Clear every group and playoff prediction for this browser?', ok:'RESET', danger:true })
+        .then(ok => { if(!ok) return; bkRemember(); bracketState = { groupResults:{}, playoffResults:{} }; saveBracketState(); renderBracket(); });
+      break;
+    case 'bracket-export': exportBracketImage(); break;
     case 'main': main = id; sub = 'All'; render(); break;
     case 'sub':  sub = id; render(); break;
     case 'tab':  ui[t] = id; renderGrid(); break;
@@ -2358,6 +3023,22 @@ document.addEventListener('click', e => {
   }
 });
 $('hamburger').addEventListener('click', () => toggleSidebar());
+$('bracket-score-form').addEventListener('submit', submitBracketScore);
+$('bracket-content').addEventListener('pointerover', e => {
+  const team = e.target.closest('.wf-team[data-org]');
+  if(team && !team.contains(e.relatedTarget)) showBracketRosterPreview(team.dataset.org, team);
+});
+$('bracket-content').addEventListener('pointerout', e => {
+  const team = e.target.closest('.wf-team[data-org]');
+  if(team && !team.contains(e.relatedTarget)) hideBracketRosterPreview();
+});
+$('bracket-content').addEventListener('focusin', e => {
+  const team = e.target.closest('.wf-team[data-org]');
+  if(team) showBracketRosterPreview(team.dataset.org, team);
+});
+$('bracket-content').addEventListener('focusout', e => {
+  if(e.target.closest('.wf-team[data-org]')) hideBracketRosterPreview();
+});
 $('sidebar-overlay').addEventListener('click', closeSidebar);
 $('nav-back').addEventListener('click', undo);
 $('nav-fwd').addEventListener('click', redo);
@@ -2367,6 +3048,7 @@ $('m-sort').addEventListener('change', e => { modalSort = e.target.value; if(m) 
 let searchTimer;
   $('m-input').addEventListener('input', () => { clearTimeout(searchTimer); searchTimer = setTimeout(() => { if(m) renderResults(); }, 120); });/* main roster search */
 $('q').addEventListener('input', e => { query = e.target.value.trim().toLowerCase(); renderGrid(); });
+$('bracket-search').addEventListener('input', e => { bracketQuery = e.target.value.trim().toLowerCase(); renderBracket(); });
 /* region / league dropdowns (touch devices) */
 $('main-tabs').addEventListener('change', e => {
   const sel = e.target.closest('[data-act="picker-main"]');
@@ -2385,6 +3067,7 @@ window.addEventListener('resize', () => {
 });document.addEventListener('keydown', e => {
   if(e.key !== 'Escape') return;
   if(confirmDone){ confirmDone(false); return; }
+  if($('bracket-score-modal').classList.contains('active')){ closeBracketScore(); return; }
   closeModal(); closeAchievementPopup(); closeExportModal(); closeSidebar();
 });
 /* if a logo file fails to load, fall back to the placeholder */
@@ -2446,7 +3129,9 @@ if(window.ResizeObserver){
   }).observe($('grid'));
 }
 updateNavButtons();
+setActivePage('brackets');
 render();
+renderBracket();
 </script>
 </body>
 </html>
