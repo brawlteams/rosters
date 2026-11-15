@@ -1746,8 +1746,8 @@ const WF26_PLAYOFF_SOURCES = {
   ubf:{a:{kind:'winner',id:'ubsf1'},b:{kind:'winner',id:'ubsf2'}},
   lbr1a:{a:{kind:'loser',id:'ubqf1'},b:{kind:'loser',id:'ubqf2'}},
   lbr1b:{a:{kind:'loser',id:'ubqf3'},b:{kind:'loser',id:'ubqf4'}},
-  lbr2a:{a:{kind:'loser',id:'ubsf1'},b:{kind:'winner',id:'lbr1a'}},
-  lbr2b:{a:{kind:'loser',id:'ubsf2'},b:{kind:'winner',id:'lbr1b'}},
+  lbr2a:{a:{kind:'loser',id:'ubsf1'},b:{kind:'winner',id:'lbr1b'}},
+  lbr2b:{a:{kind:'loser',id:'ubsf2'},b:{kind:'winner',id:'lbr1a'}},
   lbr3:{a:{kind:'winner',id:'lbr2a'},b:{kind:'winner',id:'lbr2b'}},
   lbr4:{a:{kind:'loser',id:'ubf'},b:{kind:'winner',id:'lbr3'}},
   gf:{a:{kind:'winner',id:'ubf'},b:{kind:'winner',id:'lbr4'}}
@@ -2481,9 +2481,9 @@ function renderPlayoffs(){
     wfLine(X(3) + W, ubf + 34, X(4), gf + 18, done('ubf')),
     wfStub(X(3), lbf + 18),
     // lower round 1 winners -> lower round 2 (bottom slots)
-    wfLine(X(0) + W, r1[0] + 34, X(1), lq[0] + 50, done('lbr1a')),
-    wfLine(X(0) + W, r1[1] + 34, X(1), lq[1] + 50, done('lbr1b')),
-    // lower round 2 winners -> lower round 3
+    wfLine(X(0) + W, r1[0] + 34, X(1), lq[0] + 50, done('lbr1b')),
+    wfLine(X(0) + W, r1[1] + 34, X(1), lq[1] + 50, done('lbr1a')),
+    // lower round 2 winners -> lower round 3 (top slot from LB R2a, bottom slot from LB R2b)
     wfLine(X(1) + W, lq[0] + 34, X(2), lsf + 18, done('lbr2a')),
     wfLine(X(1) + W, lq[1] + 34, X(2), lsf + 50, done('lbr2b')),
     // lower round 3 winner -> lower round 4 (bottom slot)
@@ -2513,7 +2513,7 @@ function renderPlayoffs(){
     wfMatch('ubqf3', 'playoff', X(0), qf[2]), wfMatch('ubqf4', 'playoff', X(0), qf[3]),
     wfMatch('ubsf1', 'playoff', X(1), sf[0]), wfMatch('ubsf2', 'playoff', X(1), sf[1]),
     wfMatch('ubf', 'playoff', X(3), ubf), wfMatch('gf', 'playoff', X(4), gf),
-    wfMatch('lbr1a', 'playoff', X(0), r1[0]), wfMatch('lbr1b', 'playoff', X(0), r1[1]),
+    wfMatch('lbr1b', 'playoff', X(0), r1[0]), wfMatch('lbr1a', 'playoff', X(0), r1[1]),
     wfMatch('lbr2a', 'playoff', X(1), lq[0]), wfMatch('lbr2b', 'playoff', X(1), lq[1]),
     wfMatch('lbr3', 'playoff', X(2), lsf), wfMatch('lbr4', 'playoff', X(3), lbf)
   ];
