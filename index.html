@@ -178,11 +178,13 @@ button{font-family:'Lilita One',sans-serif;cursor:pointer}
 .team-name{color:#fff;font-size:19px;line-height:24px;text-transform:uppercase;letter-spacing:1px;margin:0;max-width:100%;box-sizing:border-box;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .team-header .ach{margin-top:2px}
 .header-action{width:28px;height:28px;box-sizing:border-box;display:flex;align-items:center;justify-content:center;opacity:0;transition:opacity .12s ease;background:rgba(255,255,255,.08);color:#fff;border:1px solid #555;border-radius:5px;cursor:pointer}
-.team-header > .del{grid-column:1;grid-row:1;justify-self:start}
+.team-header-actions{display:contents}
 .team-header > .remove-org{grid-column:3;grid-row:1;justify-self:end}
 .team-header:hover .header-action,.team-header:focus-within .header-action{opacity:1}
+.team-header .transfer-info-button{position:absolute;top:8px;left:8px;opacity:1;background:rgba(255,255,255,.08);color:#fff;border:1px solid #555;padding:0}
+.team-header .transfer-info-button:hover,.team-header .transfer-info-button.selected{background:#ffcc00;border-color:#ffcc00;color:#111;filter:none}
 .header-action:hover{background:#b71c1c;color:#fff;filter:brightness(1.25)}
-.team-header .del{background:rgba(255,255,255,.08);border:1px solid #555;color:#fff;padding:0}
+.team-header .del{position:absolute;top:50%;left:8px;transform:translateY(-50%);background:rgba(255,255,255,.08);border:1px solid #555;color:#fff;padding:0}
 .team-header .del:hover{background:#b71c1c;border-color:#b71c1c;color:#fff;filter:brightness(1.25)}
 .team-header .add-org{font-size:13px;padding:4px 10px;margin-top:2px}
 .card-tabs{display:flex;background:#1a1438;border-bottom:2px solid rgba(0,0,0,.5)}
@@ -222,13 +224,20 @@ body.no-fx .team-card .row .ach-list{transition:none!important}
 .ach{display:inline-flex;align-items:center;justify-content:center;box-sizing:border-box;width:20px;height:20px;flex:0 0 20px;padding:0;overflow:hidden;background:rgba(0,0,0,.35);border:1.5px solid #000;border-radius:5px;line-height:1;cursor:pointer}
 .ach img{display:block;width:100%;height:100%;object-fit:contain}
 .ach-placeholder{font-size:6px;color:#fff;letter-spacing:0}
-.achievement-popup{display:none;position:fixed;z-index:1200;width:max-content;max-width:min(280px,calc(100vw - 24px));box-sizing:border-box;padding:10px 12px;background:#fff;color:#1b1730;border:2px solid #111;border-radius:6px;box-shadow:0 3px 0 #000;text-align:center;font-size:14px;line-height:1.35;overflow-wrap:anywhere}
-.achievement-popup.active{display:block}
-.achievement-popup::before,.achievement-popup::after{content:"";position:absolute;left:var(--arrow-x,50%);width:0;height:0;transform:translateX(-50%)}
-.achievement-popup::before{bottom:-10px;border-left:9px solid transparent;border-right:9px solid transparent;border-top:10px solid #111}
-.achievement-popup::after{bottom:-7px;border-left:7px solid transparent;border-right:7px solid transparent;border-top:8px solid #fff}
-.achievement-popup.below::before{top:-10px;bottom:auto;border-top:0;border-bottom:10px solid #111}
-.achievement-popup.below::after{top:-7px;bottom:auto;border-top:0;border-bottom:8px solid #fff}
+.achievement-popup,.transfer-popup{display:none;position:fixed;z-index:1200;width:max-content;box-sizing:border-box;padding:10px 12px;background:#fff;color:#1b1730;border:2px solid #111;border-radius:6px;box-shadow:0 3px 0 #000;font-size:14px;line-height:1.35;overflow-wrap:anywhere}
+.achievement-popup{max-width:min(280px,calc(100vw - 24px));text-align:center}
+.transfer-popup{max-width:min(340px,calc(100vw - 24px));text-align:left;font-family:'Lilita One',sans-serif;text-shadow:none;-webkit-text-stroke:0;letter-spacing:0}
+.achievement-popup.active,.transfer-popup.active{display:block}
+.transfer-popup-section+.transfer-popup-section{margin-top:10px}
+.transfer-popup h3{margin:0 0 4px;color:#e6b800;font-family:'Lilita One',sans-serif;font-size:15px;font-weight:700;line-height:1.2;text-shadow:none!important;-webkit-text-stroke:0!important;letter-spacing:0;text-transform:uppercase}
+.transfer-popup ul{margin:0;padding-left:20px}
+.transfer-popup li+li{margin-top:3px}
+.transfer-popup .transfer-empty{margin:0;color:#686477;font-size:13px;line-height:1.35;text-shadow:none;-webkit-text-stroke:0}
+.achievement-popup::before,.achievement-popup::after,.transfer-popup::before,.transfer-popup::after{content:"";position:absolute;left:var(--arrow-x,50%);width:0;height:0;transform:translateX(-50%)}
+.achievement-popup::before,.transfer-popup::before{bottom:-10px;border-left:9px solid transparent;border-right:9px solid transparent;border-top:10px solid #111}
+.achievement-popup::after,.transfer-popup::after{bottom:-7px;border-left:7px solid transparent;border-right:7px solid transparent;border-top:8px solid #fff}
+.achievement-popup.below::before,.transfer-popup.below::before{top:-10px;bottom:auto;border-top:0;border-bottom:10px solid #111}
+.achievement-popup.below::after,.transfer-popup.below::after{top:-7px;bottom:auto;border-top:0;border-bottom:8px solid #fff}
 
 /* modal */
 .modal-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.7);justify-content:center;align-items:center;z-index:1000}
@@ -815,6 +824,7 @@ button.wf-team[data-act]:hover{background:#2b2254}
   <p>Exporting...</p>
 </div>
 <div id="achievement-popup" class="achievement-popup" role="tooltip" aria-hidden="true"></div>
+<div id="transfer-popup" class="transfer-popup" role="tooltip" aria-hidden="true"></div>
 <div id="export-modal" class="export-overlay" data-act="close-export-bg" aria-hidden="true">
   <section class="export-dialog" role="dialog" aria-modal="true" aria-labelledby="export-title">
     <button class="export-close" type="button" data-act="close-export" aria-label="Close export menu"><span class="export-close-icon" aria-hidden="true">×</span></button>
@@ -1013,6 +1023,8 @@ const DB = {
     もちのすけ: {n:'もちのすけ', sub:'Championship East Asia', cc:'JP', ach:[]},
     モコモコ羊ちゃん: {n:'モコモコ羊ちゃん', sub:'Championship East Asia', cc:'JP', ach:[]},
     ドブ枠じゅげむ: {n:'ドブ枠じゅげむ', sub:'Championship East Asia', cc:'JP', ach:[]}, 
+    tenma: {n:'Tenma', sub:'Challengers Korea', cc:'KR', ach:[]}, 
+    pigboy: {n:'Pigboy', sub:'Championship China', cc:'JP', ach:[]}, 
 
     angelboy: {n:'Angelboy', sub:'Championship EMEA', cc:'UA', ach:[{logo:'img/tournaments/lcq2023.png', event:'Last Chance Qualifier 2023', t:'Angelboy earned a Golden Ticket at the Last Chance Qualifier 2023 in Katowice🇵🇱'}, {logo:'img/tournaments/lcq2025.png', event:'Last Chance Qualifier 2025', t:'Angelboy earned a Golden Ticket at the Last Chance Qualifier 2025 in Sao Paulo🇧🇷'}]}, 
     guesti: {n:'Guesti', sub:'Championship EMEA', cc:'UA', ach:[]},
@@ -1235,7 +1247,7 @@ const DB = {
     phz: {n:'Phz', sub:'Championship South America', cc:'BR', ach:[]},
     daidote: {n:'Daidote', sub:'Championship South America', cc:'PE', ach:[]},
     benjaxx: {n:'Benjaxx', sub:'Championship South America', cc:'CL', ach:[]},
-    badlioncheat: {n:'Badlioncheat', sub:'Championship South America', cc:'', ach:[]},
+    badlioncheat: {n:'Badlioncheat', sub:'Championship South America', cc:'PE', ach:[]},
     fortistars: {n:'FortiStars', sub:'Championship South America', cc:'BR', ach:[]},
     jonatas: {n:'Jonatas', sub:'Championship South America', cc:'BR', ach:[]},
     mito: {n:'Mito', sub:'Championship South America', cc:'BR', ach:[]},
@@ -1282,7 +1294,7 @@ const DB = {
     math: {n:'Math', sub:'Challengers NA East', cc:'CA', ach:[]},
     sam: {n:'Sam', sub:'Challengers NA East', cc:'US', ach:[]},
     alyanys: {n:'Alyanys', sub:'Challengers NA West', cc:'MX', ach:[]},
-    charlz: {n:'Charlz', sub:'Challengers NA West', cc:'PR', ach:[{logo:'img/tournaments/lcq2024.png', event:'Last Chance Qualifier 2024', t:'Charlz earned a Golden Ticket at the Last Chance Qualifier 2024 in Cologne🇩🇪'}]},
+    charlz: {n:'Charlz', sub:'Challengers NA West', cc:'US', ach:[{logo:'img/tournaments/lcq2024.png', event:'Last Chance Qualifier 2024', t:'Charlz earned a Golden Ticket at the Last Chance Qualifier 2024 in Cologne🇩🇪'}]},
     toxicgenie: {n:'ToxicGenie', sub:'Challengers NA East', cc:'CA', ach:[]},
     jigsaw: {n:'JIGSAW', sub:'Challengers NA East', cc:'CA', ach:[]},
     square: {n:'Square', sub:'Challengers NA East', cc:'CA', ach:[]},
@@ -1410,11 +1422,11 @@ const DB = {
     dorian: {n:'Dorian', role:'HC', sub:'Championship EMEA', cc:'IT', ach:[]},
     lollo: {n:'Lollo', role:'M', sub:'Championship North America', cc:'IT', ach:[]},
     inso: {n:'Inso', role:'HC', sub:'Championship EMEA', cc:'IT', ach:[{logo:'img/tournaments/wf2023.png', event:'World Finals 2023', t:'Inso won the World Finals 2023 in Jönköping🇸🇪 as a head coach'}]},
-    abdzz: {n:'Abdzz', role:'A', sub:'Championship China', cc:'MA', ach:[]},
+    abdzz: {n:'Abdzz', role:'A', sub:'Championship China', cc:'ES', ach:[]},
     drizz: {n:'Drizz', role:'A', sub:'Championship North America', cc:'MA', ach:[]},
     lexus: {n:'Lexus', role:'M', sub:'Championship North America', cc:'MA', ach:[]},
     domori: {n:'Domori', role:'A', sub:'Challengers EMEA', cc:'PL', ach:[]},
-    kapi: {n:'Kapi', role:'HC', sub:'Championship North America', cc:'DE', ach:[]},
+    kapi: {n:'Kapi', role:'HC', sub:'Championship North America', cc:'PL', ach:[]},
     kvalafar: {n:'KValafar', role:'M', sub:'Championship EMEA', cc:'PT', ach:[]},
     kiko: {n:'Kiko', role:'M', sub:'Challengers APAC', cc:'PT', ach:[{logo:'img/tournaments/lcq2025.png', event:'Last Chance Qualifier 2025', t:'Kiko earned a Golden Ticket at the Last Chance Qualifier 2025 in Sao Paulo🇧🇷 as a manager'}]},
     matos: {n:'Matos', role:'M', sub:'Challengers South Europe', cc:'PT', ach:[]},
@@ -1445,6 +1457,8 @@ const DB = {
     wsmoon: {n:'WSMoon', role:'M', sub:'Championship EMEA', cc:'FR', ach:[]},
     fedeilrobo: {n:'Fedeilrobo', role:'HC', sub:'Challengers South Europe', cc:'IT', ach:[]},
     cloce: {n:'Cloce', role:'M', sub:'Challengers EMEA', cc:'IE', ach:[]},
+    luspikk: {n:'LusPikK', role:'A', sub:'Challengers South Europe', cc:'ES', ach:[]},
+    heisenberg: {n:'Heisenberg', role:'HC', sub:'Challengers South Europe', cc:'ES', ach:[]},
 
     sebas: {n:'Sebas', role:'HC', sub:'Championship East Asia', cc:'CO', ach:[{logo:'img/tournaments/lcq2023.png', event:'Last Chance Qualifier 2023', t:'Sebas earned a Golden Ticket at the Last Chance Qualifier 2023 in Katowice🇵🇱 as an analyst'}, {logo:'img/tournaments/lcq2024.png', event:'Last Chance Qualifier 2024', t:'Sebas earned a Golden Ticket at the Last Chance Qualifier 2024 in Cologne🇩🇪 as a head coach'}]},
     joaking: {n:'Joaking', role:'HC', sub:'Challengers SA West', cc:'AR', ach:[]},
@@ -1477,7 +1491,7 @@ const DB = {
     sward: {n:'Sward', role:'HC', sub:'Challengers NA East', cc:'US', ach:[]},
     torchy: {n:'Torchy', role:'HC', sub:'Challengers NA East', cc:'US', ach:[]},
     acro: {n:'Acro', role:'M', sub:'Championship North America', cc:'US', ach:[]},
-    zoulan: {n:'Zoulan', role:'HC', sub:'Championship North America', cc:'PR', ach:[]},
+    zoulan: {n:'Zoulan', role:'HC', sub:'Championship EMEA', cc:'PR', ach:[]},
 
     koalano: {n:'Koalano', role:'AC', sub:'Championship China', cc:'CN', ach:[]},
     kroos: {n:'Kroos', role:'A', sub:'Championship China', cc:'CN', ach:[]},
@@ -1631,7 +1645,7 @@ const DB = {
 const OFFICIAL = [
   {id:'o1', org:'zeta', sub:'Championship East Asia',  players:['sitetampo', 'sizuku', 'batman'], staff:['mameshi', 'leightox', 'taro']},
   {id:'o2', org:'cr', sub:'Championship East Asia',  players:['tensai', 'moya', 'milkreo'], staff:['relyh']},
-  {id:'o3', org:'skc_ea', sub:'Championship East Asia',  players:['kuru','ghost_t'], staff:['sebas']},
+  {id:'o3', org:'skc_ea', sub:'Championship East Asia',  players:['kuru','ghost_t'], staff:[]},
   {id:'o4', org:'rvl', sub:'Championship East Asia',  players:['ryohei', 'yutapin', 'totoron'], staff:[]},
   {id:'o5', org:'fl', sub:'Championship East Asia',  players:['achapi', 'ken_g', 'i_see'], staff:['lukluk23']},
   {id:'o6', org:'igm', sub:'Championship East Asia',  players:['shigemyon', 'drake', 'nyades'], staff:[]},
@@ -1651,7 +1665,7 @@ const OFFICIAL = [
   {id:'o16', org:'hmb', sub:'Championship EMEA',  players:['symantec', 'lukii', 'boss'], staff:['canaan', 'vid']},
   {id:'o17', org:'ttm', sub:'Championship EMEA',  players:['maru', 'maury', 'joker'], staff:['daantz', 'alez']},
   {id:'o18', org:'novo', sub:'Championship EMEA',  players:['meow', 'filippo', 'jus'], staff:['dorian', 'kiwii', 'bashira']},
-  {id:'o19', org:'th', sub:'Championship EMEA',  players:['ikaoss', 'marco', 'subeme'], staff:['xcasta', 'peri']},
+  {id:'o19', org:'th', sub:'Championship EMEA',  players:['ikaoss', 'marco', 'subeme'], staff:['xcasta']},
   {id:'o20', org:'navi', sub:'Championship EMEA',  players:['nowy297', 'gero', 'enraged'], staff:['acee', 'chloun']},
   {id:'o21', org:'cgn', sub:'Championship EMEA',  players:['lenain', 'dompe', 'nes'], staff:['lollo']},
   {id:'o22', org:'big', sub:'Championship EMEA',  players:['salty', 'mehli', 'dede'], staff:['inso', 'plantyse', 'auge']},
@@ -1660,20 +1674,20 @@ const OFFICIAL = [
   {id:'o25', org:'rev', sub:'Championship EMEA',  players:['fayelo', 'natrix', 'ethan'], staff:['wsmoon']},
   {id:'o26', org:'fut_f', sub:'Championship EMEA',  players:['demaster', 'zeyrox', 'ferissa'], staff:['mighty']},
   {id:'o27', org:'sk', sub:'Championship EMEA',  players:['yoshi', 'ope', 'yoko'], staff:['pedro_guijarro', 'oscardc', 'kvalafar']},
-  {id:'o28', org:'tlf', sub:'Challengers South Europe',  players:['mine', 'amos', 'rup'], staff:['zoulan', 'domori']},
+  {id:'o28', org:'tlf', sub:'Challengers South Europe',  players:['rup'], staff:['zoulan', 'domori']},
   {id:'o64', org:'tgrb', sub:'Challengers France',  players:['gugu', 'tizzou', 'shawnn'], staff:[]},
   {id:'o29', org:'sxs', sub:'Challengers South Europe',  players:['biso', 'lucas', 'saint'], staff:['fedeilrobo', 'bashira']},
-  {id:'o30', org:'big_c', sub:'Challengers DACH',  players:['arthur', 'unlucky', 'decaii'], staff:['inso', 'plantyse', 'auge']},
+  {id:'o30', org:'big_c', sub:'Challengers DACH',  players:['arthur', 'unlucky'], staff:['inso', 'plantyse', 'auge']},
 
   {id:'o31', org:'bh', sub:'Championship South America',  players:['prozy', 'portox', 'wesley'], staff:['killer', 'paolo']},
-  {id:'o32', org:'red', sub:'Championship South America',  players:['mohtep', 'jubileu', 'cauebr'], staff:['alchemicalx', 'peri']},
-  {id:'o33', org:'loud', sub:'Championship South America',  players:['firecrow', 'edinho'], staff:['role', 'trekking']},
-  {id:'o34', org:'os', sub:'Championship South America',  players:['brabao', 'golden', 'satisfyer'], staff:[]},
+  {id:'o32', org:'red', sub:'Championship South America',  players:['mohtep', 'jubileu', 'cauebr'], staff:['alchemicalx']},
+  {id:'o33', org:'loud', sub:'Championship South America',  players:['kaiodog', 'firecrow', 'edinho'], staff:['role', 'trekking']},
+  {id:'o34', org:'os', sub:'Championship South America',  players:['brabao', 'golden'], staff:[]},
   {id:'o35', org:'skc', sub:'Championship South America',  players:['rhz', 'kristian'], staff:[]},
   {id:'o36', org:'al', sub:'Championship South America',  players:['fire_murilo', 'icecrow', 'lipizin'], staff:['kaiki']},
   {id:'o37', org:'ocx', sub:'Championship South America',  players:['pekka', 'derrp', 'doritos'], staff:['rol', 'murilek']},
-  {id:'o38', org:'ns', sub:'Championship South America',  players:['tufa', 'rei_do_fut', 'sennin'], staff:['quinaia', 'diego']},
-  {id:'o39', org:'qqq', sub:'Championship South America',  players:['b4st', 'deykon', 'todd'], staff:[]},
+  {id:'o38', org:'ns', sub:'Championship South America',  players:['tufa', 'rei_do_fut'], staff:['quinaia', 'diego']},
+  {id:'o39', org:'qqq', sub:'Championship South America',  players:['b4st', 'deykon'], staff:[]},
   {id:'o40', org:'_67', sub:'Championship South America',  players:['bicho', 'gods', 'nubis'], staff:[]},
   {id:'o65', org:'dro', sub:'Championship South America',  players:['benjaxx', 'daidote', 'badlioncheat'], staff:[]},
   {id:'o66', org:'goats', sub:'Championship South America',  players:['fortistars', 'jonatas', 'mito'], staff:[]},
@@ -1684,11 +1698,11 @@ const OFFICIAL = [
   {id:'o42', org:'trb', sub:'Championship North America',  players:['rbm', 'lxffy', 'diegogamer'], staff:['roledu', 'sugus']},
   {id:'o43', org:'te', sub:'Championship North America',  players:['snoiy', 'memen', 'doin'], staff:['kapi', 'lexus']},
   {id:'o44', org:'kds', sub:'Championship North America',  players:['sans'], staff:['lukiebear', 'realcanadian', 'lollo']},
-  {id:'o45', org:'vtc', sub:'Championship North America',  players:['ezlivi', 'duckie', 'belal'], staff:['lotus', 'drizz']},
+  {id:'o45', org:'vtc', sub:'Championship North America',  players:['ezlivi', 'duckie', 'belal'], staff:['lotus']},
    {id:'o46', org:'hml', sub:'Championship North America',  players:['tyrant', 'rafiki', 'ducky'], staff:[]},
-  {id:'o47', org:'lgcy', sub:'Championship North America',  players:['zeus', 'xemp'], staff:['acro', 'peri']},
-  {id:'o48', org:'utp', sub:'Championship North America',  players:['nerf', 'junnie', 'winq'], staff:['lux']},
-  {id:'o49', org:'amn', sub:'Championship North America',  players:['chino', 'tacos', 'vegeta'], staff:['og']},
+  {id:'o47', org:'lgcy', sub:'Championship North America',  players:['zeus'], staff:['acro', 'peri']},
+  {id:'o48', org:'utp', sub:'Championship North America',  players:['nerf', 'junnie', 'winq'], staff:[]},
+  {id:'o49', org:'amn', sub:'Championship North America',  players:['chino','vegeta'], staff:['og']},
   {id:'o50', org:'da', sub:'Championship North America',  players:['david_2', 'razuen', 'godnoob'], staff:[]},
   {id:'o51', org:'mtry', sub:'Championship North America',  players:['samuelito', 'jared', 'grezze'], staff:[]},
   {id:'o69', org:'name', sub:'Championship North America',  players:['zee', 'vsxolar', 'kayjayoh'], staff:[]},
@@ -1705,6 +1719,46 @@ const OFFICIAL = [
   {id:'o58', org:'tig_r', sub:'Championship China',  players:['builder', 'loaf4r', '_1764'], staff:['little0', '风之灵']},
   {id:'o59', org:'ds', sub:'Championship China',  players:['_10kyears', 'decatree', 'nagi'], staff:['haibara_ai']},
 ];
+
+// Add transfer news here, keyed by the official roster ID above (for example: 'o1').
+const TRANSFER_INFO = {
+  o2: { transfers:[], rumors:['Tensai, Moya and Milkreo split up'] },
+  o3: { transfers:['Naipishu leaves and becomes F/A', 'Sebas (HC) leaves and becomes F/A'], rumors:[] },
+  o8: { transfers:['Danshari leaves and becomes F/A'], rumors:[] },
+  o13: { transfers:['X9Jay leaves and retires'], rumors:['Sergeant leaves for an EA or EMEA team'] },
+  
+  o16: { transfers:[], rumors:['Symantec, Lukii and BosS split up'] },
+  o17: { transfers:[], rumors:['Joker leaves for SK/NOVO', 'IKaoss joins'] },
+  o18: { transfers:[], rumors:['SK acquires 2/3 current players', 'Joker replaces 1 player'] },
+  o19: { transfers:['Peri (A) leaves and becomes F/A'], rumors:['Subeme leaves and retires', 'IKaoss doesn´t have a contract, but will most likely renew', 'Marco most likely doesn´t have a contract and might renew or leave for another EMEA team'] },
+  o27: { transfers:[], rumors:['2/3 NOVO players and Joker join'] },
+  o28: { transfers:['Mine leaves and becomes F/A', 'Amos leaves and becomes F/A'], rumors:[] },
+  o30: { transfers:['Decaii leaves and becomes F/A'], rumors:[] },
+
+  o31: { transfers:[], rumors:['Prozy and Killer (HC) leave for a new SA team', 'Rhz, Bielz or Kai join'] },
+  o32: { transfers:['Peri (A) leaves and becomes F/A'], rumors:['CaueBR leaves and becomes F/A'] },
+  o33: { transfers:[], rumors:['KaioDog leaves and becomes F/A', 'Lipizin joins'] },
+  o34: { transfers:['Satisfyer leaves and becomes F/A'], rumors:['Loko joins'] },
+  o35: { transfers:['Juan Carlos leaves and becomes F/A'], rumors:['Rhz leaves for BH'] },
+  o36: { transfers:[], rumors:['Lipizin leaves for LOUD'] },
+  o37: { transfers:[], rumors:['Pekka leaves and becomes F/A', 'Derrp leaves and becomes F/A'] },
+  o38: { transfers:['Sennin leaves and becomes F/A'], rumors:['Tufa leaves and becomes F/A', 'Magic joins'] },
+  o39: { transfers:['Todd leaves and becomes F/A'], rumors:[] },
+  o41: { transfers:['Killer leaves to coach BH'], rumors:['Kai leaves for BH'] },
+
+  o43: { transfers:[], rumors:['Snoiy, Memen and Doin split up'] },
+  o44: { transfers:['Bobby leaves and retires', 'Patchy leaves and retires'], rumors:[] },
+  o45: { transfers:['Drizz (A) leaves and becomes F/A'], rumors:[] },
+  o47: { transfers:['Zoulan leaves to coach TLF', 'Xemp leaves and becomes F/A'], rumors:[] },
+  o48: { transfers:['Lux (A) leaves and becomes F/A'], rumors:[] },
+  o49: { transfers:['Tacos leaves and becomes F/A'], rumors:[] },
+  o71: { transfers:['Lukiebear leaves to coach KDS'], rumors:[] },
+
+  o54: { transfers:['OU leaves and retires'], rumors:[] },
+  o57: { transfers:[], rumors:['Yunikuai leaves for a new CNML team'] },
+  o59: { transfers:[], rumors:['Nagi leaves for a new CNML team'] },
+  // 'o1': { transfers:['Confirmed transfer details'], rumors:['Reported rumor details'] }
+};
 
 const WF26_GROUPS = {
   A:['hmb', 'th', 'red', 'ttm'],
@@ -1814,6 +1868,7 @@ let main = 'All Regions', sub = 'All', query = '', modalSort = 'region';
 let ui = {};       // per-card tab: {teamId:'players'|'staff'}
 let m = null;      // open search modal: {tid, k}
 let activeAchievementButton = null;
+let activeTransferButton = null;
 let currentExportBlob = null;
 let currentExportUrl = '';
 let currentExportFilename = '';
@@ -2275,9 +2330,13 @@ function newestFirst(teams){
 }
 function card(t){
   const o = t.org && DB.orgs[t.org];
+  const transferInfo = rosterTransferInfo(t);
   const tab = ui[t.id] || 'players';
   const logo = o && o.logo ? `<img src="${esc(o.logo)}" alt="">` : '<span>LOGO</span>';
-  const head = `<button class="header-action del" data-act="delteam" data-t="${t.id}" title="Delete Roster" aria-label="Delete Roster"><span aria-hidden="true">🗑</span></button>
+  const head = `<div class="team-header-actions">
+      ${transferInfo ? `<button type="button" class="header-action transfer-info-button" data-act="transfer-info" data-t="${esc(t.id)}" aria-label="View transfers and rumors for ${esc(o?.n || 'this team')}" aria-describedby="transfer-popup" aria-expanded="false">i</button>` : ''}
+      <button class="header-action del" data-act="delteam" data-t="${t.id}" title="Delete Roster" aria-label="Delete Roster"><span aria-hidden="true">🗑</span></button>
+    </div>
     <div class="team-identity${o ? '' : ' new-team-identity'}">
       ${o
         ? `<div class="team-logo${o.logo ? ' has-img' : ''}" aria-hidden="true">${logo}</div>${strip(o.sub)}<h3 class="team-name">${esc(o.n)}</h3><span class="org-meta">${flag(o.cc)}${achs('org', t.org, true)}</span>`
@@ -2977,8 +3036,27 @@ function closeAchievementPopup(){
   }
   activeAchievementButton = null;
 }
+function rosterTransferInfo(team){
+  if(!OFFICIAL.some(roster => roster.id === team.id)) return null;
+  const info = TRANSFER_INFO[team.id];
+  if(!info) return null;
+  const items = value => Array.isArray(value) ? value.filter(item => typeof item === 'string' && item.trim()) : [];
+  const transfers = items(info.transfers), rumors = items(info.rumors);
+  return transfers.length || rumors.length ? { transfers, rumors } : null;
+}
+function closeTransferPopup(){
+  const popup = $('transfer-popup');
+  popup.classList.remove('active', 'below');
+  popup.setAttribute('aria-hidden', 'true');
+  if(activeTransferButton){
+    activeTransferButton.setAttribute('aria-expanded', 'false');
+    activeTransferButton.classList.remove('selected');
+  }
+  activeTransferButton = null;
+}
 function showAchievementPopup(button){
   if(activeAchievementButton === button){ closeAchievementPopup(); return; }
+  closeTransferPopup();
   closeAchievementPopup();
   const { k, id, i } = button.dataset;
   const achievement = DB[DBK[k]][id].ach[Number(i)];
@@ -2991,12 +3069,36 @@ function showAchievementPopup(button){
   button.closest('.team-card .row')?.classList.add('achievement-open');
   activeAchievementButton = button;
 
+  positionPopup(popup, button, 280);
+}
+function showTransferPopup(button){
+  if(activeTransferButton === button){ closeTransferPopup(); return; }
+  closeAchievementPopup();
+  closeTransferPopup();
+  const team = state.teams.find(roster => roster.id === button.dataset.t);
+  const info = team && rosterTransferInfo(team);
+  if(!info) return;
+  const popup = $('transfer-popup');
+  const list = (items, emptyText) => items.length
+    ? `<ul>${items.map(item => `<li>${esc(item)}</li>`).join('')}</ul>`
+    : `<p class="transfer-empty">${emptyText}</p>`;
+  popup.innerHTML = `
+    <section class="transfer-popup-section"><h3>Transfers</h3>${list(info.transfers, '*no recent transfers*')}</section>
+    <section class="transfer-popup-section"><h3>Rumors</h3>${list(info.rumors, '*no recent rumors*')}</section>`;
+  popup.classList.add('active');
+  popup.setAttribute('aria-hidden', 'false');
+  button.setAttribute('aria-expanded', 'true');
+  button.classList.add('selected');
+  activeTransferButton = button;
+  positionPopup(popup, button, 340);
+}
+function positionPopup(popup, button, maxWidth){
   const viewport = window.visualViewport;
   const offsetLeft = viewport?.offsetLeft || 0;
   const offsetTop = viewport?.offsetTop || 0;
   const viewportWidth = viewport?.width || window.innerWidth;
   const viewportHeight = viewport?.height || window.innerHeight;
-  popup.style.maxWidth = `${Math.max(1, Math.min(280, viewportWidth - 24))}px`;
+  popup.style.maxWidth = `${Math.max(1, Math.min(maxWidth, viewportWidth - 24))}px`;
   popup.style.left = '0px';                    // measure at a neutral position
   popup.style.top = '0px';
   const anchor = button.getBoundingClientRect();
@@ -3057,7 +3159,7 @@ function undo(){
     return;
   }
   if(!undoStack.length) return;
-  closeModal(); closeAchievementPopup();
+  closeModal(); closeAchievementPopup(); closeTransferPopup();
   redoStack.push(snapshot());
   restoreSnapshot(undoStack.pop());
   updateNavButtons();
@@ -3072,7 +3174,7 @@ function redo(){
     return;
   }
   if(!redoStack.length) return;
-  closeModal(); closeAchievementPopup();
+  closeModal(); closeAchievementPopup(); closeTransferPopup();
   undoStack.push(snapshot());
   restoreSnapshot(redoStack.pop());
   updateNavButtons();
@@ -3092,7 +3194,15 @@ document.addEventListener('keydown', e => {
 
 /* ---------- events ---------- */
 document.addEventListener('click', e => {
-  if(activeAchievementButton && !e.target.closest('.ach')) closeAchievementPopup();
+  const selection = window.getSelection();
+  const selectionTouches = popup => selection && !selection.isCollapsed
+    && (popup.contains(selection.anchorNode) || popup.contains(selection.focusNode));
+  if(activeAchievementButton
+    && !e.target.closest('.ach, .achievement-popup')
+    && !selectionTouches($('achievement-popup'))) closeAchievementPopup();
+  if(activeTransferButton
+    && !e.target.closest('.transfer-info-button, .transfer-popup')
+    && !selectionTouches($('transfer-popup'))) closeTransferPopup();
   const el = e.target.closest('[data-act]');
   if(!el) return;
   const { act, id, t, k, i, matchId, org } = el.dataset;
@@ -3142,6 +3252,7 @@ document.addEventListener('click', e => {
       showAchievementPopup(el);
       break;
     }
+    case 'transfer-info': showTransferPopup(el); break;
     case 'pick': pick(id); break;
     case 'close': case 'close-bg': closeModal(); break;
   }
@@ -3192,7 +3303,7 @@ window.addEventListener('resize', () => {
   if(e.key !== 'Escape') return;
   if(confirmDone){ confirmDone(false); return; }
   if($('bracket-score-modal').classList.contains('active')){ closeBracketScore(); return; }
-  closeModal(); closeAchievementPopup(); closeExportModal(); closeSidebar();
+  closeModal(); closeAchievementPopup(); closeTransferPopup(); closeExportModal(); closeSidebar();
 });
 /* if a logo file fails to load, fall back to the placeholder */
 /* if an image fails to load, retry a few times before falling back to the placeholder */
@@ -3244,9 +3355,22 @@ window.addEventListener('load', () => { fitOrgNames(); fitPlayerNames(); });
 document.fonts.load('16px "Lilita One"').then(() => { fitOrgNames(); fitPlayerNames(); });
 window.addEventListener('orientationchange', () => setTimeout(() => { fitOrgNames(); fitPlayerNames(); }, 300));
 /* close the achievement bubble on any scroll (page, search list, modal) */
-window.addEventListener('scroll', () => { if(activeAchievementButton) closeAchievementPopup(); }, { passive:true, capture:true });
-window.addEventListener('wheel',  () => { if(activeAchievementButton) closeAchievementPopup(); }, { passive:true });
-window.addEventListener('touchmove', () => { if(activeAchievementButton) closeAchievementPopup(); }, { passive:true });
+const eventIsInsideInfoPopup = e => e.target instanceof Element && e.target.closest('.achievement-popup, .transfer-popup');
+window.addEventListener('scroll', e => {
+  if(eventIsInsideInfoPopup(e)) return;
+  if(activeAchievementButton) closeAchievementPopup();
+  if(activeTransferButton) closeTransferPopup();
+}, { passive:true, capture:true });
+window.addEventListener('wheel', e => {
+  if(eventIsInsideInfoPopup(e)) return;
+  if(activeAchievementButton) closeAchievementPopup();
+  if(activeTransferButton) closeTransferPopup();
+}, { passive:true });
+window.addEventListener('touchmove', e => {
+  if(eventIsInsideInfoPopup(e)) return;
+  if(activeAchievementButton) closeAchievementPopup();
+  if(activeTransferButton) closeTransferPopup();
+}, { passive:true });
 /* re-fit names whenever the layout settles (images loaded, grid width changed) */
 let fitTimer, lastGridWidth = 0;
 function scheduleFit(){
