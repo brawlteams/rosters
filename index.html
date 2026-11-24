@@ -2249,6 +2249,11 @@ const LEAGUE_LOGOS = {
   'Challengers NA West':'img/leagues/challengersnawest.png',
   'Championship China':'img/leagues/championshipchina.png'
 };
+const leagueLogoPreloaders = Object.values(LEAGUE_LOGOS).map(src => {
+  const image = new Image();
+  image.src = src;
+  return image;
+});
 function leagueInner(s){
   return LEAGUE_LOGOS[s]
     ? `<img src="${esc(LEAGUE_LOGOS[s])}" alt="${esc(s)}">`
@@ -2276,13 +2281,23 @@ function renderTabs(){
       }).join('');
   const subs = ['All', ...(main === 'All Regions' ? [] : REGIONS[main])];
   $('league-label').hidden = !subs.length;
-  $('sub-tabs').innerHTML = touch
-        ? ddHtml('sub', subClass(sub), subs, sub)
-    : subs.map(s => {
+  const subTabs = $('sub-tabs');
+  const subTabsKey = JSON.stringify([touch, main, subs]);
+  if(touch || subTabs.dataset.renderKey !== subTabsKey){
+    subTabs.innerHTML = touch
+      ? ddHtml('sub', subClass(sub), subs, sub)
+      : subs.map(s => {
         const isAll = s === 'All';
         const state = s === sub ? ' active' : (sub === 'All' ? '' : ' off');
         return `<button class="tab-btn sub ${isAll ? 'all-leagues ' : 'logo '}${subClass(s)}${state}" data-act="sub" data-id="${esc(s)}" title="${isAll ? 'All' : esc(s)}"><span>${isAll ? 'All' : leagueInner(s)}</span></button>`;
       }).join('');
+    subTabs.dataset.renderKey = subTabsKey;
+  }else{
+    subTabs.querySelectorAll('.tab-btn.sub').forEach(button => {
+      button.classList.toggle('active', button.dataset.id === sub);
+      button.classList.toggle('off', button.dataset.id !== sub && sub !== 'All');
+    });
+  }
 }
 
 /* ---------- cards ---------- */
