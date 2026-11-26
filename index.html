@@ -198,8 +198,7 @@ button{font-family:'Lilita One',sans-serif;cursor:pointer}
 .person-identity{display:flex;align-items:center;gap:4px;flex:1;min-width:0}
 .nm{text-align:left;flex:0 1 auto;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .flag{flex:0 0 auto;font-size:18px;line-height:1}
-img.flag{width:20px;height:15px;object-fit:cover;border:1px solid rgba(0,0,0,.5);border-radius:2px;vertical-align:middle;flex:0 0 auto;display:inline-block}
-.add-slot{box-sizing:border-box;min-height:44px;background:rgba(255,255,255,.06);color:#bbb;border:2px dashed rgba(255,255,255,.25);border-radius:8px;font-size:16px;padding:8px;text-align:left}
+img.flag{display:inline-block;height:13px;width:auto;flex:0 0 auto;vertical-align:middle;background:none;border:1px solid #555;border-radius:2px;box-sizing:content-box}.add-slot{box-sizing:border-box;min-height:44px;background:rgba(255,255,255,.06);color:#bbb;border:2px dashed rgba(255,255,255,.25);border-radius:8px;font-size:16px;padding:8px;text-align:left}
 .add-slot:hover{border-color:#ffcc00;color:#ffcc00;filter:brightness(1.25)}
 .add-org{margin:2px auto 0;font-size:13px;padding:4px 10px}
 .del{font-size:16px}
@@ -659,6 +658,7 @@ button.wf-team[data-act]:hover{background:#2b2254}
 .bracket-corestats{margin-top:-4px}
 .wf-export-sheet .wf-groups{display:flex!important;flex-direction:row!important;flex-wrap:nowrap!important;justify-content:center;align-items:flex-start;gap:24px!important;grid-template-columns:none!important}
 .wf-export-sheet .wf-panel{width:fit-content!important;max-width:none!important}
+.flag-export{display:inline-block;min-width:20px;padding:0 3px;font-size:10px;line-height:15px;text-align:center;background:#2b2254;border:1px solid #777;border-radius:2px;color:#ccc}
 </style>
 </head>
 <body>
@@ -1941,7 +1941,7 @@ function save(){ try { localStorage.setItem(KEY, JSON.stringify({ v: SAVE_VERSIO
 const MAX_EXPORT_ROSTERS = 16;   // rosters per PNG; change here if you want more or fewer
 const BLANK_PIXEL = 'data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==';
 /* wait until every logo has loaded (or failed and been swapped for the LOGO placeholder) */
-function waitForImages(root, timeout = 8000){
+function waitForImages(root, timeout = 4000){
   const jobs = [...root.querySelectorAll('img')].map(img => img.complete ? 0 : new Promise(res => {
     img.addEventListener('load', res, { once:true });
     img.addEventListener('error', res, { once:true });
@@ -2005,7 +2005,7 @@ async function shrinkToDataUrl(blob, maxDim = 160){
     URL.revokeObjectURL(url);
   }
 }
-async function fetchDataUrl(url, tries = 4){
+async function fetchDataUrl(url, tries = 2){
   if(imageCache.has(url)) return imageCache.get(url);
   for(let a = 0; a < tries; a++){
     try{
@@ -2017,7 +2017,7 @@ async function fetchDataUrl(url, tries = 4){
       return data;
     }catch(err){
       if(a === tries - 1){ console.warn('Export: could not load image', url, err); return null; }
-      await new Promise(r => setTimeout(r, 250 * (a + 1)));   // wait a bit, then retry
+      await new Promise(r => setTimeout(r, 250 * (a + 1)));
     }
   }
 }
@@ -2026,7 +2026,6 @@ async function inlineExportImages(root){
   const urls = [...new Set(imgs.map(i => i.currentSrc || i.src).filter(s => s && !s.startsWith('data:')))];
   const results = new Map();
   let next = 0;
-  /* 6 downloads at a time instead of all at once */
   await Promise.all(Array.from({ length: Math.min(6, urls.length) }, async () => {
     while(next < urls.length){
       const url = urls[next++];
@@ -2226,11 +2225,15 @@ async function copyExportImage(){
   }
 }
 
-/* Flags as small images (flagcdn.com), so they look the same on Windows, Mac, iOS and Android */
+/* One flag style everywhere (cards, achievements, search, export): a flagcdn image, no text fallback */
 function flag(cc){
   if(!cc || cc.length !== 2) return '';
-  const code = cc.toUpperCase();
-  return `<img class="flag" src="https://flagcdn.com/w40/${code.toLowerCase()}.png" alt="${esc(code)}" title="${esc(code)}" loading="lazy" width="20" height="15">`;
+  const code = cc.toLowerCase();
+  return `<img class="flag" src="https://flagcdn.com/w80/${code}.png" alt="" loading="lazy">`;
+}
+/* the export uses the same flag image as the rest of the site */
+function flagForExport(cc){
+  return flag(cc);
 }
 /* Turns emoji flags inside plain text (e.g. achievement texts) into the same flag images */
 function flagTextToHtml(text){
@@ -2261,9 +2264,10 @@ function achs(kind, id, clickable){
       : `<span class="${cls}" title="${esc(a.t)}">${achievementLogo(a)}</span>`;
   }).join('')}</span>`;
 }
-function person(kind, id, clickable){
+function person(kind, id, clickable, forExport = false){
   const p = DB[DBK[kind]][id];
-  return `${strip(p.sub)}<span class="person-info"><span class="person-identity"><span class="nm">${esc(p.n)}${p.role ? ' (' + esc(p.role) + ')' : ''}</span>${flag(p.cc)}</span>${achs(kind, id, clickable)}</span>`;
+  const flagHtml = forExport ? flagForExport(p.cc) : flag(p.cc);
+  return `${strip(p.sub)}<span class="person-info"><span class="person-identity"><span class="nm">${esc(p.n)}${p.role ? ' (' + esc(p.role) + ')' : ''}</span>${flagHtml}</span>${achs(kind, id, clickable)}</span>`;
 }
 
 const REGION_CLASS = {'All Regions':'r-ALL','Asia Pacific':'r-APAC','EMEA':'r-EMEA','South America':'r-SA','North America':'r-NA','Chinese Mainland':'r-CNML'};
@@ -2425,7 +2429,7 @@ function exportCard(t, orgNameOverride){
   const section = (title, kind, ids) => `<section class="export-section">
     <h3 class="export-section-title">${title}</h3>
     <div class="export-people">${ids.length
-      ? ids.map(id => `<div class="row export-person">${person(kind, id, false)}</div>`).join('')
+      ? ids.map(id => `<div class="row export-person">${person(kind, id, false, true)}</div>`).join('')
       : '<div class="export-empty">No members listed</div>'}</div>
   </section>`;
   return `<article class="export-card">
