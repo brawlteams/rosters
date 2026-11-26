@@ -1941,6 +1941,7 @@ function save(){ try { localStorage.setItem(KEY, JSON.stringify({ v: SAVE_VERSIO
 const MAX_EXPORT_ROSTERS = 16;   // rosters per PNG; change here if you want more or fewer
 const BLANK_PIXEL = 'data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==';
 /* wait until every logo has loaded (or failed and been swapped for the LOGO placeholder) */
+const withTimeout = (p, ms) => Promise.race([p, new Promise(res => setTimeout(res, ms))]);
 function waitForImages(root, timeout = 4000){
   const jobs = [...root.querySelectorAll('img')].map(img => img.complete ? 0 : new Promise(res => {
     img.addEventListener('load', res, { once:true });
@@ -2009,7 +2010,11 @@ async function fetchDataUrl(url, tries = 2){
   if(imageCache.has(url)) return imageCache.get(url);
   for(let a = 0; a < tries; a++){
     try{
-      const r = await fetch(url, { cache: a ? 'reload' : 'force-cache' });
+      const ctrl = new AbortController();
+      const t = setTimeout(() => ctrl.abort(), 8000);
+      let r;
+      try{ r = await fetch(url, { cache: a ? 'reload' : 'force-cache', signal: ctrl.signal }); }
+      finally{ clearTimeout(t); }
       if(!r.ok) throw new Error('HTTP ' + r.status);
       const blob = await r.blob();
       const data = await shrinkToDataUrl(blob);
@@ -2034,16 +2039,16 @@ async function inlineExportImages(root){
   }));
   await Promise.all(imgs.map(async img => {
     const src = img.currentSrc || img.src;
-    if(!results.has(src)) return;
-    img.src = results.get(src) || BLANK_PIXEL;
-    try{ await img.decode(); }catch(e){}
+    img.loading = 'eager';
+    if(results.has(src)) img.src = results.get(src) || BLANK_PIXEL;
+    try{ await withTimeout(img.decode(), 3000); }catch(e){}
   }));
 }
 /* Safari draws nested images late: render repeatedly until two passes in a row give the same file size */
 async function renderStable(node, options){
   let best = null;
   for(let i = 0; i < 3; i++){
-    const b = await window.htmlToImage.toBlob(node, options).catch(() => null);
+    const b = await withTimeout(window.htmlToImage.toBlob(node, options).catch(() => null), 20000);
     if(b && (!best || b.size > best.size)) best = b;
     await new Promise(r => setTimeout(r, 200));
   }
@@ -2229,7 +2234,7 @@ async function copyExportImage(){
 function flag(cc){
   if(!cc || cc.length !== 2) return '';
   const code = cc.toLowerCase();
-  return `<img class="flag" src="https://flagcdn.com/w80/${code}.png" alt="" loading="lazy">`;
+  return `<img class="flag" src="https://flagcdn.com/w80/${code}.png" alt="">`;
 }
 /* the export uses the same flag image as the rest of the site */
 function flagForExport(cc){
