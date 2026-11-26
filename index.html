@@ -196,7 +196,9 @@ button{font-family:'Lilita One',sans-serif;cursor:pointer}
 .row{display:flex;align-items:center;gap:6px;background:rgba(0,0,0,.25);padding:8px 10px;border-radius:8px;font-size:16px;border-bottom:2px solid rgba(0,0,0,.2);position:relative}
 .person-info{display:flex;align-items:center;flex:1;min-width:0}
 .person-identity{display:flex;align-items:center;gap:4px;flex:1;min-width:0}
-.nm{text-align:left;flex:0 1 auto;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.flag{flex:0 0 auto;font-size:18px;line-height:1}
+.nm{text-align:left;flex:0 1 auto;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.flag{flex:0 0 auto;font-size:18px;line-height:1}
+img.flag{width:20px;height:15px;object-fit:cover;border:1px solid rgba(0,0,0,.5);border-radius:2px;vertical-align:middle;flex:0 0 auto;display:inline-block}
 .add-slot{box-sizing:border-box;min-height:44px;background:rgba(255,255,255,.06);color:#bbb;border:2px dashed rgba(255,255,255,.25);border-radius:8px;font-size:16px;padding:8px;text-align:left}
 .add-slot:hover{border-color:#ffcc00;color:#ffcc00;filter:brightness(1.25)}
 .add-org{margin:2px auto 0;font-size:13px;padding:4px 10px}
@@ -2224,9 +2226,28 @@ async function copyExportImage(){
   }
 }
 
+/* Flags as small images (flagcdn.com), so they look the same on Windows, Mac, iOS and Android */
 function flag(cc){
   if(!cc || cc.length !== 2) return '';
-  return `<span class="flag" title="${esc(cc)}">${String.fromCodePoint(...[...cc.toUpperCase()].map(c => 127397 + c.charCodeAt(0)))}</span>`;
+  const code = cc.toUpperCase();
+  return `<img class="flag" src="https://flagcdn.com/w40/${code.toLowerCase()}.png" alt="${esc(code)}" title="${esc(code)}" loading="lazy" width="20" height="15">`;
+}
+/* Turns emoji flags inside plain text (e.g. achievement texts) into the same flag images */
+function flagTextToHtml(text){
+  const isRegionalIndicator = c => c >= 0x1F1E6 && c <= 0x1F1FF;
+  const chars = [...(text || '')];
+  let out = '';
+  for(let i = 0; i < chars.length; i++){
+    const a = chars[i].codePointAt(0);
+    const b = chars[i + 1] ? chars[i + 1].codePointAt(0) : undefined;
+    if(isRegionalIndicator(a) && b !== undefined && isRegionalIndicator(b)){
+      out += flag(String.fromCharCode(a - 0x1F1E6 + 65, b - 0x1F1E6 + 65));
+      i++;
+    }else{
+      out += esc(chars[i]);
+    }
+  }
+  return out;
 }
 function strip(s){ return `<span class="region-strip strip-${STRIPS[s] || 'none'}" title="${esc(s || '')}"></span>`; }
 function achievementLogo(a){ return a.logo ? `<img src="${esc(a.logo)}" alt="">` : '<span class="ach-placeholder">LOGO</span>'; }
@@ -3099,7 +3120,7 @@ function showAchievementPopup(button){
   const { k, id, i } = button.dataset;
   const achievement = DB[DBK[k]][id].ach[Number(i)];
   const popup = $('achievement-popup');
-  popup.textContent = achievement.t;
+  popup.innerHTML = flagTextToHtml(achievement.t);
   popup.classList.add('active');
   popup.setAttribute('aria-hidden', 'false');
   button.setAttribute('aria-expanded', 'true');
