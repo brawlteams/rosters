@@ -1343,6 +1343,7 @@ const DB = {
     pierre: {n:'Pierre', sub:'Championship North America', cc:'CA', ach:[]},
     toxicasher: {n:'ToxicAsher', sub:'Challengers NA East', cc:'US', ach:[]},
     zoulan: {n:'Zoulan', sub:'Championship North America', cc:'PR', ach:[]},
+    lukiebear: {n:'Lukiebear', sub:'Championship North America', cc:'CA', ach:[{logo:'img/tournaments/lcq2023.png', event:'Last Chance Qualifier 2023', t:'Lukiebear earned a Golden Ticket at the Last Chance Qualifier 2023 in Katowice🇵🇱 as a manager'}]},
   
     diuqiang: {n:'DiuQiang', sub:'Championship China', cc:'CN', ach:[]},
     dynamike: {n:'DynaMike', sub:'Championship China', cc:'CN', ach:[]},
@@ -1655,7 +1656,7 @@ const DB = {
   }
 };
 
-/* Official baseline rosters (what everyone starts with (o41, o47, o70 empty)) */
+/* Official baseline rosters (what everyone starts with (o41, o47, o48, o70 empty)) */
 const OFFICIAL = [
   {id:'o1', org:'zeta', sub:'Championship East Asia',  players:['sitetampo', 'sizuku', 'batman'], staff:['mameshi', 'leightox', 'taro']},
   {id:'o2', org:'cr', sub:'Championship East Asia',  players:['tensai', 'moya', 'milkreo'], staff:['relyh']},
@@ -1706,14 +1707,13 @@ const OFFICIAL = [
   {id:'o65', org:'dro', sub:'Championship South America',  players:['benjaxx', 'daidote', 'badlioncheat'], staff:[]},
   {id:'o66', org:'goats', sub:'Championship South America',  players:['fortistars', 'jonatas', 'mito'], staff:[]},
   {id:'o67', org:'sbd', sub:'Championship South America',  players:['mega_prime', 'luking', 'dex'], staff:[]},
-  {id:'o68', org:'mcqt', sub:'Championship South America',  players:['sterixx', 'br_rqcrow', 'phz'], staff:[]},
+  {id:'o68', org:'mcqt', sub:'Championship South America',  players:['br_rqcrow', 'phz'], staff:[]},
 
   {id:'o42', org:'trb', sub:'Championship North America',  players:['rbm', 'lxffy', 'diegogamer'], staff:['roledu', 'sugus']},
   {id:'o43', org:'te', sub:'Championship North America',  players:['snoiy', 'memen', 'doin'], staff:['kapi', 'quinaia','lexus']},
   {id:'o44', org:'', sub:'Championship North America',  players:['sans'], staff:['lukiebear', 'realcanadian', 'lollo']},
   {id:'o45', org:'vtc', sub:'Championship North America',  players:['ezlivi', 'duckie', 'belal'], staff:['lotus']},
    {id:'o46', org:'hml', sub:'Championship North America',  players:['tyrant', 'rafiki', 'ducky'], staff:[]},
-  {id:'o48', org:'utp', sub:'Championship North America',  players:['nerf', 'junnie', 'winq'], staff:[]},
   {id:'o49', org:'', sub:'Championship North America',  players:['chino','vegeta'], staff:['og']},
   {id:'o50', org:'da', sub:'Championship North America',  players:['razuen', 'godnoob'], staff:[]},
   {id:'o51', org:'mtry', sub:'Championship North America',  players:['samuelito', 'jared', 'grezze'], staff:[]},
@@ -1743,9 +1743,9 @@ const TRANSFER_INFO = {
   
   o15: { transfers:[], rumors:['Ricky (A) leaves for another team'] },
   o16: { transfers:[], rumors:['Symantec leaves','BosS leaves for another EMEA team', 'Canaan (HC) leaves for another EMEA team', 'Joker joins'] },
-  o17: { transfers:[], rumors:['Joker leaves for NOVO/HMB', 'DaaNTz leaves for another EMEA team', 'IKaoss joins'] },
+  o17: { transfers:[], rumors:['Joker leaves for NOVO/HMB', 'DaaNTz (HC) leaves for another EMEA team', 'IKaoss joins'] },
   o18: { transfers:[], rumors:['1 current player leaves', 'Joker joins'] },
-  o19: { transfers:['Peri (A) leaves and becomes F/A', 'Subeme leaves and retires'], rumors:[, 'IKaoss doesn´t have a contract, but will most likely renew', 'Marco most likely doesn´t have a contract and might renew or leave for another EMEA team', 'XCasta leaves for another team'] },
+  o19: { transfers:['Peri (A) leaves and becomes F/A', 'Subeme leaves and retires'], rumors:[, 'IKaoss doesn´t have a contract, but will most likely renew', 'Marco most likely doesn´t have a contract and might renew or leave for another EMEA team', 'XCasta (HC) leaves for another team'] },
   o20: { transfers:[], rumors:['Acee (A) leaves for another team'] },
   o21: { transfers:['Treymi29 (A) leaves and becomes F/A'], rumors:['Dompe leaves for another EMEA team', 'Lollo (M) leaves for another team'] },
   o22: { transfers:[], rumors:['Melih leaves and retires', 'Salty leaves for another EMEA team', 'Inso (HC) leaves for another EMEA team', 'Plantyse (A) leaves for another EMEA team'] },
@@ -1757,27 +1757,27 @@ const TRANSFER_INFO = {
   o29: { transfers:['SXS releases the roster', 'Lucas leaves and becomes F/A'], rumors:[] },
   o30: { transfers:['Decaii leaves and becomes F/A', 'BIG C releases the roster'], rumors:['Arthur, Unlucky, Inso (HC), Plantyse (A) and Auge (M) split up'] },
 
-  o31: { transfers:[], rumors:['Prozy and Killer (HC) leave for a new SA team', 'Rhz, Bielz or Kai join'] },
-  o32: { transfers:['Peri (A) leaves and becomes F/A'], rumors:['CaueBR leaves for another SA team'] },
+  o31: { transfers:[], rumors:['Prozy, Portox, Wesley, Killer (HC) and Paolo (A) split up'] },
+  o32: { transfers:['Peri (A) leaves and becomes F/A'], rumors:['CaueBR leaves for another SA team', 'Mohtep leaves for a new SA team'] },
   o33: { transfers:['KaioDog leaves and becomes F/A'], rumors:['Lipizin joins'] },
   o34: { transfers:['OS releases the roster', 'Satisfyer leaves and becomes F/A'], rumors:['Loko joins'] },
-  o35: { transfers:['Juan Carlos leaves and becomes F/A', 'SKC releases the roster'], rumors:['Rhz leaves for BH'] },
+  o35: { transfers:['Juan Carlos leaves and becomes F/A', 'SKC releases the roster'], rumors:['Rhz leaves for a new SA team'] },
   o36: { transfers:[], rumors:['Lipizin leaves for LOUD'] },
   o37: { transfers:['OCX releases the roster'], rumors:['Pekka leaves and becomes F/A', 'Derrp leaves for another SA team'] },
   o38: { transfers:['Sennin leaves and becomes F/A'], rumors:['Magic joins'] },
   o39: { transfers:[], rumors:['Todd leaves and becomes F/A'] },
+  o68: { transfers:['Sterixx leaves and becomes F/A'], rumors:[] },
 
   o43: { transfers:[], rumors:['Snoiy, Memen and Doin split up'] },
   o44: { transfers:['Bobby leaves and retires','KDS releases the roster', 'Patchy leaves and retires'], rumors:['Lollo (M) leaves for another team'] },
   o45: { transfers:['Drizz (A) leaves and becomes F/A'], rumors:['Ezlivi leaves for another NA team', 'Vegeta joins', 'Lotus (HC) leaves for a new NA team'] },
   o46: { transfers:[], rumors:['Tyrant, Rafiki and Ducky split up'] },
-  o48: { transfers:['Lux (A) leaves and becomes F/A'], rumors:[] },
   o49: { transfers:['AMN releases the roster', 'Tacos leaves and becomes F/A'], rumors:['Vegeta leaves for VTC'] },
   o50: { transfers:['David leaves and becomes F/A'], rumors:[] },
   o71: { transfers:['Lukiebear leaves to coach KDS'], rumors:[] },
   o72: { transfers:['LGCY A releases the roster'], rumors:[] },
 
-  o52: { transfers:['Abdzz leaves and becomes F/A'], rumors:[] },
+  o52: { transfers:['Abdzz (A) leaves and becomes F/A'], rumors:[] },
   o54: { transfers:['OU leaves and retires'], rumors:[] },
   o57: { transfers:[], rumors:['Yunikuai leaves for a new CNML team'] },
   o59: { transfers:[], rumors:['Nagi leaves for a new CNML team'] },
