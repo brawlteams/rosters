@@ -1691,7 +1691,7 @@ const OFFICIAL = [
 
   {id:'o31', org:'bh', sub:'Championship South America',  players:['prozy', 'portox', 'wesley'], staff:['killer', 'paolo']},
   {id:'o32', org:'red', sub:'Championship South America',  players:['mohtep', 'jubileu', 'cauebr'], staff:['alchemicalx']},
-  {id:'o33', org:'loud', sub:'Championship South America',  players:['kaiodog', 'firecrow', 'edinho'], staff:['role', 'trekking']},
+  {id:'o33', org:'loud', sub:'Championship South America',  players:['firecrow', 'edinho'], staff:['role', 'trekking']},
   {id:'o34', org:'os', sub:'Championship South America',  players:['brabao', 'golden'], staff:[]},
   {id:'o35', org:'skc', sub:'Championship South America',  players:['rhz', 'kristian'], staff:[]},
   {id:'o36', org:'al', sub:'Championship South America',  players:['fire_murilo', 'icecrow', 'lipizin'], staff:['kaiki']},
@@ -1710,7 +1710,7 @@ const OFFICIAL = [
   {id:'o44', org:'kds', sub:'Championship North America',  players:['sans'], staff:['lukiebear', 'realcanadian', 'lollo']},
   {id:'o45', org:'vtc', sub:'Championship North America',  players:['ezlivi', 'duckie', 'belal'], staff:['lotus']},
    {id:'o46', org:'hml', sub:'Championship North America',  players:['tyrant', 'rafiki', 'ducky'], staff:[]},
-  {id:'o47', org:'lgcy', sub:'Championship North America',  players:['zeus'], staff:['acro', 'peri']},
+  {id:'o47', org:'lgcy', sub:'Championship North America',  players:['zeus'], staff:[]},
   {id:'o48', org:'utp', sub:'Championship North America',  players:['nerf', 'junnie', 'winq'], staff:[]},
   {id:'o49', org:'amn', sub:'Championship North America',  players:['chino','vegeta'], staff:['og']},
   {id:'o50', org:'da', sub:'Championship North America',  players:['razuen', 'godnoob'], staff:[]},
@@ -1720,7 +1720,7 @@ const OFFICIAL = [
   {id:'o71', org:'lime', sub:'Championship North America',  players:['pierre', 'pika'], staff:[]},
   {id:'o72', org:'lgcy_a', sub:'Championship North America',  players:['darkwolf', 'polone', 'akeno'], staff:[]},
 
-  {id:'o52', org:'toc', sub:'Championship China',  players:['diuqiang', 'dynamike', 'xpr'], staff:['pirin329', 'abdzz']},
+  {id:'o52', org:'toc', sub:'Championship China',  players:['diuqiang', 'dynamike', 'xpr'], staff:['pirin329']},
   {id:'o53', org:'axr', sub:'Championship China',  players:['galaxy', 'david', 'coldrink'], staff:['kroos']},
   {id:'o54', org:'tl', sub:'Championship China',  players:['engine', 'white'], staff:['stardragon']},
   {id:'o55', org:'io', sub:'Championship China',  players:['valentine', 'expression', '下山'], staff:['natsuki']},
@@ -1732,8 +1732,10 @@ const OFFICIAL = [
 
 // Add transfer news here, keyed by the official roster ID above (for example: 'o1').
 const TRANSFER_INFO = {
+  o1: { transfers:[], rumors:['Sitetampo leaves for a new EA team'] },
   o2: { transfers:[], rumors:['Tensai, Moya and Milkreo split up'] },
-  o3: { transfers:['Naipishu leaves and becomes F/A', 'Sebas (HC) leaves and becomes F/A'], rumors:[] },
+  o3: { transfers:['Naipishu leaves and becomes F/A', 'Sebas (HC) leaves and becomes F/A'], rumors:['Kuru leaves for a new EA team', 'Ryohei joins' ] },
+  o4: { transfers:[], rumors:['Ryohei leaves for SKC EA'] },
   o8: { transfers:['Danshari leaves and becomes F/A'], rumors:[] },
   o13: { transfers:['X9Jay leaves and retires'], rumors:['Sergeant leaves for an EA or EMEA team'] },
   
@@ -1750,11 +1752,11 @@ const TRANSFER_INFO = {
   o27: { transfers:[], rumors:['Ope leaves for another EMEA team', 'Yoko leaves for another EMEA team', 'Sergeant joins'] },
   o28: { transfers:['Mine leaves and becomes F/A', 'Amos leaves and becomes F/A'], rumors:[] },
   o29: { transfers:['Lucas leaves and becomes F/A'], rumors:[] },
-  o30: { transfers:['Decaii leaves and becomes F/A'], rumors:['Inso (HC) leaves for another EMEA team', 'Plantyse (A) leaves for another EMEA team'] },
+  o30: { transfers:['Decaii leaves and becomes F/A'], rumors:['Arthur, Unlucky, Inso (HC), Plantyse (A) and Auge (M) split up'] },
 
   o31: { transfers:[], rumors:['Prozy and Killer (HC) leave for a new SA team', 'Rhz, Bielz or Kai join'] },
   o32: { transfers:['Peri (A) leaves and becomes F/A'], rumors:['CaueBR leaves for another SA team'] },
-  o33: { transfers:[], rumors:['KaioDog leaves for another SA team', 'Lipizin joins'] },
+  o33: { transfers:['KaioDog leaves and becomes F/A'], rumors:['Lipizin joins'] },
   o34: { transfers:['Satisfyer leaves and becomes F/A'], rumors:['Loko joins'] },
   o35: { transfers:['Juan Carlos leaves and becomes F/A'], rumors:['Rhz leaves for BH'] },
   o36: { transfers:[], rumors:['Lipizin leaves for LOUD'] },
@@ -1766,13 +1768,15 @@ const TRANSFER_INFO = {
   o43: { transfers:[], rumors:['Snoiy, Memen and Doin split up'] },
   o44: { transfers:['Bobby leaves and retires', 'Patchy leaves and retires'], rumors:['Lollo (M) leaves for another team'] },
   o45: { transfers:['Drizz (A) leaves and becomes F/A'], rumors:['Ezlivi leaves for another NA team', 'Vegeta joins', 'Lotus (HC) leaves for a new NA team'] },
-  o47: { transfers:['Zoulan leaves to coach TLF', 'Xemp leaves and becomes F/A'], rumors:[] },
+  o46: { transfers:[], rumors:['Tyrant, Rafiki and Ducky split up'] },
+  o47: { transfers:['Zoulan leaves to coach TLF', 'Xemp leaves and becomes F/A'], rumors:['Peri (A) leaves and becomes F/A'] },
   o48: { transfers:['Lux (A) leaves and becomes F/A'], rumors:[] },
   o49: { transfers:['Tacos leaves and becomes F/A'], rumors:['Vegeta leaves for VTC'] },
   o50: { transfers:['David leaves and becomes F/A'], rumors:[] },
-  o70: { transfers:['Kirito leaves and becomes F/A', 'Squeezy leaves and becomes F/A'], rumors:[] },
+  o70: { transfers:['Kirito leaves and becomes F/A', 'Squeezy leaves and becomes F/A'], rumors:['PaiN leaves for another NA team'] },
   o71: { transfers:['Lukiebear leaves to coach KDS'], rumors:[] },
 
+  o52: { transfers:['Abdzz leaves and becomes F/A'], rumors:[] },
   o54: { transfers:['OU leaves and retires'], rumors:[] },
   o57: { transfers:[], rumors:['Yunikuai leaves for a new CNML team'] },
   o59: { transfers:[], rumors:['Nagi leaves for a new CNML team'] },
