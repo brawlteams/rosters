@@ -1179,6 +1179,11 @@ const DB = {
     oneshot: {n:'Oneshot', sub:'Challengers DACH', cc:'DE', ach:[]},
     destiny: {n:'Destiny', sub:'Challengers DACH', cc:'KR', ach:[]},
     kapi: {n:'Kapi', sub:'Challengers DACH', cc:'PL', ach:[]},
+    jungle: {n:'Jungle', sub:'Challengers EMEA', cc:'RO', ach:[]},
+    cracky: {n:'Cracky', sub:'Challengers DACH', cc:'CH', ach:[]},
+    jason_3: {n:'Jason', sub:'Challengers DACH', cc:'DE', ach:[]},
+    stoprob: {n:'StopRob', sub:'Challengers EMEA', cc:'RU', ach:[]},
+    bbgs: {n:'BBgs', sub:'Challengers EMEA', cc:'RU', ach:[]},
 
     prozy: {n:'Prozy', sub:'Championship South America', cc:'PE', ach:[]},
     portox: {n:'Portox', sub:'Championship South America', cc:'AR', ach:[]},
@@ -1672,7 +1677,7 @@ const OFFICIAL = [
   {id:'o7', org:'ins', sub:'Championship East Asia',  players:['jene_azure', 'wahochi', 'koga'], staff:['xena']},
   {id:'o8', org:'fz', sub:'Championship East Asia',  players:['toridesu','ferkel'], staff:[]},
   {id:'o9', org:'rc', sub:'Championship East Asia',  players:['melty', 'shu', 'levi'], staff:[]},
-  {id:'o10', org:'axis', sub:'Championship East Asia',  players:['terry', 'menmi', 'yume'], staff:['nem']},
+  {id:'o10', org:'axis', sub:'Championship East Asia',  players:['menmi', 'yume'], staff:['nem']},
   {id:'o60', org:'nes', sub:'Championship East Asia',  players:['geki', 'sunrise', 'nelu215'], staff:[]},
   {id:'o61', org:'flc', sub:'Championship East Asia',  players:['sun','sourin', 'yukimll'], staff:[]},
   {id:'o62', org:'モーティス', sub:'Championship East Asia',  players:['ponkey', 'ater', 'midoronashi'], staff:[]},
@@ -1744,6 +1749,7 @@ const TRANSFER_INFO = {
   o4: { transfers:['RVL releases the roster'], rumors:['Ryohei leaves for SKC EA'] },
   o6: { transfers:['IGM releases the roster'], rumors:[] },
   o8: { transfers:['Danshari leaves and becomes F/A'], rumors:[] },
+  o10: { transfers:['Terry leaves and becomes F/A'], rumors:[] },
   o13: { transfers:[], rumors:['X9Jay leaves and retires', 'Sergeant leaves for an EA or EMEA team'] },
   
   o15: { transfers:[], rumors:['Ricky (A) leaves for another team'] },
@@ -1851,6 +1857,29 @@ const WF26_DOWNSTREAM = {
   lbr1a:['lbr2a'],lbr1b:['lbr2b'],lbr2a:['lbr3'],lbr2b:['lbr3'],lbr3:['lbr4'],lbr4:['gf']
 };
 
+/* NATIONAL ORGS: one org per country with 3+ players, flag as logo, placed in the Championship of its region.
+   Only in the org/team search, never on the baseline. */
+(function(){
+  const champOf = s => CHAMPIONSHIP_BY_REGION[regionForSubregion(s)] || s;   // any subregion -> its region's Championship
+  const byCc = {};
+  Object.values(DB.players).forEach(p => {
+    if(!p.cc) return;
+    const c = (byCc[p.cc] = byCc[p.cc] || { count:0, champs:{} });
+    c.count++;
+    const ch = champOf(p.sub);
+    c.champs[ch] = (c.champs[ch] || 0) + 1;
+  });
+  const names = new Intl.DisplayNames(['en'], { type:'region' });
+  Object.entries(byCc)
+    .filter(([, c]) => c.count >= 3)
+    .forEach(([cc, c]) => {
+      const sub = Object.entries(c.champs).sort((a, b) => b[1] - a[1])[0][0];   // most common Championship
+      DB.orgs['nat_' + cc.toLowerCase()] = {
+        n: names.of(cc), sub, homeRegion: regionForSubregion(sub), cc,
+        logo: `https://flagcdn.com/w160/${cc.toLowerCase()}.png`, ach: []
+      };
+    });
+})();
 /* =====================================================================
    3) APP LOGIC
    ===================================================================== */
