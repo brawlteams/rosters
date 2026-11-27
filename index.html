@@ -1869,13 +1869,14 @@ const WF26_DOWNSTREAM = {
     const ch = champOf(p.sub);
     c.champs[ch] = (c.champs[ch] || 0) + 1;
   });
+  const NAME_OVERRIDES = { TR:'Turkey', CN:'China' };   // names shown for national orgs
   const names = new Intl.DisplayNames(['en'], { type:'region' });
   Object.entries(byCc)
     .filter(([, c]) => c.count >= 3)
     .forEach(([cc, c]) => {
       const sub = Object.entries(c.champs).sort((a, b) => b[1] - a[1])[0][0];   // most common Championship
       DB.orgs['nat_' + cc.toLowerCase()] = {
-        n: names.of(cc), sub, homeRegion: regionForSubregion(sub), cc,
+        n: NAME_OVERRIDES[cc] || names.of(cc), sub, homeRegion: regionForSubregion(sub), cc,
         logo: `https://flagcdn.com/w160/${cc.toLowerCase()}.png`, ach: []
       };
     });
